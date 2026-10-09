@@ -1,0 +1,23 @@
+# scripts
+https://coastalworld.merci-michel.com/assets/main.35e6243a65453426.js
+https://coastalworld.merci-michel.com/assets/webgl.3250e36a65453426.js
+
+# styles
+https://coastalworld.merci-michel.com/assets/vendor.a83843c365453426.css
+
+# images
+
+# fonts
+
+# media
+
+# other_links
+https://coastalworld.com/
+https://coastalworld.merci-michel.com/assets/main.35e6243a65453426.js
+https://coastalworld.merci-michel.com/assets/webgl.3250e36a65453426.js
+https://coastalworld.merci-michel.com/favicon.ico?v=918eafe8
+https://coastalworld.merci-michel.com/icons/favicon_dark.svg?v=918eafe8
+https://coastalworld.merci-michel.com/icons/favicon_light.svg?v=918eafe8
+https://coastalworld.merci-michel.com/icons/icon_180.png?v=918eafe8
+https://coastalworld.merci-michel.com/manifest.webmanifest?v=918eafe8
+
