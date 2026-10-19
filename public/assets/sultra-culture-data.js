@@ -116,6 +116,7 @@ export const CULTURE_GUIDES = [
     id: 'lulo',
     title: 'Lulo: Langkah dalam Lingkaran',
     region: 'Tolaki · Konawe dan Mekongga',
+    subtitle: 'Gerak bersama, irama, dan persaudaraan',
     homeId: 'mekongga',
     description: [
       'Lulo atau Molulo dikenal melalui gerak bersama dalam lingkaran. Para peserta bergandengan tangan dan menyelaraskan langkah mengikuti irama. Dalam kehidupan masyarakat Tolaki, pertemuan seperti ini menjadi ruang untuk mempererat hubungan dan menyambut orang lain.',
@@ -141,6 +142,7 @@ export const CULTURE_GUIDES = [
     id: 'lumense',
     title: 'Lumense: Harapan dari Kabaena',
     region: 'Moronene · Kabaena, Bombana',
+    subtitle: 'Tarian harapan dari Kabaena',
     homeId: 'laika',
     visitingRegion: 'Pemandu tamu dari Kabaena; Lumense merupakan tradisi Moronene.',
     description: [
@@ -167,6 +169,7 @@ export const CULTURE_GUIDES = [
     id: 'pomani',
     title: 'Pomani: Mengenal Tari Muna',
     region: 'Muna',
+    subtitle: 'Keindahan budaya masyarakat Muna',
     homeId: 'bharugano-wuna',
     description: [
       'Pomani memperkenalkan keindahan budaya masyarakat Muna melalui seni tari. Nama ini tercatat dalam Kamus Budaya Sulawesi Tenggara yang diterbitkan Badan Bahasa.',
@@ -187,6 +190,7 @@ export const CULTURE_GUIDES = [
     id: 'alionda',
     title: 'Alionda: Tari, Nyanyian, dan Permainan',
     region: 'Kulisusu · Buton Utara',
+    subtitle: 'Tari, nyanyian, dan permainan rakyat',
     homeId: 'banua-tada',
     visitingRegion: 'Pemandu dari Kulisusu, Buton Utara, mengenalkan tradisinya di ruang bersama.',
     description: [
@@ -209,6 +213,7 @@ export const CULTURE_GUIDES = [
     id: 'kaghati-kolope',
     title: 'Kaghati Kolope: Daun yang Terbang',
     region: 'Muna · Liangkobori',
+    subtitle: 'Layang-layang daun dari Muna',
     homeId: 'bharugano-wuna',
     description: [
       'Kaghati Kolope adalah layang-layang tradisional masyarakat Muna yang menggunakan daun kolope atau daun ubi hutan. Bambu menjadi bagian rangkanya, sementara serat nanas hutan digunakan untuk tali.',
@@ -230,6 +235,7 @@ export const CULTURE_GUIDES = [
     id: 'tenun-konawe',
     title: 'Tenun Konawe: Cerita dalam Benang',
     region: 'Konawe',
+    subtitle: 'Motif, benang, dan ketekunan perajin',
     homeId: 'laika',
     description: [
       'Tenun Konawe menyimpan pengetahuan tentang benang, alat, dan pembentukan motif. Penenun menggunakan gedogan maupun alat tenun bukan mesin, yang dikenal sebagai ATBM. Keduanya membutuhkan keterampilan dalam mengatur benang hingga menjadi kain.',

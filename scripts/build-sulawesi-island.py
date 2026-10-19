@@ -9,6 +9,7 @@ from shapely.geometry import Polygon,Point,LineString,box,shape
 from shapely.affinity import rotate,translate,scale
 from shapely.ops import nearest_points
 from PIL import Image, ImageDraw, ImageFilter
+from sultra_terrain_features import build_coast_fence
 ROOT=Path(__file__).resolve().parents[1]
 indonesia=shape(json.loads((ROOT/'data/geography/natural-earth-indonesia.geojson').read_text())['geometry'])
 sulawesi=next(p for p in indonesia.geoms if p.contains(Point(120,-2)))
@@ -16,6 +17,7 @@ sulawesi=scale(translate(sulawesi,xoff=-121,yoff=1.7),xfact=40,yfact=-40,origin=
 outline=list(sulawesi.exterior.coords)
 land=Polygon(outline)
 GROUND=3.0
+SHORE_WIDTH=.8
 houses=[]
 for name,target,width,depth,angle in [
  ('laika',(-16,20),8.3,18,0),('mekongga',(-47,104),16,17,0),
@@ -31,7 +33,7 @@ for name,target,width,depth,angle in [
  houses.append(dict(id=name,x=x,z=z,width=width,depth=depth,rotation=angle))
 spawn_pt=nearest_points(Point(-65,145),land.buffer(-4))[1]
 spawn=[round(spawn_pt.x,3),3.2,round(spawn_pt.y,3)]
-stage=dict(x=-30,z=-10,radius=8,speakers=dict(x=-30,z=-16,rotation=0),dance=dict(x=-30,z=-7,radius=2.5,count=12))
+stage=dict(x=-30,z=-10,radius=8,speakers=dict(x=-30,z=-16,rotation=math.pi),dance=dict(x=-30,z=-7,radius=2.5,count=12))
 guide_specs=[('lumense','laika',-16),('tenun-konawe','laika',16),('pomani','bharugano-wuna',-16),('kaghati-kolope','bharugano-wuna',16),('alionda','banua-tada',0),('lulo','mekongga',0)]
 guides=[]
 safe_guide_land=land.buffer(-7)
@@ -90,13 +92,36 @@ paths.append(route(center,(stage['x'],stage['z']+8)))
 # Extend a nature walk towards the northern peninsula.
 north=nearest_points(Point(147,-116),land.buffer(-3))[1]
 paths.append(route(center,(north.x,north.y)))
-road=LineString(paths[0]).buffer(1.25)
-for p in paths[1:]:road=road.union(LineString(p).buffer(1.25))
+road=LineString(paths[0]).buffer(1.15)
+for p in paths[1:]:road=road.union(LineString(p).buffer(1.15))
 road=road.intersection(land)
-plazas=Point(stage['x'],stage['z']).buffer(9)
+plazas=Point(stage['x'],stage['z']).buffer(6.3).union(Point(stage['speakers']['x'],stage['speakers']['z']).buffer(3.1))
 for h in houses:
- footprint=translate(rotate(box(-h['width']/2-1,-h['depth']/2-1,h['width']/2+1,h['depth']/2+1),-h['rotation']*180/math.pi),xoff=h['x'],yoff=h['z'])
- plazas=plazas.union(footprint).union(Point(h['entrance']['x'],h['entrance']['z']).buffer(3))
+ footprint=translate(rotate(box(-h['width']/2-.25,-h['depth']/2-.25,h['width']/2+.25,h['depth']/2+.25),-h['rotation']*180/math.pi),xoff=h['x'],yoff=h['z'])
+ plazas=plazas.union(footprint).union(Point(h['entrance']['x'],h['entrance']['z']).buffer(1.7))
+
+# Compact smooth hills stay clear of homes, wandering circles and the stage.
+# Stone paths can climb them gently; cosine caps have zero slope at their edges.
+flat_areas=plazas.buffer(3).union(Point(spawn[0],spawn[2]).buffer(7))
+for g in guides:flat_areas=flat_areas.union(Point(g['x'],g['z']).buffer(5))
+hill_candidates=[]
+for x in np.arange(minx,maxx,4):
+ for z in np.arange(minz,maxz,4):
+  p=Point(x,z)
+  if not land.contains(p):continue
+  radius=min(25,p.distance(land.boundary)-2,p.distance(flat_areas)-1)
+  if radius>=7:hill_candidates.append((radius,x,z))
+hills=[]
+for radius,x,z in sorted(hill_candidates,reverse=True):
+ if any(math.hypot(x-h['x'],z-h['z'])<(radius+h['radius'])*.94 for h in hills):continue
+ hills.append(dict(x=round(x,3),z=round(z,3),radius=round(radius,3),height=round(radius*.34,3)))
+ if len(hills)>=8:break
+def height_at(x,z):
+ rise=0.
+ for hill in hills:
+  r=math.hypot(x-hill['x'],z-hill['z'])/hill['radius']
+  if r<1:rise=max(rise,hill['height']*(.5+.5*math.cos(math.pi*r)))
+ return GROUND+rise
 random.seed(94)
 forest=[]
 forest_land=land.buffer(-4)
@@ -119,14 +144,66 @@ for at in np.arange(0,shore.length,12):
  decor.append(dict(asset='RockA',x=round(p.x,2),z=round(p.y,2),y=3.3,scale=round(random.uniform(2.5,4.5),2),rotation=random.uniform(0,math.tau)))
 for tree in forest[::2]:
  decor.append(dict(asset='BushA',x=tree['x']+1.6,z=tree['z']+1,y=GROUND,scale=1.5,rotation=tree['rotation']))
+# Keep garden walls beside each house, clear of the complete paved walkway.
+# The native Wall collider is slightly wider/longer than its visible mesh.
+garden_clearance=road.buffer(.65)
+garden_land=land.buffer(-3)
+garden_footprints=[]
+def garden_wall(h,side,across,along):
+ a=h['rotation'];lx=side*(h['width']/2+across)
+ x=h['x']+lx*math.cos(a)+along*math.sin(a);z=h['z']-lx*math.sin(a)+along*math.cos(a)
+ footprint=translate(rotate(box(-.218786717*1.8,-6.114641*.75,.218786717*1.8,6.114641*.75),-a*180/math.pi),xoff=x,yoff=z)
+ return x,z,footprint
 for h in houses:
  for side in [-1,1]:
-  a=h['rotation'];lx=side*(h['width']/2+3);lz=-1
-  x=h['x']+lx*math.cos(a)+lz*math.sin(a);z=h['z']-lx*math.sin(a)+lz*math.cos(a)
-  wall=translate(rotate(box(-.4,-5,.4,5),-a*180/math.pi),xoff=x,yoff=z)
-  if land.buffer(-3).covers(wall):
-   decor.append(dict(asset='Wall',x=x,z=z,y=GROUND+.65,scaleXYZ=[1.5,.65,.75],rotation=a))
-decor.append(dict(asset='SpeakersOn',x=stage['speakers']['x'],z=stage['speakers']['z'],y=GROUND,scale=1,rotation=0))
+  _,_,original=garden_wall(h,side,3,-1)
+  if not garden_land.covers(original):continue
+  candidates=[]
+  for across in [3,4.5,6]:
+   for along in [-1,-3,1,-5,3,-7,5,-9,7]:
+    x,z,footprint=garden_wall(h,side,across,along)
+    if not garden_land.covers(footprint) or garden_clearance.intersects(footprint):continue
+    candidates.append(((across-3)**2+(along+1)**2,x,z,footprint))
+  if not candidates:continue
+  _,x,z,footprint=min(candidates,key=lambda candidate:candidate[0])
+  garden_footprints.append(footprint)
+  # Match the smooth retaining wall asset used throughout the original scene.
+  decor.append(dict(asset='Wall',x=x,z=z,y=GROUND+.5,scaleXYZ=[1.8,.5,.75],rotation=h['rotation'],solid=True))
+if any(garden_clearance.intersects(wall) for wall in garden_footprints):
+ raise ValueError('A garden wall obstructs a stone walkway')
+decor.append(dict(asset='SpeakersOn',x=stage['speakers']['x'],z=stage['speakers']['z'],y=GROUND,scale=1,rotation=stage['speakers']['rotation']))
+for prop in forest+decor:
+ prop['y']=round(height_at(prop['x'],prop['z'])+prop.get('y',GROUND)-GROUND,4)
+coast_fence=build_coast_fence(land,height_at)
+decor.extend(coast_fence['props'])
+
+# Add two small monument forecourts after the existing environment is laid out.
+# Preserve the established environment, clearing only vegetation at a new site.
+monuments=json.loads((ROOT/'data/monument-sites.json').read_text(encoding='utf8'))
+for monument in monuments:
+ a=monument['rotation'];w=monument['width']/2;d=monument['depth']/2
+ footprint=translate(rotate(box(-w,-d,w,d),-a*180/math.pi),xoff=monument['x'],yoff=monument['z'])
+ apron=footprint.buffer(.5,join_style=2)
+ connector=LineString(monument['connector']);approach=connector.buffer(.7)
+ if not land.buffer(-2).covers(apron.union(approach)):
+  raise ValueError('Monument too close to coast: '+monument['id'])
+ if footprint.intersects(road.buffer(.5)):
+  raise ValueError('Monument obstructs a walkway: '+monument['id'])
+ for x in np.arange(apron.bounds[0],apron.bounds[2]+.25,.25):
+  for z in np.arange(apron.bounds[1],apron.bounds[3]+.25,.25):
+   if apron.covers(Point(x,z)) and height_at(x,z)>GROUND+.015:
+    raise ValueError('Monument needs flat ground: '+monument['id'])
+ if any(apron.union(approach).intersects(wall) for wall in garden_footprints):
+  raise ValueError('Monument forecourt intersects a garden wall')
+ if any(footprint.distance(Point(g['x'],g['z']))<g['wanderRadius']+2 for g in guides):
+  raise ValueError('Monument obstructs an NPC wandering area')
+ if monument.get('clearVegetation'):
+  clearance=footprint.buffer(2).union(connector.buffer(2.2))
+  forest=[tree for tree in forest if not clearance.covers(Point(tree['x'],tree['z']))]
+  decor=[prop for prop in decor if prop['asset'] not in ('BushA','RockA') or not clearance.covers(Point(prop['x'],prop['z']))]
+ plazas=plazas.union(apron)
+ road=road.union(approach)
+ paths.append(monument['connector'])
 
 # Native terrain channels: red paving, green meadow, blue path, alpha land.
 # UVs and pixels use the same normalized X/Z range (the loader uses flipY=false).
@@ -143,23 +220,29 @@ def mask(geometry):
   for hole in p.interiors:draw.polygon(coords(hole),fill=0)
  paint(geometry)
  return image.filter(ImageFilter.GaussianBlur(1.5))
-alpha=mask(land.buffer(-3))
+alpha=mask(land.buffer(-SHORE_WIDTH))
 paths_mask=mask(road.union(plazas))
-grass_mask=mask(land.buffer(-3.5).difference(road.buffer(.65)).difference(plazas.buffer(.5)))
-Image.merge('RGBA',(Image.new('L',alpha.size),grass_mask,paths_mask,alpha)).save(ROOT/'public/models/culture/terrain-splat.png')
+grass_mask=mask(land.buffer(-1.15).difference(road.buffer(.3)).difference(plazas.buffer(.25)))
+Image.merge('RGBA',(paths_mask,grass_mask,Image.new('L',alpha.size),alpha)).save(ROOT/'public/models/culture/terrain-splat.png')
 Image.merge('RGB',(grass_mask,grass_mask,grass_mask)).save(ROOT/'public/models/culture/grass-splat.png')
 P=[];N=[];UV=[];C=[];I=[]
-def triangle(a,b,c,color):
+def triangle(a,b,c,color,smooth=False):
  a,b,c=map(lambda v:np.array(v,dtype=float),(a,b,c))
  normal=np.cross(b-a,c-a);normal/=max(np.linalg.norm(normal),1e-9)
  start=len(P)
- for p in [a,b,c]:P.append(p.tolist());N.append(normal.tolist());UV.append([(p[0]-minx)/(maxx-minx),(p[2]-minz)/(maxz-minz)]);C.append(color)
+ for p in [a,b,c]:
+  n=normal
+  if smooth:
+   n=np.array([height_at(p[0]-.1,p[2])-height_at(p[0]+.1,p[2]),.2,height_at(p[0],p[2]-.1)-height_at(p[0],p[2]+.1)])
+   n/=np.linalg.norm(n)
+  P.append(p.tolist());N.append(n.tolist());UV.append([(p[0]-minx)/(maxx-minx),(p[2]-minz)/(maxz-minz)]);C.append(color)
  I.extend([start,start+1,start+2])
 def top(poly,y,color):
  if poly.is_empty:return
- if poly.geom_type=='MultiPolygon':
+ if poly.geom_type in ['MultiPolygon','GeometryCollection']:
   for part in poly.geoms:top(part,y,color)
   return
+ if poly.geom_type!='Polygon':return
  rings=[list(poly.exterior.coords)[:-1]]+[list(r.coords)[:-1] for r in poly.interiors]
  coords=np.array([p for r in rings for p in r],dtype=np.float64)
  ends=np.cumsum([len(r) for r in rings],dtype=np.uint32)
@@ -167,10 +250,14 @@ def top(poly,y,color):
  for at in range(0,len(idx),3):
   vs=[[coords[i][0],y(coords[i]) if callable(y) else y,coords[i][1]] for i in idx[at:at+3]]
   if np.cross(np.subtract(vs[1],vs[0]),np.subtract(vs[2],vs[0]))[1]<0:vs[1],vs[2]=vs[2],vs[1]
-  triangle(*vs,color)
-interior=land.buffer(-3.0)
-top(interior,GROUND,[1,1,1])
-top(land.difference(interior),lambda p: .15+(GROUND-.15)*min(1,Point(p).distance(land.boundary)/3),[1,1,1])
+  triangle(*vs,color,smooth=all(v[1]>=GROUND for v in vs))
+interior=land.buffer(-SHORE_WIDTH)
+grid=2.5
+for x in np.arange(minx,maxx,grid):
+ for z in np.arange(minz,maxz,grid):
+  cell=interior.intersection(box(x,z,x+grid,z+grid))
+  if not cell.is_empty:top(cell,lambda p:height_at(p[0],p[1]),[1,1,1])
+top(land.difference(interior),lambda p: .15+(GROUND-.15)*min(1,Point(p).distance(land.boundary)/SHORE_WIDTH),[1,1,1])
 for i,(x,z) in enumerate(outline[:-1]):
  nx,nz=outline[i+1]
  triangle([x,.15,z],[nx,.15,nz],[x,-4,z],[1,1,1])
@@ -178,7 +265,8 @@ for i,(x,z) in enumerate(outline[:-1]):
 def write_glb(path,scale=1,tx=0,tz=0):
  positions=np.array(P,dtype=np.float32)*scale;positions[:,0]+=tx;positions[:,2]+=tz
  # Keep sea and ground heights consistent in the intro preview.
- positions[:,1]=np.array(P)[:,1]
+ original_y=np.array(P)[:,1]
+ positions[:,1]=np.where(original_y>GROUND,GROUND+(original_y-GROUND)*scale,original_y)
  arrays=[(positions,5126,'VEC3'),(np.array(N,dtype=np.float32),5126,'VEC3'),(np.array(UV,dtype=np.float32),5126,'VEC2'),(np.array(C,dtype=np.float32),5126,'VEC3'),(np.array(I,dtype=np.uint32),5125,'SCALAR')]
  binary=bytearray();views=[];accessors=[]
  for arr,comp,typ in arrays:
@@ -188,9 +276,12 @@ def write_glb(path,scale=1,tx=0,tz=0):
   accessors.append(acc);binary.extend(raw)
  # Lightweight closed collision boxes keep the player outside the house walls.
  cp=[];cn=[];cu=[];ci=[]
- for h in houses:
-  w,d=h['width']*.45,h['depth']*.42
-  verts=np.array([[-w,3,-d],[w,3,-d],[w,17,-d],[-w,17,-d],[-w,3,d],[w,3,d],[w,17,d],[-w,17,d]],dtype=float)
+ colliders=[dict(x=h['x'],z=h['z'],rotation=h['rotation'],w=h['width']*.45,d=h['depth']*.42,bottom=3,top=17) for h in houses]
+ colliders.extend(dict(x=m['x'],z=m['z'],rotation=m['rotation'],w=m['width']/2,d=m['depth']/2,bottom=GROUND,top=GROUND+m['height']) for m in monuments)
+ colliders.extend(dict(x=f['x'],z=f['z'],rotation=f['rotation'],w=.22,d=f['length']/2+.12,bottom=f['y']-.6,top=f['y']+3) for f in coast_fence['segments'])
+ for h in colliders:
+  w,d=h['w'],h['d'];bottom,top_y=h['bottom'],h['top']
+  verts=np.array([[-w,bottom,-d],[w,bottom,-d],[w,top_y,-d],[-w,top_y,-d],[-w,bottom,d],[w,bottom,d],[w,top_y,d],[-w,top_y,d]],dtype=float)
   a=h['rotation'];x=verts[:,0].copy();z=verts[:,2].copy()
   verts[:,0]=(x*math.cos(a)+z*math.sin(a)+h['x'])*scale+tx
   verts[:,2]=(-x*math.sin(a)+z*math.cos(a)+h['z'])*scale+tz
@@ -210,7 +301,7 @@ main_bounds=write_glb(ROOT/'public/models/culture/sulawesi-island.glb')
 intro_bounds=write_glb(ROOT/'public/models/culture/sulawesi-intro.glb',.60,135,-58)
 main_bounds[1][1]=24
 intro_bounds[1][1]=18
-layout=dict(groundY=GROUND,bounds=main_bounds,introBounds=intro_bounds,spawn=spawn,houses=houses,guides=guides,forest=forest,decor=decor,stage=stage,outline=outline,paths=paths,introTransform=dict(scale=.60,x=135,z=-58))
+layout=dict(groundY=GROUND,bounds=main_bounds,introBounds=intro_bounds,spawn=spawn,houses=houses,guides=guides,monuments=monuments,forest=forest,decor=decor,stage=stage,hills=hills,coastFence=coast_fence['rings'],outline=outline,paths=paths,introTransform=dict(scale=.60,x=135,z=-58))
 (ROOT/'public/assets/sultra-island-layout.js').write_text('// Silhouette: Natural Earth (public domain). Exhibition sites are interpretive.\nexport default '+json.dumps(layout,separators=(',',':'))+';\n')
 (ROOT/'public/models/culture/island-layout.json').write_text(json.dumps(layout,indent=2))
-print(json.dumps(dict(bounds=main_bounds,spawn=spawn,houses=houses,guides=guides,trees=len(forest),terrainTriangles=len(I)//3),indent=2))
+print(json.dumps(dict(bounds=main_bounds,spawn=spawn,houses=houses,guides=guides,trees=len(forest),hills=hills,gardenWalls=len(garden_footprints),fenceSections=len(coast_fence['segments']),terrainTriangles=len(I)//3),indent=2))

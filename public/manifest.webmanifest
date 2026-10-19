@@ -1,21 +1,16 @@
 {
-	"short_name": "Coastal World - Digital Banking 3D Game and Marketplace",
-	"name": "Coastal World - Digital Banking 3D Game and Marketplace",
-	"description": "Play Coastal World now and explore mobile banking apps, digital credit cards, and online banking options that can help you reach your financial goals.",
+	"short_name": "Sultra Rupa",
+	"name": "Sultra Rupa — Jelajah Budaya Sulawesi Tenggara",
+	"description": "Jelajahi rumah adat, tari, musik, dan cerita Sulawesi Tenggara dalam pengalaman 3D Sultra Rupa.",
 	"start_url": "/",
-	"background_color": "#000000",
-	"theme_color": "#000000",
+	"background_color": "#3b3777",
+	"theme_color": "#3b3777",
 	"orientation": "portrait",
 	"icons": [
 		{
-			"src": "/icons/icon_192.png?v=918eafe8",
+			"src": "/icons/icon_180.png?v=918eafe8",
 			"type": "image/png",
-			"sizes": "192x192"
-		},
-		{
-			"src": "/icons/icon_512.png?v=918eafe8",
-			"type": "image/png",
-			"sizes": "512x512"
+			"sizes": "180x180"
 		}
 	],
 	"display": "fullscreen"

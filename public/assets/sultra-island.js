@@ -2,6 +2,10 @@ import layout from './sultra-island-layout.js';
 import { HOUSE_EXHIBITS, CULTURE_GUIDES } from './sultra-culture-data.js';
 import { createCultureUI } from './sultra-culture-ui.js';
 import { installSultraPhoneMap } from './sultra-phone-map.js';
+import { installSultraPhoneCulture } from './sultra-phone-culture.js';
+import { registerSultraGuideDialog } from './sultra-guide-dialogs.js';
+import { createHouseInteractions } from './sultra-house-interaction.js';
+import { createCultureVoice } from './sultra-culture-voice.js';
 import { registerLuloDancers, installSultraLulo } from './sultra-lulo.js';
 import { convertMaterials } from './opening-boat.js';
 import {
@@ -21,6 +25,27 @@ function transform(x, y, z, rotation = 0, scale = 1) {
   return [x, y, z, scale, scale, scale, 0, Math.sin(rotation / 2), 0, Math.cos(rotation / 2)];
 }
 
+function culturePointName(id) {
+  return `Culture_${id}`;
+}
+
+function cultureDestinationPoints() {
+  const points = {};
+  const add = (id, x, z, rotation = 0) => {
+    points[culturePointName(id)] = transform(x, GROUND + .2, z, rotation);
+  };
+  for (const house of layout.houses) {
+    add(house.id, house.entrance?.x ?? house.x, house.entrance?.z ?? house.z, house.rotation);
+  }
+  for (const guide of layout.guides) add(guide.id, guide.x, guide.z, guide.rotation);
+  if (layout.stage || layout.luloStage) {
+    const stage = layout.stage || layout.luloStage;
+    const destination = stage.speakers || stage.dance || stage;
+    add('lulo-stage', destination.x, (destination.z ?? stage.z) + 3, destination.rotation ?? 0);
+  }
+  return points;
+}
+
 function forestProps(manifest, preview = false) {
   const offset = preview ? layout.introTransform : { x: 0, z: 0, scale: 1 };
   const scale = offset.scale ?? 1;
@@ -28,13 +53,13 @@ function forestProps(manifest, preview = false) {
     // A missing optional native tree should never prevent the island loading.
     if (!manifest.assets[tree.asset]) return [];
     const transforms = transform(
-      tree.x * scale + offset.x, tree.y ?? GROUND, tree.z * scale + offset.z,
+      tree.x * scale + offset.x, GROUND + ((tree.y ?? GROUND) - GROUND) * scale, tree.z * scale + offset.z,
       tree.rotation, (tree.scale ?? 1) * scale,
     );
     if (tree.scaleXYZ) tree.scaleXYZ.forEach((value, i) => { transforms[3 + i] = value * scale; });
     return [{
       asset: tree.asset,
-      traversable: !['Wall', 'SpeakersOn'].includes(tree.asset),
+      traversable: !tree.solid && !['Wall', 'SpeakersOn'].includes(tree.asset),
       transforms,
     }];
   });
@@ -52,23 +77,7 @@ function registerGuides(game) {
       head: null, body: null, bottom: 'Bottom-Sandals',
       script: 'TalkingCitizen', scriptArgs: { animation: 'Idle2' },
     };
-    const dialog = game.app.$dialogs.list[subtype] = {
-      Start: {
-        id: 'Start', isSpeak: true,
-        bubble: `Selamat datang! Mari mengenal ${content.title}. ${content.facts[0]}`,
-        before: [{ action: 'EMOTE', opts: ['Hello'] }],
-        next: [{ action: 'GOTO', node: 'LearnMore' }],
-      },
-      LearnMore: {
-        id: 'LearnMore', isSpeak: true,
-        bubble: 'Pilih ikon pemandu di atas saya untuk membaca cerita dan sumbernya. Selamat menjelajah!',
-        next: [{ action: 'END' }],
-      },
-    };
-    Object.defineProperties(dialog, {
-      __first__: { value: 'Start' },
-      __id__: { value: subtype },
-    });
+    registerSultraGuideDialog(game, subtype, content);
     const uid = guideUID(site.id);
     actors[uid] = {
       uid, type: 'NPC', params: { subtype, move: `radius=${site.wanderRadius ?? 3},pausemin=0.8,pausemax=2.4,speed=1.7` },
@@ -98,7 +107,10 @@ function configureScenes(game, state) {
     bounds: copy(layout.bounds), useBaseAsCollider: true,
     props: mainTrees, assets: [...new Set(mainTrees.map((entry) => entry.asset))],
     actors: { ...registerGuides(game), ...registerLuloDancers(game, layout) },
-    points: { 'Spawn.001': spawn, 'PortSpawnA.001': [...spawn], 'PortSpawnB.001': [...spawn] },
+    points: {
+      'Spawn.001': spawn, 'PortSpawnA.001': [...spawn], 'PortSpawnB.001': [...spawn],
+      ...cultureDestinationPoints(),
+    },
     curves: {}, areas: {},
   });
 
@@ -119,7 +131,8 @@ function configureScenes(game, state) {
     manifest.textures[`Scene_${id}_TerrainSplatting`] = { default: '/models/culture/terrain-splat.png' };
     manifest.textures[`Scene_${id}_GrassSplatting`] = { default: '/models/culture/grass-splat.png' };
   }
-  manifest.timestamp = Number(state.backup.timestamp) + 20261005;
+  // Invalidate persistent asset caches when regenerated terrain/masks change.
+  manifest.timestamp = Number(state.backup.timestamp) + 2026101302;
 
   // The bundled merge cache omits vertex colors. Preserve native cache behavior
   // for other resources while always reading the two colored terrain GLBs.
@@ -136,10 +149,10 @@ function configureScenes(game, state) {
   game.app.$store.overrideSpawnPoint = null;
   // Only the old world's coordinates need migration; outfits and progress stay.
   try {
-    if (localStorage.getItem('sultrarupa-island-layout') !== '1') {
+    if (localStorage.getItem('sultrarupa-island-layout') !== '2') {
       state.backup.playerPosition = localStorage.getItem('player_position');
       localStorage.setItem('player_position', [MAIN, ...layout.spawn, 0, 0, 0].join('|'));
-      localStorage.setItem('sultrarupa-island-layout', '1');
+      localStorage.setItem('sultrarupa-island-layout', '2');
     }
   } catch {
     // The regular Spawn point also works when browser storage is unavailable.
@@ -155,9 +168,29 @@ function configureScenes(game, state) {
 }
 
 async function loadHouses(state) {
-  await Promise.all(HOUSE_EXHIBITS.map(async (entry) => {
+  const exhibits = [...HOUSE_EXHIBITS, ...(layout.monuments || [])];
+  await Promise.all(exhibits.map(async (entry) => {
     const gltf = await assets.load(entry.model, { noCache: true });
     convertMaterials(gltf.scene);
+    if (entry.unlit) gltf.scene.traverse((object) => {
+      if (!object.isMesh) return;
+      // Diffuse color from the PBR source is displayed directly, without baked
+      // directional shading, scene lighting, tone mapping or fog dimming it.
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      for (const material of materials) {
+        material.color.set(0xffffff);
+        material.fog = false;
+        material.toneMapped = false;
+        if (material.map) {
+          // This legacy renderer presents display-encoded colors directly.
+          // Its r150 texture API uses encoding; colorSpace alone has no effect.
+          // Avoid decoding sRGB into a linear framebuffer with no output encode.
+          material.map.encoding = 3000; // THREE.LinearEncoding in the bundle.
+          material.map.needsUpdate = true;
+        }
+        material.needsUpdate = true;
+      }
+    });
     gltf.scene.updateMatrixWorld(true);
     const bounds = new Box3().setFromObject(gltf.scene);
     const size = bounds.getSize(new Vector3());
@@ -179,6 +212,7 @@ function addHouses(scene, state) {
   const group = new Group();
   group.name = preview ? 'Sultrarupa opening island houses' : 'Sultrarupa traditional houses';
   const targets = [];
+  const interactiveHouses = [];
   for (const site of layout.houses) {
     const source = state.templates.get(site.id);
     const content = HOUSE_EXHIBITS.find((entry) => entry.id === site.id);
@@ -190,10 +224,22 @@ function addHouses(scene, state) {
     house.position.set(site.x * offset.scale + offset.x, GROUND, site.z * offset.scale + offset.z);
     house.userData.exhibit = site.id;
     group.add(house);
+    if (!preview) interactiveHouses.push({ id: site.id, object: house });
     if (!preview) targets.push({
       ...content, kind: 'house',
       position: new Vector3(site.entrance?.x ?? site.x, GROUND + 2.1, site.entrance?.z ?? site.z),
     });
+  }
+  for (const site of layout.monuments || []) {
+    const source = state.templates.get(site.id);
+    if (!source) continue;
+    const monument = source.object.clone(true);
+    monument.name = site.title;
+    monument.scale.setScalar(site.height / source.size.y * offset.scale);
+    monument.rotation.y = site.rotation || 0;
+    monument.position.set(site.x * offset.scale + offset.x, GROUND, site.z * offset.scale + offset.z);
+    monument.userData.landmark = site.id;
+    group.add(monument);
   }
   scene.base.add(group);
   group.updateMatrixWorld(true);
@@ -208,13 +254,15 @@ function addHouses(scene, state) {
       state.guideTargets.push({ target, uid: guideUID(site.id) });
     }
     const lulo = CULTURE_GUIDES.find((entry) => entry.id === 'lulo');
-    targets.push({ ...lulo, id: 'lulo-stage', title: 'Panggung Lulo', kind: 'guide',
+    targets.push({ ...lulo, id: 'lulo-stage', title: 'Panggung Lulo', kind: 'guide', worldMarker: 'music',
       position: new Vector3(layout.stage.speakers.x, GROUND + 2.1, layout.stage.speakers.z + 3) });
     state.ui.setTargets(targets);
+    state.houseInteraction.setHouses(interactiveHouses);
   }
 }
 
 function attachScene(scene, state) {
+  state.houseInteraction.clear();
   state.ui.clear();
   state.houses?.removeFromParent();
   state.houses = null;
@@ -232,15 +280,35 @@ export function installSultraIsland(game) {
     templates: new Map(), scene: null, houses: null, guideTargets: [],
   };
   state.ui = createCultureUI({
-    onOpenChange(open) {
+    onOpenChange(open, { target, presentation } = {}) {
       game.input?.keyboard?.unpressAllKeys();
       const scene = game.scenes?.current;
       if (scene?.id !== MAIN) return;
+      if (open && presentation === 'house-dialog') state.houseInteraction?.focus(target.id);
+      else state.houseInteraction?.clearFocus();
+      if (open && target) state.voice?.setTarget(target, { autoplay: presentation === 'house-dialog' });
+      else state.voice?.clear();
       scene.physics.movePlayer(new Vector3());
-      scene.physics.togglePause(open);
+      scene.physics.togglePause(open || Boolean(game.store.onPhone?.value));
     },
   });
-  state.phoneMap = installSultraPhoneMap(game, { openTarget: (id) => state.ui.openTarget(id) });
+  state.houseInteraction = createHouseInteractions(game, state.ui);
+  state.voice = createCultureVoice(game);
+  state.ui.setNarrationControls(state.voice.element);
+  state.phoneMap = installSultraPhoneMap(game, {
+    navigateTo(id) {
+      const point = culturePointName(id);
+      const points = game.app?.$manifest?.content?.scenes?.[MAIN]?.points;
+      if (!points?.[point] || !game.scenes?.teleportTo) return false;
+      game.input?.keyboard?.unpressAllKeys();
+      // Follow the phone map's built-in travel flow: leave the phone first,
+      // then place the player at a named, safe destination point.
+      game.app.$router?.push({ name: 'Home' });
+      game.scenes.teleportTo(MAIN, { point, delay: 400 });
+      return true;
+    },
+  });
+  state.phoneCulture = installSultraPhoneCulture(game);
   state.lulo = installSultraLulo(game, layout);
   function preload() {
     if (state.ready) return;
@@ -270,7 +338,12 @@ export function installSultraIsland(game) {
       if (actor?.base) target.position.copy(actor.base.position).add(GUIDE_OFFSET);
     }
     const camera = scene.getCurrentCamera()?.cam;
-    if (camera && scene.player?.base) state.ui.update(camera, scene.player.base.position);
+    if (camera && scene.player?.base) {
+      const canInteract = scene.player.canMove && !game.store.onPhone?.value
+        && !game.store.inDialog?.value && !game.store.interactionButton?.value;
+      state.ui.update(camera, scene.player.base.position, canInteract);
+      state.houseInteraction.update(scene, camera, scene.player.base.position);
+    }
   });
   return state;
 }

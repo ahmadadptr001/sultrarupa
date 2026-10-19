@@ -1,0 +1,138 @@
+[
+  {
+    "id": "tugu-mtq",
+    "source": "C:\\Users\\user\\Downloads\\tugu mtq asset glb\\base_basic_pbr.glb",
+    "output": "public\\models\\culture\\tugu-mtq.glb",
+    "sourceBytes": 50635616,
+    "outputBytes": 2322056,
+    "material": "KHR_materials_unlit, source PBR base-color only; no baked directional lighting",
+    "sourceTriangles": 1000000,
+    "triangles": 69588,
+    "sourceVertices": 871889,
+    "verticesBeforeExportSeams": 35867,
+    "sourceImages": [
+      {
+        "name": "texture_diffuse",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "texture_metallic-texture_roughness",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "texture_normal",
+        "size": [
+          2048,
+          2048
+        ]
+      }
+    ],
+    "images": [
+      {
+        "name": "texture_diffuse",
+        "size": [
+          2048,
+          2048
+        ]
+      }
+    ],
+    "boundsGltf": {
+      "min": [
+        -0.4516281187534332,
+        9.112499537877738e-05,
+        -0.3558999001979828
+      ],
+      "max": [
+        0.45406588912010193,
+        1.9045583009719849,
+        0.3553718626499176
+      ]
+    },
+    "sizeGltf": [
+      0.9056940078735352,
+      1.904467175976606,
+      0.7112717628479004
+    ],
+    "coordinateSystem": "glTF: Y up; original orientation retained; base Y=0",
+    "previews": [
+      "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\monuments\\tugu-mtq-front.png",
+      "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\monuments\\tugu-mtq-back.png",
+      "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\monuments\\tugu-mtq-side.png",
+      "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\monuments\\tugu-mtq-three-quarter.png"
+    ]
+  },
+  {
+    "id": "patung-oputa",
+    "source": "C:\\Users\\user\\Downloads\\patung oputa\\base_basic_pbr.glb",
+    "output": "public\\models\\culture\\patung-oputa.glb",
+    "sourceBytes": 78523040,
+    "outputBytes": 2618836,
+    "material": "KHR_materials_unlit, source PBR base-color only; no baked directional lighting",
+    "sourceTriangles": 1800000,
+    "triangles": 89996,
+    "sourceVertices": 1332581,
+    "verticesBeforeExportSeams": 44942,
+    "sourceImages": [
+      {
+        "name": "texture_diffuse",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "texture_metallic-texture_roughness",
+        "size": [
+          2048,
+          2048
+        ]
+      },
+      {
+        "name": "texture_normal",
+        "size": [
+          2048,
+          2048
+        ]
+      }
+    ],
+    "images": [
+      {
+        "name": "texture_diffuse",
+        "size": [
+          2048,
+          2048
+        ]
+      }
+    ],
+    "boundsGltf": {
+      "min": [
+        -0.394147664308548,
+        -0.00027569200028665364,
+        -0.5973907113075256
+      ],
+      "max": [
+        0.39419034123420715,
+        1.9021375179290771,
+        0.6003226041793823
+      ]
+    },
+    "sizeGltf": [
+      0.7883380055427551,
+      1.9024132099293638,
+      1.197713315486908
+    ],
+    "coordinateSystem": "glTF: Y up; original orientation retained; base Y=0",
+    "previews": [
+      "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\monuments\\patung-oputa-front.png",
+      "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\monuments\\patung-oputa-back.png",
+      "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\monuments\\patung-oputa-side.png",
+      "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\monuments\\patung-oputa-three-quarter.png"
+    ]
+  }
+]

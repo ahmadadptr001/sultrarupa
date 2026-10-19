@@ -1,0 +1,190 @@
+{
+  "laika": {
+    "url": "/audio/culture/laika.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 40.75,
+    "sha256": "dbc871344150aeb39ec7f74ca4e65e2bedb72aac81c627ccd10b6b9fd4845aa3",
+    "transcript": "Laika adalah rumah tradisional masyarakat Tolaki. Bentuk panggungnya memperlihatkan hubungan antara tempat tinggal, lingkungan, dan kegiatan sehari-hari. Kolong dapat digunakan untuk menyimpan alat pertanian, memelihara ternak, atau beristirahat, sekaligus membantu aliran udara di bawah lantai.\n\nBagian hunian di atasnya menjadi ruang aktivitas keluarga. Dalam arsitektur Tolaki, bagian rumah juga dijelaskan melalui perumpamaan tubuh manusia. Laika memiliki beberapa bentuk; Laika Mbuu dan Laika Aha, misalnya, mempunyai perbedaan dalam pembagian ruangnya.",
+    "pages": [
+      {
+        "url": "/audio/culture/laika-page-1.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 20.9,
+        "sha256": "c4f57383c6f1dc6315b54c05d0d1a8487eda4cf09f3c66e576b7007fb44c59c1",
+        "transcript": "Laika adalah rumah tradisional masyarakat Tolaki. Bentuk panggungnya memperlihatkan hubungan antara tempat tinggal, lingkungan, dan kegiatan sehari-hari. Kolong dapat digunakan untuk menyimpan alat pertanian, memelihara ternak, atau beristirahat, sekaligus membantu aliran udara di bawah lantai."
+      },
+      {
+        "url": "/audio/culture/laika-page-2.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 19.97,
+        "sha256": "a7b0aadc1baad2f63322390ac1d766197d4308bb008133af1639857b9273ae0d",
+        "transcript": "Bagian hunian di atasnya menjadi ruang aktivitas keluarga. Dalam arsitektur Tolaki, bagian rumah juga dijelaskan melalui perumpamaan tubuh manusia. Laika memiliki beberapa bentuk; Laika Mbuu dan Laika Aha, misalnya, mempunyai perbedaan dalam pembagian ruangnya."
+      }
+    ]
+  },
+  "bharugano-wuna": {
+    "url": "/audio/culture/bharugano-wuna.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 39.77,
+    "sha256": "bcf4249102858103a21a34963153b63cb6a86b754f7f9b1acf28e1c9ec158b3b",
+    "transcript": "Bharugano Wuna menjadi tempat mengenal warisan masyarakat Muna. Rumah Adat Muna yang digunakan sebagai museum ini dibangun dan diresmikan pada 2017, kemudian memperoleh dasar pengelolaan museum pada 2018.\n\nKoleksinya mempertemukan pengunjung dengan benda keseharian, kerajinan, dan peninggalan sejarah. Keranjang, tikar, serta alat penangkap ikan membantu menceritakan kehidupan masyarakat Muna. Salah satu koleksi unggulannya adalah Kaghati Kolope, layang-layang berbahan daun. Rumah dan koleksinya menjadi ruang pembelajaran budaya yang terus dirawat.",
+    "pages": [
+      {
+        "url": "/audio/culture/bharugano-wuna-page-1.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 15.1,
+        "sha256": "ebe8368c9a8c93aa6b3b4a7415f0e1e8d7c1a280f23a8d121d9b2e836a8b2751",
+        "transcript": "Bharugano Wuna menjadi tempat mengenal warisan masyarakat Muna. Rumah Adat Muna yang digunakan sebagai museum ini dibangun dan diresmikan pada 2017, kemudian memperoleh dasar pengelolaan museum pada 2018."
+      },
+      {
+        "url": "/audio/culture/bharugano-wuna-page-2.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 19.85,
+        "sha256": "95b35bd2e9db034d29c77e171c4f5008d6469134b00c62f42a17052d118b7216",
+        "transcript": "Koleksinya mempertemukan pengunjung dengan benda keseharian, kerajinan, dan peninggalan sejarah. Keranjang, tikar, serta alat penangkap ikan membantu menceritakan kehidupan masyarakat Muna. Salah satu koleksi unggulannya adalah Kaghati Kolope, layang-layang berbahan daun."
+      },
+      {
+        "url": "/audio/culture/bharugano-wuna-page-3.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 4.97,
+        "sha256": "4d77aec25b9b041a7ba2bd113d0875678490fe0d6cc2e8f71f46df802181ac73",
+        "transcript": "Rumah dan koleksinya menjadi ruang pembelajaran budaya yang terus dirawat."
+      }
+    ]
+  },
+  "banua-tada": {
+    "url": "/audio/culture/banua-tada.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 38.52,
+    "sha256": "b877da15ab45c285809cab61113dfd99776f4a4977b9fa489bc2aa8202d9ee06",
+    "transcript": "Banua Tada merupakan rumah tradisional dalam kebudayaan Buton, khususnya masyarakat Wolio. Namanya berarti rumah siku, merujuk pada bentuk siku dalam rangka bangunannya. Rumah panggung ini menggunakan kayu sebagai struktur utama.\n\nBentuk dan ukurannya berkaitan dengan kedudukan penghuninya. Kamali atau Malige dikenal sebagai kediaman raja atau sultan beserta keluarganya, sementara bentuk lain digunakan oleh pejabat dan masyarakat. Ragam Banua Tada memperlihatkan bagaimana arsitektur menyimpan cerita tentang kehidupan sosial dan sejarah Buton.",
+    "pages": [
+      {
+        "url": "/audio/culture/banua-tada-page-1.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 21.46,
+        "sha256": "c08623f12d6ee963a4f79b564c7a0183022101acd070fb2bb033575ec02caaf5",
+        "transcript": "Banua Tada merupakan rumah tradisional dalam kebudayaan Buton, khususnya masyarakat Wolio. Namanya berarti rumah siku, merujuk pada bentuk siku dalam rangka bangunannya. Rumah panggung ini menggunakan kayu sebagai struktur utama. Bentuk dan ukurannya berkaitan dengan kedudukan penghuninya."
+      },
+      {
+        "url": "/audio/culture/banua-tada-page-2.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 17.06,
+        "sha256": "0c88af543807460341458a00352a624d3faca89721be8162f2c8589524cbba0c",
+        "transcript": "Kamali atau Malige dikenal sebagai kediaman raja atau sultan beserta keluarganya, sementara bentuk lain digunakan oleh pejabat dan masyarakat. Ragam Banua Tada memperlihatkan bagaimana arsitektur menyimpan cerita tentang kehidupan sosial dan sejarah Buton."
+      }
+    ]
+  },
+  "mekongga": {
+    "url": "/audio/culture/mekongga.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 36.82,
+    "sha256": "c85285f868fa2a07fef313c1272a9351f62a492e66ba0e2e00d69c8de8f7d5bc",
+    "transcript": "Rumah Adat Mekongga di Kolaka menghadirkan kembali bentuk kediaman yang dikaitkan dengan Bokeo Latambaga. Bangunan yang dikenal sekarang merupakan hasil pembangunan kembali, dengan ornamen yang membawa nilai budaya setempat.\n\nSalah satu ragam hiasnya adalah tabere, yang mengambil bentuk tumbuhan pakis. Ornamen ini menghubungkan rumah dengan gagasan tentang kehidupan dan keberlanjutan generasi. Pada dindingnya terlihat warna kuning, hitam, dan merah. Rumah ini mengenalkan sejarah kepemimpinan dan ruang pertemuan dalam masyarakat Mekongga.",
+    "pages": [
+      {
+        "url": "/audio/culture/mekongga-page-1.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 14.11,
+        "sha256": "aea28d5a4ba7fe18e23c57c730ec29da4524b9b35b6419b545beb319cb3909e2",
+        "transcript": "Rumah Adat Mekongga di Kolaka menghadirkan kembali bentuk kediaman yang dikaitkan dengan Bokeo Latambaga. Bangunan yang dikenal sekarang merupakan hasil pembangunan kembali, dengan ornamen yang membawa nilai budaya setempat."
+      },
+      {
+        "url": "/audio/culture/mekongga-page-2.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 16.92,
+        "sha256": "5504e12f419c68fa7469e6955c7de746dc5c614f1158952d5845b7add19cc93c",
+        "transcript": "Salah satu ragam hiasnya adalah tabere, yang mengambil bentuk tumbuhan pakis. Ornamen ini menghubungkan rumah dengan gagasan tentang kehidupan dan keberlanjutan generasi. Pada dindingnya terlihat warna kuning, hitam, dan merah."
+      },
+      {
+        "url": "/audio/culture/mekongga-page-3.mp3",
+        "voice": "id-ID-GadisNeural",
+        "language": "id-ID",
+        "rate": "+10%",
+        "duration": 5.98,
+        "sha256": "037a3a5bf51144c9d96b1936078eecefbee60e6cdd944eb0c55589f97eaa3b90",
+        "transcript": "Rumah ini mengenalkan sejarah kepemimpinan dan ruang pertemuan dalam masyarakat Mekongga."
+      }
+    ]
+  },
+  "lulo": {
+    "url": "/audio/culture/lulo.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 29.23,
+    "sha256": "2deb23539229636c9b4421d34d84ebdb12f2dfd67f02eb95bbfa4eeb21f9bc79",
+    "transcript": "Lulo atau Molulo dikenal melalui gerak bersama dalam lingkaran. Para peserta bergandengan tangan dan menyelaraskan langkah mengikuti irama. Dalam kehidupan masyarakat Tolaki, pertemuan seperti ini menjadi ruang untuk mempererat hubungan dan menyambut orang lain.\n\nGeraknya mengingatkan kita untuk memperhatikan orang di sebelah kita. Bentuk pertunjukan dan iringannya dapat berkembang, sementara lingkaran tetap menjadi ciri yang mudah dikenali."
+  },
+  "lumense": {
+    "url": "/audio/culture/lumense.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 30.19,
+    "sha256": "2c5903b17bb27fc757f492d18c465c04fb7e721bcb3054e03df73d24c1ac22b8",
+    "transcript": "Lumense berasal dari masyarakat Moronene di Pulau Kabaena. Tarian ini mempunyai hubungan dengan tradisi memohon keselamatan dan menjauhkan bencana. Salah satu bagian yang dikenal adalah gerak menebas batang pisang sebagai lambang mengakhiri malapetaka.\n\nDalam perkembangannya, Lumense juga ditampilkan untuk menyambut tamu. Pertunjukan ini menyimpan ingatan tentang kepercayaan, harapan, dan perjalanan masyarakat pendukungnya."
+  },
+  "pomani": {
+    "url": "/audio/culture/pomani.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 26.4,
+    "sha256": "706a311ea5fddccf85212cad0e0f8c8fe02f8841a6855a008a2411dd0ac96dea",
+    "transcript": "Pomani memperkenalkan keindahan budaya masyarakat Muna melalui seni tari. Nama ini tercatat dalam Kamus Budaya Sulawesi Tenggara yang diterbitkan Badan Bahasa.\n\nMasyarakat Muna memiliki beragam tradisi pertunjukan, dan setiap nama perlu dikenali dalam konteksnya sendiri. Mengenal Pomani dapat dimulai dengan mendengarkan pengetahuan para penari dan pelaku tradisi yang merawat serta meneruskannya."
+  },
+  "alionda": {
+    "url": "/audio/culture/alionda.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 31.61,
+    "sha256": "9ad51147f88c9a8ed8d5ab6687552c77fbb5c0986cf129769dc8f70156a15bd6",
+    "transcript": "Alionda adalah pertunjukan tradisi masyarakat Kulisusu di Buton Utara. Di dalamnya bertemu tari, nyanyian, dan permainan rakyat. Pengetahuan pertunjukan diwariskan melalui keluarga serta keterlibatan langsung dalam pementasan.\n\nPenelitian tentang Alionda mencatat penciptaan nyanyian secara spontan tanpa teks tertulis. Tradisi ini menunjukkan bahwa belajar budaya juga berlangsung dengan mendengar, mengamati, dan ikut berkegiatan bersama pelaku tradisi."
+  },
+  "kaghati-kolope": {
+    "url": "/audio/culture/kaghati-kolope.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 31.78,
+    "sha256": "f4a98ddff12015e2893a6874ace3893867501d72ded0bfedbcadf3ae3e5969e0",
+    "transcript": "Kaghati Kolope adalah layang-layang tradisional masyarakat Muna yang menggunakan daun kolope atau daun ubi hutan. Bambu menjadi bagian rangkanya, sementara serat nanas hutan digunakan untuk tali.\n\nMembuatnya mempertemukan keterampilan tangan dengan pengetahuan tentang bahan di lingkungan sekitar. Di Desa Wisata Liangkobori, pengunjung dapat mengenal proses pembuatannya bersama pemandu. Perhatikan bagaimana daun dan serat tumbuhan disusun menjadi benda yang dapat terbang."
+  },
+  "tenun-konawe": {
+    "url": "/audio/culture/tenun-konawe.mp3",
+    "voice": "id-ID-GadisNeural",
+    "language": "id-ID",
+    "rate": "+10%",
+    "duration": 29.88,
+    "sha256": "993ef7497e3e04cebdd18d5db0e2257cea55a462564312b5264dc861beb1088f",
+    "transcript": "Tenun Konawe menyimpan pengetahuan tentang benang, alat, dan pembentukan motif. Penenun menggunakan gedogan maupun alat tenun bukan mesin, yang dikenal sebagai ATBM. Keduanya membutuhkan keterampilan dalam mengatur benang hingga menjadi kain.\n\nTradisi tenun di wilayah ini juga memperlihatkan hubungan dengan masyarakat Buton dan Bugis. Sehelai kain menjadi pintu untuk mengenal pertemuan budaya serta ketekunan para perajin."
+  }
+}

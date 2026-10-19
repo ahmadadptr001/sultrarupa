@@ -1,9 +1,11 @@
 import { aS as Vector3 } from './vendor.75f6e6ae65453426.js';
 import islandLayout from './sultra-island-layout.js';
+import { getStoryPages } from './sultra-story-pages.js';
 
 const ICONS = {
   house: '<path d="m3 10 9-7 9 7M5 9v11h14V9M9 20v-7h6v7M4 7l8-5 8 5"/>',
   guide: '<circle cx="12" cy="7" r="3"/><path d="M5 21v-3a7 7 0 0 1 14 0v3M12 13v5M10 16h4"/>',
+  music: '<path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>',
   map: '<path d="m9 3-6 3v15l6-3 6 3 6-3V3l-6 3-6-3Zm0 0v15m6-12v15"/>',
   arrow: '<path d="m9 5 7 7-7 7"/>',
   close: '<path d="m6 6 12 12M6 18 18 6"/>',
@@ -67,24 +69,10 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
   const markerLayer = element('div', 'sc-markers');
   markerLayer.setAttribute('aria-label', 'Tempat dan pemandu budaya');
 
-  const hud = element('section', 'sc-hud');
-  hud.setAttribute('aria-label', 'Jelajah budaya');
-  const hudMark = element('span', 'sc-hud-mark');
-  hudMark.append(icon('house'));
-  const hudCopy = element('div', 'sc-hud-copy');
-  hudCopy.append(
-    element('span', 'sc-eyebrow', 'SULTRARUPA · PULAU BUDAYA'),
-    element('h2', 'sc-hud-title', 'Jelajah Sulawesi Tenggara'),
-    element('p', 'sc-hud-caption', 'Dekati rumah, temukan ceritanya.'),
-  );
-  const mapButton = action('sc-map-button', 'Buka peta budaya', 'map');
-  mapButton.append(element('span', '', 'Peta budaya'));
-  hud.append(hudMark, hudCopy, mapButton);
-
   const prompt = element('div', 'sc-nearby');
   prompt.hidden = true;
   prompt.setAttribute('role', 'status');
-  const promptKey = element('kbd', '', 'E');
+  const promptKey = element('kbd', '', 'Space');
   const promptText = element('span');
   prompt.append(promptKey, promptText);
 
@@ -100,20 +88,31 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
   const toolbar = element('div', 'sc-panel-toolbar');
   const backButton = action('sc-back-button', 'Kembali ke peta budaya', 'back');
   backButton.append(element('span', '', 'Peta budaya'));
+  const storyBackButton = action('sc-back-button sc-story-back', 'Kembali ke cerita', 'back');
+  storyBackButton.append(element('span', '', 'Kembali ke cerita'));
+  storyBackButton.hidden = true;
   const panelBrand = element('span', 'sc-panel-brand', 'RUANG CERITA');
+  const voiceControls = element('div', 'sc-voice-controls');
+  voiceControls.hidden = true;
+  const dialogueHint = element('span', 'sc-dialogue-hint', 'Space untuk lanjut');
+  dialogueHint.hidden = true;
   const closeButton = action('sc-close-button', 'Tutup informasi budaya', 'close');
   closeButton.title = 'Tutup (Esc)';
-  toolbar.append(backButton, panelBrand, closeButton);
+  toolbar.append(backButton, storyBackButton, panelBrand, voiceControls, dialogueHint, closeButton);
   const body = element('div', 'sc-panel-body');
+  body.tabIndex = -1;
   panel.append(toolbar, body);
   backdrop.append(panel);
-  root.append(markerLayer, hud, prompt, backdrop);
+  root.append(markerLayer, prompt, backdrop);
   document.body.append(root);
 
   let targets = [];
   let markers = [];
   let nearest = null;
   let opened = false;
+  let activeTarget = null;
+  let activePresentation = 'panel';
+  let story = null;
   let destroyed = false;
   let returnFocus = null;
   let lastPrompt = '';
@@ -142,14 +141,23 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
     mapPlayer.hidden = x < 0 || x > mapWidth || y < 0 || y > mapHeight;
   }
 
+  function dialogContext() {
+    const target = activePresentation === 'house-dialog' && story
+      ? { ...activeTarget, description: [story.pages[story.page]], narrationPage: story.page }
+      : activeTarget;
+    return { target, presentation: activePresentation };
+  }
+
   function setOpen(next) {
-    if (opened === next) return;
+    if (opened === next) {
+      if (next) onOpenChange(true, dialogContext());
+      return;
+    }
     opened = next;
     backdrop.hidden = !next;
     root.classList.toggle('sc-is-open', next);
     markerLayer.setAttribute('aria-hidden', String(next));
     markerLayer.inert = next;
-    hud.inert = next;
     if (next) {
       returnFocus = document.activeElement;
       // Native inert keeps tab focus and assistive technology inside the dialog.
@@ -157,7 +165,7 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
         .filter((node) => node !== root && !node.inert && node instanceof HTMLElement);
       inertNodes.forEach((node) => { node.inert = true; });
       if (document.pointerLockElement) document.exitPointerLock?.();
-      closeButton.focus({ preventScroll: true });
+      (activePresentation === 'house-dialog' ? panel : closeButton).focus({ preventScroll: true });
     } else {
       inertNodes.forEach((node) => { node.inert = false; });
       inertNodes = [];
@@ -166,7 +174,13 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
       }
       returnFocus = null;
     }
-    onOpenChange(next);
+    onOpenChange(next, dialogContext());
+    if (!next) {
+      activeTarget = null;
+      activePresentation = 'panel';
+      story = null;
+      root.classList.remove('sc-house-dialog');
+    }
   }
 
   function titleBlock(kicker, title, subtitle) {
@@ -191,11 +205,75 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
     return image;
   }
 
-  function showTarget(target, viaMap = false) {
+  function showStoryPage(page = 0) {
+    if (!story || destroyed) return;
+    story.page = Math.max(0, Math.min(page, story.pages.length - 1));
+    activeTarget = story.target;
+    activePresentation = 'house-dialog';
+    root.classList.add('sc-house-dialog');
+    mapPlayer = null;
+    backButton.hidden = true;
+    storyBackButton.hidden = true;
+    panelBrand.hidden = true;
+    dialogueHint.hidden = false;
+    voiceControls.hidden = !voiceControls.childElementCount;
+    body.replaceChildren();
+
+    const header = element('header', 'sc-story-header');
+    const title = element('h2', 'sc-story-title', activeTarget.title);
+    title.id = headingId;
+    const count = element('span', 'sc-story-count', `${story.page + 1} / ${story.pages.length}`);
+    count.setAttribute('aria-label', `Bagian ${story.page + 1} dari ${story.pages.length}`);
+    header.append(title, count);
+    const copy = element('p', 'sc-story-text', story.pages[story.page]);
+    copy.setAttribute('aria-live', 'polite');
+    copy.setAttribute('aria-atomic', 'true');
+    const navigation = element('div', 'sc-story-navigation');
+    const details = action('sc-story-details', 'Info lengkap');
+    details.textContent = 'Info lengkap';
+    details.addEventListener('click', () => showTarget(story.target, false, { retainStory: true }));
+    const steps = element('div', 'sc-story-steps');
+    const previous = action('sc-story-previous', 'Bagian sebelumnya', 'back');
+    previous.append(element('span', '', 'Kembali'));
+    previous.disabled = story.page === 0;
+    previous.addEventListener('click', () => showStoryPage(story.page - 1));
+    const next = action('sc-story-next', story.page === story.pages.length - 1 ? 'Selesai' : 'Lanjut');
+    next.append(element('span', '', story.page === story.pages.length - 1 ? 'Selesai' : 'Lanjut'), icon('arrow'));
+    next.addEventListener('click', advanceStory);
+    steps.append(previous, next);
+    navigation.append(details, steps);
+    body.append(header, copy, navigation);
+    setOpen(true);
+    body.scrollTop = 0;
+    panel.focus({ preventScroll: true });
+  }
+
+  function advanceStory() {
+    if (!story) return;
+    if (story.page < story.pages.length - 1) showStoryPage(story.page + 1);
+    else close();
+  }
+
+  function showTarget(target, viaMap = false, { presentation = 'panel', retainStory = false } = {}) {
     if (!target || destroyed) return;
+    if (target.kind === 'house' && presentation === 'house-dialog') {
+      const pages = getStoryPages(target);
+      if (pages.length) {
+        story = { target, pages, page: 0 };
+        showStoryPage();
+        return;
+      }
+    }
+    if (!retainStory) story = null;
+    activeTarget = target;
+    activePresentation = 'panel';
+    root.classList.remove('sc-house-dialog');
+    dialogueHint.hidden = true;
+    voiceControls.hidden = !voiceControls.childElementCount;
     mapPlayer = null;
     backButton.hidden = !viaMap;
-    panelBrand.hidden = viaMap;
+    storyBackButton.hidden = !story;
+    panelBrand.hidden = viaMap || Boolean(story);
     body.replaceChildren();
     body.append(titleBlock(
       `${target.kind === 'guide' ? 'PANDUAN BUDAYA' : 'RUMAH ADAT'}${target.region ? ` · ${target.region.toUpperCase()}` : ''}`,
@@ -241,14 +319,23 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
       body.append(sources);
     }
     body.append(element('p', 'sc-panel-footnote', 'Warisan yang beragam, cerita yang terus hidup.'));
-    body.scrollTop = 0;
     setOpen(true);
+    // Reset after the hidden dialog has been laid out; hidden elements retain
+    // their previous scroll position when another exhibit is opened.
+    body.scrollTop = 0;
     closeButton.focus({ preventScroll: true });
   }
 
   function showMap() {
     if (destroyed || !targets.length) return;
+    activeTarget = null;
+    activePresentation = 'panel';
+    story = null;
+    root.classList.remove('sc-house-dialog');
+    dialogueHint.hidden = true;
+    voiceControls.hidden = true;
     backButton.hidden = true;
+    storyBackButton.hidden = true;
     panelBrand.hidden = false;
     body.replaceChildren();
     body.append(titleBlock('JELAJAH SULAWESI TENGGARA', 'Peta budaya', 'Kenali rumah adat dan cerita masyarakat di baliknya. Pilih sebuah tempat untuk mulai membaca.'));
@@ -343,9 +430,9 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
         body.append(guide);
       });
     }
-    body.append(element('p', 'sc-map-hint', 'Di pulau, dekati ikon rumah atau pemandu. Tekan E atau ketuk ikon untuk membuka cerita.'));
-    body.scrollTop = 0;
+    body.append(element('p', 'sc-map-hint', 'Dekati rumah yang bercahaya, lalu klik rumah atau tekan Space. Untuk mendengar cerita pemandu, dekati orangnya dan gunakan percakapan bawaan.'));
     setOpen(true);
+    body.scrollTop = 0;
     closeButton.focus({ preventScroll: true });
   }
 
@@ -365,15 +452,19 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
         event.preventDefault();
         suppressedKey = event.code;
         close();
+      } else if (event.code === 'Space' && activePresentation === 'house-dialog' && !event.target.closest('button, a')) {
+        event.preventDefault();
+        suppressedKey = event.code;
+        if (!event.repeat) advanceStory();
       } else if (event.key === 'Tab') {
-        const focusable = [...panel.querySelectorAll('button:not([hidden]), a[href]')]
+        const focusable = [...panel.querySelectorAll('button:not([hidden]):not(:disabled), a[href]')]
           .filter((node) => !node.closest('[hidden]'));
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
-        if (event.shiftKey && (document.activeElement === first || !panel.contains(document.activeElement))) {
+        if (event.shiftKey && (document.activeElement === first || document.activeElement === panel || !panel.contains(document.activeElement))) {
           event.preventDefault();
           last?.focus();
-        } else if (!event.shiftKey && (document.activeElement === last || !panel.contains(document.activeElement))) {
+        } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === panel || !panel.contains(document.activeElement))) {
           event.preventDefault();
           first?.focus();
         }
@@ -383,7 +474,7 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
       return;
     }
     if (document.documentElement.classList.contains('sultra-phone-open')) return;
-    if (event.code === 'KeyE' && nearest && !event.repeat && !event.altKey && !event.ctrlKey && !event.metaKey && !event.target.closest('input, textarea, [contenteditable="true"]')) {
+    if (event.code === 'Space' && nearest && !prompt.hidden && !event.repeat && !event.altKey && !event.ctrlKey && !event.metaKey && !event.target.closest('input, textarea, button, a, [contenteditable="true"]')) {
       event.preventDefault();
       event.stopImmediatePropagation();
       suppressedKey = event.code;
@@ -398,8 +489,8 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
     }
   }
 
-  mapButton.addEventListener('click', showMap);
   backButton.addEventListener('click', showMap);
+  storyBackButton.addEventListener('click', () => showStoryPage(story?.page));
   closeButton.addEventListener('click', close);
   backdrop.addEventListener('click', (event) => { if (event.target === backdrop) close(); });
   ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'click', 'wheel'].forEach((name) => {
@@ -423,10 +514,18 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
   }
 
   return {
-    openTarget(id) {
+    get isOpen() { return opened; },
+    get activeTarget() { return activeTarget; },
+    get activePresentation() { return activePresentation; },
+    get narrationPage() { return activePresentation === 'house-dialog' ? story?.page ?? null : null; },
+    setNarrationControls(controls) {
+      voiceControls.replaceChildren(...(controls ? [controls] : []));
+      voiceControls.hidden = !controls || !activeTarget;
+    },
+    openTarget(id, options = {}) {
       const target = targets.find((entry) => entry.id === id);
       if (!target || destroyed) return false;
-      showTarget(target);
+      showTarget(target, false, options);
       return true;
     },
     openMap() {
@@ -438,8 +537,10 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
       if (destroyed) return;
       clear();
       targets = nextTargets.filter((target) => target?.position && ['house', 'guide'].includes(target.kind));
-      markers = targets.map((target) => {
-        const button = action(`sc-marker sc-marker-${target.kind}`, `${target.kind === 'guide' ? 'Baca cerita pemandu' : 'Jelajahi rumah adat'} ${target.title}`, target.kind);
+      // Homes are selected directly in the world; people use native chat.
+      // Only the music stage keeps a world marker.
+      markers = targets.filter((target) => target.worldMarker).map((target) => {
+        const button = action('sc-marker sc-marker-stage', target.title, target.worldMarker);
         button.title = target.title;
         button.hidden = true;
         button.append(element('span', 'sc-marker-label', target.title));
@@ -449,22 +550,21 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
       });
       root.hidden = !targets.length;
     },
-    update(camera, playerPosition) {
+    update(camera, playerPosition, canInteract = true) {
       if (destroyed || root.hidden || !camera || !playerPosition) return;
       playerPositionOnMap = { x: playerPosition.x, z: playerPosition.z };
       moveMapPlayer();
       camera.updateMatrixWorld?.();
       let nextNearest = null;
-      let nearestDistance = 15;
+      let nearestDistance = 5;
       const width = window.innerWidth;
       const height = window.innerHeight;
       for (const marker of markers) {
         const { target, button } = marker;
         const { x, y, z } = target.position;
-        // Roof and speech icons sit above the interaction point on the ground.
         const distance = Math.hypot(x - playerPosition.x, z - playerPosition.z);
         marker.distance = distance;
-        let visible = distance <= (target.kind === 'guide' ? 30 : 100);
+        let visible = canInteract && distance <= 30;
         if (visible) {
           cameraSpace.set(x, y, z).applyMatrix4(camera.matrixWorldInverse);
           projected.set(x, y, z).project(camera);
@@ -485,7 +585,7 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
         nearest = nextNearest;
         nearest?.button.classList.add('sc-marker-nearest');
       }
-      prompt.hidden = !nearest || opened;
+      prompt.hidden = !nearest || opened || !canInteract;
       if (nearest && lastPrompt !== nearest.target.id) {
         promptText.textContent = `Jelajahi ${nearest.target.title}`;
         lastPrompt = nearest.target.id;

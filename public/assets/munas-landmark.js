@@ -1,6 +1,8 @@
 // Uses the game's own Three.js instance; no second renderer or animation loop.
 import { installOpeningBoat } from './opening-boat.js';
 import { installPlayerCharacter } from './player-character.js';
+import { installSultraMobileControls } from './sultra-mobile-controls.js';
+import { installSultraIntroWordmark } from './sultra-intro-wordmark.js';
 import { installSultraIsland } from './sultra-island.js';
 import {
   b6 as BufferAttribute, b7 as BufferGeometry, b5 as Mesh,
@@ -32,7 +34,7 @@ function createCloudHaze() {
   texture.colorSpace = SRGBColorSpace;
   texture.needsUpdate = true;
   const group = new Group();
-  group.name = 'Coastal sky - drifting white clouds';
+  group.name = 'Sultra sky - drifting white clouds';
   // Spread clouds around the whole coast, independently of the logo's position.
   const layers = Array.from({ length: 22 }, (_, index) => {
     const angle = index * 2.399963;
@@ -121,7 +123,7 @@ async function loadLogo() {
         #include <tonemapping_fragment>
       `);
     };
-    result.customProgramCacheKey = () => 'munas-coastal-atmosphere-v1';
+    result.customProgramCacheKey = () => 'munas-sultra-atmosphere-v1';
     return result;
   });
   const root = new Group();
@@ -149,6 +151,8 @@ export function installMunasLandmark(game) {
   installSultraIsland(game);
   installOpeningBoat(game);
   installPlayerCharacter(game);
+  installSultraIntroWordmark(game);
+  installSultraMobileControls(game);
   if (game.munasLandmark) return;
   const state = game.munasLandmark = {
     status: 'loading', object: null, haze: null, scene: null,

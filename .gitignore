@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# Python asset builders
+__pycache__/
+
 # next.js
 /.next/
 /out/
