@@ -1,16 +1,18 @@
 ﻿import { cD as assets, cd as Group, b6 as BufferAttribute } from './vendor.75f6e6ae65453426.js';
 import { convertMaterials } from './opening-boat.js';
 
-const MODEL_URL = '/models/player-character.glb';
-const HEIGHT_RATIO = 2.387394 / 1.89957;
+const MODEL_URL = '/models/player-anoa.glb';
+const HEIGHT_RATIO = 2.387394 / 1.8957;
 const SHORT_NAME = 'Chara_Low_RigGameSkeleton';
-// Joint centres measured on the replacement, in its authored Y-up space.
+// Joint centres measured on the anoa replacement, in its authored Y-up space.
+// Legs are hidden above the skirt hem, so hip and knee sit at their anatomical
+// heights even though no visible surface reaches them.
 const JOINTS = {
-  Root_M: [0, .61, 0], Spine1_M: [0, .91, 0], Chest_M: [0, 1.23, 0], Head_M: [0, 1.365, 0],
-  Shoulder_L: [.20, 1.23, -.045], Elbow_L: [.275, .925, -.045], Wrist_L: [.29, .755, -.01],
-  Shoulder_R: [-.20, 1.23, -.045], Elbow_R: [-.275, .925, -.045], Wrist_R: [-.29, .755, -.01],
-  Hip_L: [.115, .61, 0], Knee_L: [.12, .40, -.015], Ankle_L: [.12, .18, -.015], Toes_L: [.12, .065, .12],
-  Hip_R: [-.115, .61, 0], Knee_R: [-.12, .40, -.015], Ankle_R: [-.12, .18, -.015], Toes_R: [-.12, .065, .12],
+  Root_M: [0, .82, 0], Spine1_M: [0, 1.02, 0], Chest_M: [0, 1.24, -.01], Head_M: [0, 1.38, .03],
+  Shoulder_L: [.27, 1.25, -.02], Elbow_L: [.39, .92, 0], Wrist_L: [.44, .70, .05],
+  Shoulder_R: [-.27, 1.25, -.02], Elbow_R: [-.39, .92, 0], Wrist_R: [-.44, .70, .05],
+  Hip_L: [.15, .78, 0], Knee_L: [.19, .48, .01], Ankle_L: [.19, .20, 0], Toes_L: [.21, .05, .08],
+  Hip_R: [-.15, .78, 0], Knee_R: [-.19, .48, .01], Ankle_R: [-.19, .20, 0], Toes_R: [-.21, .05, .08],
 };
 function smooth(a, b, value) {
   const t = Math.min(1, Math.max(0, (value - a) / (b - a)));
@@ -29,29 +31,37 @@ function skinGeometry(source, bones) {
     const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
     const side = x >= 0 ? 'L' : 'R', influence = {};
     const add = (name, weight) => { influence[name] = (influence[name] || 0) + weight; };
-    const head = smooth(1.32, 1.41, y);
-    const armEdge = .23 - .05 * smooth(.95, 1.24, y);
-    const scarf = z > .065 ? smooth(.22, .26, Math.abs(x)) : 1;
-    const arm = smooth(armEdge - .014, armEdge + .024, Math.abs(x))
-      * (1 - smooth(1.25, 1.34, y)) * smooth(.55, .63, y)
-      * smooth(-.18, -.14, z) * scarf;
-    if (y < .67) {
-      const pelvis = smooth(.54, .67, y), knee = 1 - smooth(.33, .47, y);
-      const ankle = 1 - smooth(.17, .25, y);
+    // The muzzle juts forward low on the skull, so the head owns forward
+    // geometry below the neck line; ears and horns sit far out on x, where the
+    // narrow gate that keeps the pauldrons off the head must not reach them.
+    const head = Math.max(smooth(1.30, 1.42, y), smooth(.20, .34, z) * smooth(1.22, 1.34, y))
+      * (1 - smooth(.17, .26, Math.abs(x)) * (1 - smooth(1.36, 1.46, y)));
+    // The arm leaves the silhouette below the pauldrons, hugs the narrow waist
+    // and flares at the chest; the hanging sash stays inside its edge.
+    const edge = .24 + .13 * (1 - smooth(.60, .92, y)) + .06 * smooth(1.10, 1.28, y);
+    const arm = smooth(edge - .025, edge + .035, Math.abs(x))
+      * (1 - smooth(1.27, 1.38, y)) * smooth(.32, .45, y);
+    if (y < .80) {
+      // Only the leg below the wrapped skirt hem is driven; the cloth above it
+      // keeps following the pelvis, so strides cannot tear the hem open. The
+      // inner fade keeps the cloth hanging between the legs on the pelvis too.
+      const leg = (1 - smooth(.30, .50, y))
+        * smooth(.005, .02 + .10 * smooth(.35, .55, y), Math.abs(x));
+      const ankle = 1 - smooth(.20, .32, y), knee = 1 - smooth(.42, .60, y);
+      add('Root_M', 1 - leg);
       // Keep the shoe rigid on its ankle so its sole cannot tear at the toes.
-      add(`Ankle_${side}`, (1 - pelvis) * ankle);
-      add(`Knee_${side}`, (1 - pelvis) * (1 - ankle) * knee);
-      add(`Hip_${side}`, (1 - pelvis) * (1 - ankle) * (1 - knee));
-      add('Root_M', pelvis);
+      add(`Ankle_${side}`, leg * ankle);
+      add(`Knee_${side}`, leg * (1 - ankle) * knee);
+      add(`Hip_${side}`, leg * (1 - ankle) * (1 - knee));
     } else {
-      const chest = smooth(.92, 1.19, y), spine = smooth(.67, .90, y);
+      const chest = smooth(.98, 1.26, y), spine = smooth(.76, 1.02, y);
       add('Root_M', (1 - head) * (1 - chest) * (1 - spine));
       add('Spine1_M', (1 - head) * (1 - chest) * spine);
       add('Chest_M', (1 - head) * chest);
       add('Head_M', head);
     }
     for (const name of Object.keys(influence)) influence[name] *= 1 - arm;
-    const elbow = 1 - smooth(.85, 1.01, y), wrist = 1 - smooth(.70, .80, y);
+    const elbow = 1 - smooth(.86, 1.04, y), wrist = 1 - smooth(.63, .77, y);
     add(`Shoulder_${side}`, arm * (1 - elbow));
     add(`Elbow_${side}`, arm * elbow * (1 - wrist));
     add(`Wrist_${side}`, arm * elbow * wrist);

@@ -1,0 +1,51 @@
+{
+  "id": "player-anoa",
+  "source": "C:\\Users\\user\\Downloads\\karakter anoa\\base_basic_shaded.glb",
+  "output": "public\\models\\player-anoa.glb",
+  "sourceBytes": 4639248,
+  "outputBytes": 1144924,
+  "material": {
+    "emissiveTexture": true,
+    "emissiveFactor": [
+      1,
+      1,
+      1
+    ],
+    "baseColorFactor": [
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "sourceTriangles": 33286,
+  "triangles": 33286,
+  "sourceVertices": 21089,
+  "vertices": 16645,
+  "image": {
+    "mimeType": "image/jpeg",
+    "size": [
+      2048,
+      2048
+    ]
+  },
+  "boundsGltf": {
+    "min": [
+      -0.531138002872467,
+      0,
+      -0.41941598057746887
+    ],
+    "max": [
+      0.5308579802513123,
+      1.8956849575042725,
+      0.4280959665775299
+    ]
+  },
+  "coordinateSystem": "glTF: Y up, +Z forward, base Y=0, authored pose kept for runtime skinning",
+  "previews": [
+    "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\player\\player-anoa-front.png",
+    "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\player\\player-anoa-back.png",
+    "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\player\\player-anoa-side.png",
+    "C:\\Users\\user\\Documents\\PROJECTS\\sultrarupa\\artifacts\\player\\player-anoa-three-quarter.png"
+  ]
+}
