@@ -204,6 +204,12 @@ export function installSultraLulo(game, layout) {
       if (state.volume === 0) state.element.pause();
     }
     if (state.targetVolume > .001) tryPlay();
+    if (active && state.distance < 12) state.watchTime = (state.watchTime || 0) + dt;
+    else state.watchTime = 0;
+    if (state.watchTime > 3) {
+      const vars = game.savestate?.game?.vars;
+      if (vars && !vars.isSultraLuloWatched) vars.isSultraLuloWatched = true;
+    }
     const suspend = state.volume > .06 && state.element && !state.element.paused;
     if (!!suspend !== bgmSuspended) {
       bgmSuspended = !!suspend;

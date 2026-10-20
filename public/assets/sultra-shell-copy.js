@@ -27,6 +27,81 @@
       bubbles: ['Saat tiba, jelajahi rumah adat, tari, musik Lulo, dan cerita lokal.'],
     },
   };
+  const SULTRA_QUESTS = {
+    SultraRumah: {
+      id: 'SultraRumah', type: 'Main', icon: 'interactions-compass', item: null,
+      title: 'Jelajah rumah adat',
+      description: 'Kunjungi 4 rumah adat<br>di pulau budaya.',
+      unlockText: null, unlockCondition: '',
+      reward: 40, rewardItem: null,
+      rewardText: '<strong>Hebat!</strong> Empat rumah adat sudah kamu kunjungi. Pemandu budaya menanti ceritanya.',
+      rewardCondition: '(($sultraHouseMask & 1) ? 1 : 0) + (($sultraHouseMask & 2) ? 1 : 0) + (($sultraHouseMask & 4) ? 1 : 0) + (($sultraHouseMask & 8) ? 1 : 0) [===] 4',
+    },
+    SultraPemandu: {
+      id: 'SultraPemandu', type: 'Main', icon: 'interactions-chat', item: null,
+      title: 'Temui pemandu',
+      description: 'Temui 6 pemandu<br>di titik budaya.',
+      unlockText: null, unlockCondition: '',
+      reward: 60, rewardItem: null,
+      rewardText: '<strong>Mantap!</strong> Semua pemandu budaya sudah kamu temui. Dengarkan cerita mereka.',
+      rewardCondition: '(($sultraGuideMask & 1) ? 1 : 0) + (($sultraGuideMask & 2) ? 1 : 0) + (($sultraGuideMask & 4) ? 1 : 0) + (($sultraGuideMask & 8) ? 1 : 0) + (($sultraGuideMask & 16) ? 1 : 0) + (($sultraGuideMask & 32) ? 1 : 0) [===] 6',
+    },
+    SultraLulo: {
+      id: 'SultraLulo', type: 'Main', icon: 'interactions-tamtam', item: null,
+      title: 'Tari Lulo',
+      description: 'Saksikan tari Lulo<br>di panggung.',
+      unlockText: null, unlockCondition: '',
+      reward: 30, rewardItem: null,
+      rewardText: '<strong>Indah!</strong> Kamu sudah menyaksikan tari Lulo bersama para penari.',
+      rewardCondition: '$isSultraLuloWatched [===] 1',
+    },
+    SultraTugu: {
+      id: 'SultraTugu', type: 'Side', icon: 'interactions-flag', item: null,
+      title: 'Tugu MTQ',
+      description: 'Kunjungi Tugu MTQ<br>di tepi pantai.',
+      unlockText: null, unlockCondition: '',
+      reward: 20, rewardItem: null,
+      rewardText: 'Tugu MTQ sudah kamu kunjungi.',
+      rewardCondition: '$isSultraTuguVisited [===] 1',
+    },
+    SultraOputa: {
+      id: 'SultraOputa', type: 'Side', icon: 'misc-star', item: null,
+      title: 'Patung Oputa',
+      description: 'Kunjungi Patung<br>Oputa di pulau.',
+      unlockText: null, unlockCondition: '',
+      reward: 20, rewardItem: null,
+      rewardText: 'Patung Oputa sudah kamu kunjungi.',
+      rewardCondition: '$isSultraOputaVisited [===] 1',
+    },
+    SultraCerita: {
+      id: 'SultraCerita', type: 'Side', icon: 'interactions-telescope', item: null,
+      title: 'Cerita rumah',
+      description: 'Baca cerita rumah<br>hingga bagian akhir.',
+      unlockText: null, unlockCondition: '',
+      reward: 30, rewardItem: null,
+      rewardText: 'Satu cerita rumah sudah kamu baca sampai selesai.',
+      rewardCondition: '$isSultraStoryFinished [===] 1',
+    },
+    SultraBusana: {
+      id: 'SultraBusana', type: 'Side', icon: 'item-Body-UrbanBackpack', item: null,
+      title: 'Busana budaya',
+      description: 'Kenakan busana atau<br>aksesori pilihanmu.',
+      unlockText: null, unlockCondition: '',
+      reward: 20, rewardItem: null,
+      rewardText: 'Busana budaya sudah kamu kenakan. Buka menu Atur Karakter untuk mencoba yang lain.',
+      rewardCondition: '$isSultraDressedUp [===] 1',
+    },
+    SultraFinale: {
+      id: 'SultraFinale', type: 'Main', icon: 'misc-star', item: null,
+      title: 'Jelajah Sultra Rupa',
+      description: 'Selesaikan semua<br>misi budaya.',
+      unlockText: 'Selesaikan semua misi budaya',
+      unlockCondition: '$$quests.SultraRumah && $$quests.SultraPemandu && $$quests.SultraLulo && $$quests.SultraTugu && $$quests.SultraOputa && $$quests.SultraCerita && $$quests.SultraBusana',
+      reward: 0, rewardItem: 'Head-VahineCrown',
+      rewardText: '<strong>Selamat!</strong> Seluruh misi budaya selesai. Mahkota bunga Vahine menjadi milikmu.',
+      rewardCondition: '$$quests.SultraRumah && $$quests.SultraPemandu && $$quests.SultraLulo && $$quests.SultraTugu && $$quests.SultraOputa && $$quests.SultraCerita && $$quests.SultraBusana',
+    },
+  };
   const SHELL_STYLES = `
     .app-header .logo .sultra-wordmark { width: 100%; height: 100%; color: #fff; }
     .menu .menu-infos > .sultra-wordmark { color: #3b3777; }
@@ -48,20 +123,31 @@
       const response = await nativeFetch(...args);
       const request = args[0];
       const url = typeof request === 'string' || request instanceof URL ? String(request) : request?.url || '';
-      if (!/\/dialogs_en\.json(?:[?#]|$)/i.test(url)) return response;
       try {
-        const dialogs = await response.clone().json();
-        dialogs.Intro = SULTRA_INTRO_DIALOG;
-        const headers = new Headers(response.headers);
-        headers.delete('content-length');
-        return new Response(JSON.stringify(dialogs), {
-          status: response.status,
-          statusText: response.statusText,
-          headers,
-        });
+        if (/\/dialogs_en\.json(?:[?#]|$)/i.test(url)) {
+          const dialogs = await response.clone().json();
+          dialogs.Intro = SULTRA_INTRO_DIALOG;
+          const headers = new Headers(response.headers);
+          headers.delete('content-length');
+          return new Response(JSON.stringify(dialogs), {
+            status: response.status,
+            statusText: response.statusText,
+            headers,
+          });
+        }
+        if (/\/quests_[a-z-]+\.json(?:[?#]|$)/i.test(url)) {
+          const headers = new Headers(response.headers);
+          headers.delete('content-length');
+          return new Response(JSON.stringify(SULTRA_QUESTS), {
+            status: response.status,
+            statusText: response.statusText,
+            headers,
+          });
+        }
       } catch {
         return response;
       }
+      return response;
     };
   }
 

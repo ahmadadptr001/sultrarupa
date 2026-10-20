@@ -23,6 +23,11 @@ const STYLES = `
 .spm-coast { fill: #f4ebbf; stroke: #fff; stroke-width: 10; stroke-linejoin: round; }
 .spm-land { fill: #9ddd7b; stroke: #72bf6c; stroke-width: 2; stroke-linejoin: round; }
 .spm-trail { fill: none; stroke: #f7eabc; stroke-width: 3.1; stroke-linecap: round; stroke-linejoin: round; }
+.spm-leader { stroke: #fff; stroke-width: 2.2; stroke-linecap: round; opacity: .9; }
+.spm-anchor { stroke: #fff; stroke-width: 1.6; }
+.spm-anchor-house { fill: #3b3777; }
+.spm-anchor-guide { fill: #d58b37; }
+.spm-anchor-stage { fill: #e26470; }
 .spm-compass { fill: #fff; opacity: .94; }
 .spm-map-title { fill: #fff; font-family: Comfortaa, Gilmer, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .04em; text-anchor: middle; }
 .spm-pin { position: absolute; display: flex; align-items: flex-start; justify-content: center; width: calc(60px * var(--phone-scale, 1)); height: calc(75px * var(--phone-scale, 1)); padding: 0; border: 0; background: transparent; color: #3b3777; cursor: var(--cursor-pointer, pointer); transform: translate(calc(-50% + var(--pin-offset-x, 0px)), calc(-100% + var(--pin-offset-y, 0px))) scale(.9); transform-origin: bottom center; transition: transform .5s cubic-bezier(.23, 1, .32, 1); }
@@ -95,22 +100,81 @@ function position(element, x, z) {
   return px >= 0 && px <= WIDTH && py >= 0 && py <= HEIGHT;
 }
 
-const PIN_SLOTS = {
-  alionda: [185, 80], 'banua-tada': [255, 160], 'bharugano-wuna': [185, 320],
-  'kaghati-kolope': [255, 240], laika: [185, 240], lulo: [185, 160],
-  'lulo-stage': [45, 160], lumense: [115, 160], mekongga: [115, 320],
-  pomani: [255, 320], 'tenun-konawe': [115, 240],
-};
+const MIN_PIN_DISTANCE = 42;
+const MAX_PIN_OFFSET = 38;
+const OFFSET_SCALE = 430 / WIDTH;
 
-function placePin(element, id, x, z) {
-  position(element, x, z);
-  const [px, py] = point(x, z);
-  const [slotX, slotY] = PIN_SLOTS[id] || [px, py];
-  const offsetX = slotX - px;
-  const offsetY = slotY - py;
-  element.style.setProperty('--pin-offset-x', `calc(${offsetX}px * var(--phone-scale, 1))`);
-  element.style.setProperty('--pin-offset-y', `calc(${offsetY}px * var(--phone-scale, 1))`);
+function declutter(pins) {
+  const placed = [];
+  for (const pin of pins) {
+    const [x, y] = point(pin.x, pin.z);
+    let offsetX = 0;
+    let offsetY = 0;
+    for (let pass = 0; pass < 48; pass += 1) {
+      const currentX = x + offsetX;
+      const currentY = y + offsetY;
+      let pushX = 0;
+      let pushY = 0;
+      for (const other of placed) {
+        let dx = currentX - other.x;
+        let dy = currentY - other.y;
+        let distance = Math.hypot(dx, dy);
+        if (distance < 0.001) { dx = 1; dy = 0; distance = 1; }
+        if (distance >= MIN_PIN_DISTANCE) continue;
+        const push = MIN_PIN_DISTANCE - distance;
+        pushX += (dx / distance) * push;
+        pushY += (dy / distance) * push;
+      }
+      if (!pushX && !pushY) break;
+      offsetX += pushX * 0.55;
+      offsetY += pushY * 0.55;
+      const length = Math.hypot(offsetX, offsetY);
+      if (length > MAX_PIN_OFFSET) {
+        offsetX = (offsetX / length) * MAX_PIN_OFFSET;
+        offsetY = (offsetY / length) * MAX_PIN_OFFSET;
+      }
+    }
+    pin.screenX = x + offsetX;
+    pin.screenY = y + offsetY;
+    placed.push({ x: pin.screenX, y: pin.screenY });
+  }
 }
+
+function placePin(element, pin) {
+  const [px, py] = point(pin.x, pin.z);
+  element.style.left = `${px / WIDTH * 100}%`;
+  element.style.top = `${py / HEIGHT * 100}%`;
+  const offsetX = (pin.screenX - px) * OFFSET_SCALE;
+  const offsetY = (pin.screenY - py) * OFFSET_SCALE;
+  element.style.setProperty('--pin-offset-x', `calc(${offsetX.toFixed(2)}px * var(--phone-scale, 1))`);
+  element.style.setProperty('--pin-offset-y', `calc(${offsetY.toFixed(2)}px * var(--phone-scale, 1))`);
+}
+
+function destinationPins() {
+  const pins = [];
+  for (const site of layout.houses) {
+    const content = HOUSE_EXHIBITS.find((entry) => entry.id === site.id);
+    if (!content) continue;
+    pins.push({
+      id: site.id, title: content.title, kind: 'house',
+      x: site.entrance?.x ?? site.x, z: site.entrance?.z ?? site.z,
+    });
+  }
+  for (const site of layout.guides) {
+    const content = CULTURE_GUIDES.find((entry) => entry.id === site.id);
+    pins.push({ id: site.id, title: content?.title || site.id, kind: 'guide', x: site.x, z: site.z });
+  }
+  const stage = layout.stage || layout.luloStage;
+  if (stage) {
+    const destination = stage.speakers || stage.dance || stage;
+    pins.push({
+      id: 'lulo-stage', title: 'Panggung Lulo', kind: 'stage',
+      x: destination.x, z: (destination.z ?? stage.z) + 3,
+    });
+  }
+  return pins;
+}
+
 
 /** Replaces only the native phone's map pane, keeping its navigation and back button. */
 export function installSultraPhoneMap(game, { navigateTo = () => false } = {}) {
@@ -208,26 +272,25 @@ export function installSultraPhoneMap(game, { navigateTo = () => false } = {}) {
     compass.append(north, svgNode('path', { d: 'M0 -6 L5 9 L0 5 L-5 9 Z' }));
     svg.append(compass);
     chart.append(svg);
-    for (const site of layout.houses) {
-      const content = HOUSE_EXHIBITS.find((entry) => entry.id === site.id);
-      if (!content) continue;
-      const pin = makeButton(site.id, content.title, 'spm-house', 'house', requestNavigation);
-      placePin(pin, site.id, site.x, site.z);
+    const pins = destinationPins();
+    declutter(pins);
+    const leaders = svgNode('g', { 'aria-hidden': true });
+    svg.append(leaders);
+    for (const site of pins) {
+      const pin = makeButton(site.id, site.title, `spm-${site.kind}`, site.kind, requestNavigation);
+      placePin(pin, site);
       chart.append(pin);
-    }
-    const guidePins = [];
-    for (const site of layout.guides) {
-      const content = CULTURE_GUIDES.find((entry) => entry.id === site.id);
-      const pin = makeButton(site.id, content?.title || site.id, 'spm-guide', 'guide', requestNavigation);
-      placePin(pin, site.id, site.x, site.z);
-      chart.append(pin);
-      guidePins.push({ site, pin });
-    }
-    const stage = layout.stage || layout.luloStage || layout.guides.find((entry) => entry.id === 'lulo');
-    if (stage) {
-      const pin = makeButton('lulo-stage', 'Panggung Lulo', 'spm-stage', 'stage', requestNavigation);
-      placePin(pin, 'lulo-stage', stage.x, stage.z);
-      chart.append(pin);
+      const [anchorX, anchorY] = point(site.x, site.z);
+      if (Math.hypot(site.screenX - anchorX, site.screenY - anchorY) > 0.5) {
+        leaders.append(svgNode('line', {
+          x1: anchorX.toFixed(2), y1: anchorY.toFixed(2),
+          x2: site.screenX.toFixed(2), y2: site.screenY.toFixed(2), class: 'spm-leader',
+        }));
+      }
+      leaders.append(svgNode('circle', {
+        cx: anchorX.toFixed(2), cy: anchorY.toFixed(2), r: 3.2,
+        class: `spm-anchor spm-anchor-${site.kind}`,
+      }));
     }
     const player = node('span', 'spm-player');
     player.title = 'Posisimu';
@@ -239,7 +302,7 @@ export function installSultraPhoneMap(game, { navigateTo = () => false } = {}) {
     for (const eventName of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'click', 'wheel']) root.addEventListener(eventName, (event) => event.stopPropagation());
     tab.classList.add('sultra-phone-map-active');
     tab.append(root);
-    views.add({ tab, root, player, guidePins });
+    views.add({ tab, root, player });
   }
 
   function update() {
@@ -251,10 +314,6 @@ export function installSultraPhoneMap(game, { navigateTo = () => false } = {}) {
       const current = scene?.player?.base?.position || game.store?.playerPosition;
       view.player.hidden = !current || scene?.id !== 'IslandWest';
       if (!view.player.hidden) view.player.hidden = !position(view.player, current.x, current.z);
-      for (const { site, pin } of view.guidePins) {
-        const current = scene?.actors?.[`NPC_SultraGuide_${site.id}`]?.base?.position;
-        position(pin, current?.x ?? site.x, current?.z ?? site.z);
-      }
     }
   }
 

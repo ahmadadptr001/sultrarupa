@@ -235,7 +235,13 @@ function addHouses(scene, state) {
     if (!source) continue;
     const monument = source.object.clone(true);
     monument.name = site.title;
-    monument.scale.setScalar(site.height / source.size.y * offset.scale);
+    // Height and footprint are independent: the MTQ tower stands on a narrow
+    // coastal strip, so it grows taller without widening past the shoreline.
+    monument.scale.set(
+      site.width / source.size.x * offset.scale,
+      site.height / source.size.y * offset.scale,
+      site.depth / source.size.z * offset.scale,
+    );
     monument.rotation.y = site.rotation || 0;
     monument.position.set(site.x * offset.scale + offset.x, GROUND, site.z * offset.scale + offset.z);
     monument.userData.landmark = site.id;
@@ -279,17 +285,50 @@ export function installSultraIsland(game) {
     status: 'loading', configured: false, backup: null,
     templates: new Map(), scene: null, houses: null, guideTargets: [],
   };
+  const houseBits = new Map((layout.houses || []).map((site, index) => [site.id, 1 << index]));
+  const guideBits = new Map((layout.guides || []).map((site, index) => [site.id, 1 << index]));
+  function setVariable(name, value) {
+    const vars = game.savestate?.game?.vars;
+    if (vars && vars[name] !== value) vars[name] = value;
+  }
+  function addMask(name, bit) {
+    const vars = game.savestate?.game?.vars;
+    if (vars && !(Number(vars[name]) & bit)) vars[name] = (Number(vars[name]) || 0) | bit;
+  }
+  function markCulture(id, kind) {
+    if (kind === 'house') {
+      const bit = houseBits.get(id);
+      if (bit) addMask('sultraHouseMask', bit);
+    } else if (kind === 'guide') {
+      const bit = guideBits.get(id);
+      if (bit) addMask('sultraGuideMask', bit);
+    }
+  }
+  function markLandmarks(position) {
+    for (const site of layout.monuments || []) {
+      if (Math.hypot(position.x - site.x, position.z - site.z) > 14) continue;
+      if (site.id === 'tugu-mtq') setVariable('isSultraTuguVisited', true);
+      else if (site.id === 'patung-oputa') setVariable('isSultraOputaVisited', true);
+    }
+    const player = game.savestate?.game?.player;
+    if (player && (player.head !== 'Head-Empty' || player.body !== 'Body-Empty'
+      || player.bottom !== 'Bottom-Empty')) setVariable('isSultraDressedUp', true);
+  }
   state.ui = createCultureUI({
     onOpenChange(open, { target, presentation } = {}) {
       game.input?.keyboard?.unpressAllKeys();
       const scene = game.scenes?.current;
       if (scene?.id !== MAIN) return;
+      if (open && target) markCulture(target.id, target.kind);
       if (open && presentation === 'house-dialog') state.houseInteraction?.focus(target.id);
       else state.houseInteraction?.clearFocus();
       if (open && target) state.voice?.setTarget(target, { autoplay: presentation === 'house-dialog' });
       else state.voice?.clear();
       scene.physics.movePlayer(new Vector3());
       scene.physics.togglePause(open || Boolean(game.store.onPhone?.value));
+    },
+    onStoryPage(target, page, total) {
+      if (target?.kind === 'house' && page >= total - 1) setVariable('isSultraStoryFinished', true);
     },
   });
   state.houseInteraction = createHouseInteractions(game, state.ui);
@@ -336,6 +375,15 @@ export function installSultraIsland(game) {
     for (const { target, uid } of state.guideTargets) {
       const actor = scene.actors[uid];
       if (actor?.base) target.position.copy(actor.base.position).add(GUIDE_OFFSET);
+    }
+    const playerPosition = scene.player?.base?.position;
+    if (playerPosition) {
+      for (const { target } of state.guideTargets) {
+        const dx = target.position.x - playerPosition.x;
+        const dz = target.position.z - playerPosition.z;
+        if (dx * dx + dz * dz < 49) markCulture(target.id, 'guide');
+      }
+      markLandmarks(playerPosition);
     }
     const camera = scene.getCurrentCamera()?.cam;
     if (camera && scene.player?.base) {

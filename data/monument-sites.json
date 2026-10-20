@@ -7,7 +7,7 @@
     "x": 160.5,
     "z": -127.5,
     "rotation": -0.66824,
-    "height": 16,
+    "height": 24,
     "width": 7.609,
     "depth": 5.976,
     "clearVegetation": true,
@@ -18,12 +18,12 @@
     "title": "Patung Oputa",
     "model": "/models/culture/patung-oputa.glb",
     "unlit": true,
-    "x": 18,
-    "z": 65,
+    "x": 15.88,
+    "z": 67.12,
     "rotation": 2.356194490192345,
-    "height": 10,
-    "width": 4.147,
-    "depth": 6.295,
-    "connector": [[22.13, 60.87], [20.225, 62.775]]
+    "height": 15,
+    "width": 6.221,
+    "depth": 9.443,
+    "connector": [[22.13, 60.87], [18.28, 64.72]]
   }
 ]

@@ -2,7 +2,7 @@
 import { convertMaterials } from './opening-boat.js';
 
 const MODEL_URL = '/models/player-anoa.glb';
-const HEIGHT_RATIO = 2.387394 / 1.8957;
+const HEIGHT_RATIO = 2.7455 / 1.8957;
 const SHORT_NAME = 'Chara_Low_RigGameSkeleton';
 // Joint centres measured on the anoa replacement, in its authored Y-up space.
 // Legs are hidden above the skirt hem, so hip and knee sit at their anatomical
@@ -130,7 +130,25 @@ function attach(actor, template, state) {
   const hiddenMaterial = state.material.clone();
   hiddenMaterial.visible = false;
   actor.armature.add(root);
-  return { actor, root, mesh, bones, originalMeshes, hiddenMaterial, reference,
+  const accessoryMaterial = actor.charMesh.material;
+  const accessorySkeleton = actor.charMesh.skeleton || actor.skeleton;
+  const accessories = ['head', 'body', 'bottom'].map((part) => {
+    const accessory = new template.source.constructor(
+      new template.source.geometry.constructor(), accessoryMaterial);
+    accessory.name = `Custom player ${part} accessory`;
+    accessory.frustumCulled = false;
+    accessory.castShadow = true;
+    accessory.receiveShadow = true;
+    accessory.opacity = 1;
+    accessory.colorId = actor.charMesh.colorId;
+    accessory.faceColor = actor.charMesh.faceColor;
+    accessory.faceData = actor.charMesh.faceData;
+    accessory.visible = false;
+    actor.charMesh.add(accessory);
+    accessory.bind(accessorySkeleton, actor.charMesh.bindMatrix);
+    return { part, mesh: accessory };
+  });
+  return { actor, root, mesh, bones, originalMeshes, hiddenMaterial, reference, accessories,
     sources: reference.map((bone) => byName.get(bone.name)), delta: root.position.clone(),
     rootIndex: reference.findIndex((bone) => !bone.parent?.isBone),
   };
@@ -138,10 +156,33 @@ function attach(actor, template, state) {
 function detach(entry) {
   if (!entry) return;
   entry.root.removeFromParent(); entry.mesh.skeleton.dispose();
+  for (const { mesh } of entry.accessories) mesh.removeFromParent();
   for (const [mesh, material] of entry.originalMeshes) mesh.material = material;
   entry.hiddenMaterial.dispose();
 }
-function animate(entry) {
+function syncAccessories(entry, game) {
+  const character = game.character;
+  const player = game.savestate?.game?.player;
+  if (!character || !player) return;
+  const parts = {
+    head: character.heads?.[player.head],
+    body: character.bodies?.[player.body],
+    bottom: character.bottoms?.[player.bottom],
+  };
+  for (const { part, mesh } of entry.accessories) {
+    const geometry = parts[part];
+    if (geometry) {
+      if (mesh.geometry !== geometry) mesh.geometry = geometry;
+      mesh.colorId = entry.actor.charMesh.colorId;
+      mesh.faceColor = entry.actor.charMesh.faceColor;
+      mesh.faceData = entry.actor.charMesh.faceData;
+      mesh.visible = true;
+    } else {
+      mesh.visible = false;
+    }
+  }
+}
+function animate(entry, game) {
   const { actor, bones, sources, reference, rootIndex, delta } = entry;
   entry.root.scale.setScalar(actor.charMesh.scale.x * 100 * HEIGHT_RATIO);
   entry.root.position.copy(actor.charMesh.position);
@@ -155,6 +196,7 @@ function animate(entry) {
       bone.position.fromArray(JOINTS.Root_M).add(delta);
     }
   });
+  syncAccessories(entry, game);
   // Native mixer, locomotion, and collisions keep running. Only hide old visuals.
   for (const [mesh] of entry.originalMeshes) mesh.material = entry.hiddenMaterial;
   entry.root.updateMatrixWorld(true);
@@ -174,6 +216,16 @@ export function installPlayerCharacter(game) {
     if (!state.source) return;
     const scene = game.scenes?.current;
     const actor = scene?.player || (scene?.id === 'IslandIntro' ? scene.npcIntro : null);
+    if (!state.defaultsApplied && game.app?.$items?.headDefault) {
+      const player = game.savestate?.game?.player;
+      const items = game.app.$items;
+      if (player) {
+        if (player.head === items.headDefault) player.head = 'Head-Empty';
+        if (player.body === items.bodyDefault) player.body = 'Body-Empty';
+        if (player.bottom === items.bottomDefault) player.bottom = 'Bottom-Empty';
+      }
+      state.defaultsApplied = true;
+    }
     if (state.entry && state.entry.actor !== actor) { detach(state.entry); state.entry = null; }
     if (!actor?.armature || !actor?.skeleton || !actor?.charMesh) return;
     if (!state.template) {
@@ -187,6 +239,6 @@ export function installPlayerCharacter(game) {
       if (!state.entry) return;
       state.skinned = state.entry.mesh; state.attachedTo = actor.armature;
     }
-    animate(state.entry);
+    animate(state.entry, game);
   });
 }

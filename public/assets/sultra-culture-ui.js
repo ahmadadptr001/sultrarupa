@@ -54,7 +54,7 @@ function safeUrl(url) {
  * Positions and camera are in the same Three.js world coordinate system.
  * setTargets activates the interface; clear removes all island UI and content.
  */
-export function createCultureUI({ onOpenChange = () => {} } = {}) {
+export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {} } = {}) {
   if (!document.querySelector('link[data-sultra-culture-style]')) {
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
@@ -246,6 +246,7 @@ export function createCultureUI({ onOpenChange = () => {} } = {}) {
     setOpen(true);
     body.scrollTop = 0;
     panel.focus({ preventScroll: true });
+    onStoryPage(story.target, story.page, story.pages.length);
   }
 
   function advanceStory() {
