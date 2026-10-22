@@ -1,16 +1,21 @@
 {
 	"short_name": "Sultra Rupa",
-	"name": "Sultra Rupa — Jelajah Budaya Sulawesi Tenggara",
+	"name": "Sultra Rupa | Jelajah Budaya Sulawesi Tenggara",
 	"description": "Jelajahi rumah adat, tari, musik, dan cerita Sulawesi Tenggara dalam pengalaman 3D Sultra Rupa.",
 	"start_url": "/",
-	"background_color": "#3b3777",
-	"theme_color": "#3b3777",
+	"background_color": "#103f49",
+	"theme_color": "#103f49",
 	"orientation": "portrait",
 	"icons": [
 		{
-			"src": "/icons/icon_180.png?v=918eafe8",
+			"src": "/icons/icon_192.png?v=sultra-icon-20261022",
 			"type": "image/png",
-			"sizes": "180x180"
+			"sizes": "192x192"
+		},
+		{
+			"src": "/icons/icon_512.png?v=sultra-icon-20261022",
+			"type": "image/png",
+			"sizes": "512x512"
 		}
 	],
 	"display": "fullscreen"

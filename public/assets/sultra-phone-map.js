@@ -27,6 +27,8 @@ const STYLES = `
 .spm-anchor { stroke: #fff; stroke-width: 1.6; }
 .spm-anchor-house { fill: #3b3777; }
 .spm-anchor-guide { fill: #d58b37; }
+.spm-anchor-tugu { fill: #4a73e8; }
+.spm-anchor-statue { fill: #7c5cbf; }
 .spm-anchor-stage { fill: #e26470; }
 .spm-compass { fill: #fff; opacity: .94; }
 .spm-map-title { fill: #fff; font-family: Comfortaa, Gilmer, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .04em; text-anchor: middle; }
@@ -39,6 +41,8 @@ const STYLES = `
 .spm-pin:hover .spm-pin-circle, .spm-pin:focus-visible .spm-pin-circle { border-color: #f2ba00aa; }
 .spm-pin svg { width: calc(26px * var(--phone-scale, 1)); height: calc(26px * var(--phone-scale, 1)); }
 .spm-guide .spm-pin-circle { border-color: #f2ba00; color: #d58b37; }
+.spm-tugu .spm-pin-circle { border-color: #4a73e8; color: #4a73e8; }
+.spm-statue .spm-pin-circle { border-color: #7c5cbf; color: #7c5cbf; }
 .spm-stage .spm-pin-circle { border-color: #f2676f; color: #e26470; }
 .spm-player { position: absolute; z-index: 6; width: calc(40px * var(--phone-scale, 1)); height: calc(40px * var(--phone-scale, 1)); pointer-events: none; transform: translate(-50%, -50%); }
 .spm-player::before { position: absolute; inset: 0; content: ''; background: #fff; border-radius: 50%; animation: spm-pulse 2s infinite; }
@@ -79,6 +83,8 @@ function symbol(kind) {
   const paths = {
     house: 'm3 10 9-7 9 7M5 9v12h14V9M9 21v-8h6v8',
     guide: 'M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM5 21v-3a7 7 0 0 1 14 0v3M12 13v5M10 16h4',
+    tugu: 'M12 3 8 8h8L12 3ZM9 8v12M15 8v12M7 21h10M8 12h8M8 16h8',
+    statue: 'M12 3a2.1 2.1 0 1 1 0 4.2A2.1 2.1 0 0 1 12 3ZM12 7.2V14M8.5 21v-4L10 10h4l1.5 7v4M10 14h4M9 21h6',
     stage: 'M9 18V5l11-2v13M9 5v4l11-2M9 18c0 2-6 4-6 1s6-4 6-1m11-2c0 2-6 4-6 1s6-4 6-1',
   };
   svg.append(svgNode('path', { d: paths[kind] || paths.house }));
@@ -103,6 +109,10 @@ function position(element, x, z) {
 const MIN_PIN_DISTANCE = 42;
 const MAX_PIN_OFFSET = 38;
 const OFFSET_SCALE = 430 / WIDTH;
+const MIN_PIN_X = 30;
+const MAX_PIN_X = WIDTH - 30;
+const MIN_PIN_Y = 68;
+const MAX_PIN_Y = HEIGHT - 4;
 
 function declutter(pins) {
   const placed = [];
@@ -134,8 +144,8 @@ function declutter(pins) {
         offsetY = (offsetY / length) * MAX_PIN_OFFSET;
       }
     }
-    pin.screenX = x + offsetX;
-    pin.screenY = y + offsetY;
+    pin.screenX = Math.max(MIN_PIN_X, Math.min(MAX_PIN_X, x + offsetX));
+    pin.screenY = Math.max(MIN_PIN_Y, Math.min(MAX_PIN_Y, y + offsetY));
     placed.push({ x: pin.screenX, y: pin.screenY });
   }
 }
@@ -163,6 +173,11 @@ function destinationPins() {
   for (const site of layout.guides) {
     const content = CULTURE_GUIDES.find((entry) => entry.id === site.id);
     pins.push({ id: site.id, title: content?.title || site.id, kind: 'guide', x: site.x, z: site.z });
+  }
+  for (const site of layout.monuments || []) {
+    const tugu = site.id === 'tugu-mtq';
+    const title = tugu ? 'Tugu MTQ' : site.id === 'patung-oputa' ? 'Patung Oputa Yi Koo' : site.name || site.id;
+    pins.push({ id: site.id, title, kind: tugu ? 'tugu' : 'statue', x: site.x, z: site.z });
   }
   const stage = layout.stage || layout.luloStage;
   if (stage) {

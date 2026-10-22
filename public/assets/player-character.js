@@ -1,8 +1,41 @@
 ﻿import { cD as assets, cd as Group, b6 as BufferAttribute } from './vendor.75f6e6ae65453426.js';
 import { convertMaterials } from './opening-boat.js';
+import { createAnoaAnimator } from './anoa-animation.js';
 
 const MODEL_URL = '/models/player-anoa.glb';
+const ACCESSORY_MODEL_URL = '/models/player-anoa-accessories.glb?v=anoa-fit-v3';
+const NATIVE_ACCESSORY_MODEL_URL = '/models/player-anoa-native-accessories.glb?v=anoa-fit-v3';
 const HEIGHT_RATIO = 2.7455 / 1.8957;
+const HEAD_WEAR = [
+  'Head-AstronautHelmet', 'Head-Beanie', 'Head-BearBeanie', 'Head-BikeHelmet', 'Head-Bob',
+  'Head-BunnyCap', 'Head-Cap', 'Head-Crown', 'Head-DeerHat', 'Head-Dino', 'Head-Fish',
+  'Head-FrenchBeret', 'Head-Glass1', 'Head-Glass2', 'Head-GraduationHat', 'Head-Heaset',
+  'Head-MotorcycleHelmet', 'Head-Scuba', 'Head-Unicorn', 'Head-Visor',
+];
+const BODY_WEAR = [
+  ['Body-Bumbag', 'Spine1_M'], ['Body-Buoy', 'Chest_M'],
+  ['Body-JetPack', 'Chest_M'], ['Body-OxygenBottle', 'Chest_M'], ['Body-Shark', 'Chest_M'],
+  ['Body-UrbanBackpack', 'Chest_M'], ['Body-Wings', 'Chest_M'],
+];
+const BOTTOM_WEAR = [
+  'Bottom-LowSneakers', 'Bottom-MidSneakers', 'Bottom-Sandals', 'Bottom-Palm',
+  'Bottom-Dino', 'Bottom-FastShoes',
+];
+const CUSTOM_WEAR = [
+  { part: 'head', item: 'Head-VahineCrown', node: 'Accessory_Head', bone: 'Head_M' },
+  { part: 'body', item: 'Body-PandaBackpack', node: 'Accessory_Body', bone: 'Chest_M' },
+  { part: 'bottom', item: 'Bottom-Boots', node: 'Accessory_Bottom_L', bone: 'Ankle_L' },
+  { part: 'bottom', item: 'Bottom-Boots', node: 'Accessory_Bottom_R', bone: 'Ankle_R' },
+  ...['L', 'R'].map((side) => ({
+    part: 'body', item: 'Body-Dino', node: `Wear_Body-Dino_${side}`, bone: `Wrist_${side}`,
+  })),
+  { part: 'body', item: 'Body-Dino', node: 'Wear_Body-Dino_Tail', bone: 'Root_M' },
+  ...HEAD_WEAR.map((item) => ({ part: 'head', item, node: `Wear_${item}`, bone: 'Head_M' })),
+  ...BODY_WEAR.map(([item, bone]) => ({ part: 'body', item, node: `Wear_${item}`, bone })),
+  ...BOTTOM_WEAR.flatMap((item) => ['L', 'R'].map((side) => ({
+    part: 'bottom', item, node: `Wear_${item}_${side}`, bone: `Ankle_${side}`,
+  }))),
+];
 const SHORT_NAME = 'Chara_Low_RigGameSkeleton';
 // Joint centres measured on the anoa replacement, in its authored Y-up space.
 // Legs are hidden above the skirt hem, so hip and knee sit at their anatomical
@@ -38,14 +71,20 @@ function skinGeometry(source, bones) {
       * (1 - smooth(.17, .26, Math.abs(x)) * (1 - smooth(1.36, 1.46, y)));
     // The arm leaves the silhouette below the pauldrons, hugs the narrow waist
     // and flares at the chest; the hanging sash stays inside its edge.
-    const edge = .24 + .13 * (1 - smooth(.60, .92, y)) + .06 * smooth(1.10, 1.28, y);
+    // The inward-facing thumbs reach x=0.36 below the wrist. Keep the entire
+    // hand beyond the arm boundary, otherwise a few thumb vertices stay on
+    // the pelvis and stretch into spikes when the greeting raises the hand.
+    const edge = .24 + .072 * (1 - smooth(.60, .92, y))
+      + .06 * (1 - smooth(.53, .60, y)) + .06 * smooth(1.10, 1.28, y);
     const arm = smooth(edge - .025, edge + .035, Math.abs(x))
       * (1 - smooth(1.27, 1.38, y)) * smooth(.32, .45, y);
     if (y < .80) {
       // Only the leg below the wrapped skirt hem is driven; the cloth above it
       // keeps following the pelvis, so strides cannot tear the hem open. The
       // inner fade keeps the cloth hanging between the legs on the pelvis too.
-      const leg = (1 - smooth(.30, .50, y))
+      const exposedThigh = (1 - smooth(.03, .12, z)) * smooth(.08, .17, Math.abs(x));
+      const hem = .50 + .12 * exposedThigh;
+      const leg = (1 - smooth(.30, hem, y))
         * smooth(.005, .02 + .10 * smooth(.35, .55, y), Math.abs(x));
       const ankle = 1 - smooth(.20, .32, y), knee = 1 - smooth(.42, .60, y);
       add('Root_M', 1 - leg);
@@ -130,6 +169,7 @@ function attach(actor, template, state) {
   const hiddenMaterial = state.material.clone();
   hiddenMaterial.visible = false;
   actor.armature.add(root);
+  const custom = attachCustomAccessories(root, bones, state);
   const accessoryMaterial = actor.charMesh.material;
   const accessorySkeleton = actor.charMesh.skeleton || actor.skeleton;
   const accessories = ['head', 'body', 'bottom'].map((part) => {
@@ -148,15 +188,70 @@ function attach(actor, template, state) {
     accessory.bind(accessorySkeleton, actor.charMesh.bindMatrix);
     return { part, mesh: accessory };
   });
-  return { actor, root, mesh, bones, originalMeshes, hiddenMaterial, reference, accessories,
-    sources: reference.map((bone) => byName.get(bone.name)), delta: root.position.clone(),
+  const entry = { actor, root, mesh, bones, originalMeshes, hiddenMaterial, reference, accessories,
+    custom, sources: reference.map((bone) => byName.get(bone.name)), delta: root.position.clone(),
     rootIndex: reference.findIndex((bone) => !bone.parent?.isBone),
   };
+  entry.animator = createAnoaAnimator(entry, template);
+  return entry;
 }
-function detach(entry) {
+function attachCustomAccessories(root, bones, state) {
+  if (!state.customSource) return [];
+  const byName = new Map(bones.map((bone) => [bone.name.replace('Custom_', ''), bone]));
+  root.updateMatrixWorld(true);
+  state.customSource.updateMatrixWorld(true);
+  const sourceInverse = state.customSource.matrixWorld.clone().invert();
+  const attached = [];
+  for (const wear of CUSTOM_WEAR) {
+    const source = state.customSource.getObjectByName(wear.node);
+    const bone = byName.get(wear.bone);
+    if (!source || !bone) continue;
+    const object = source.clone();
+    object.name = `${wear.node} worn`;
+    object.castShadow = true;
+    object.receiveShadow = true;
+    object.matrixAutoUpdate = false;
+    // Retain both the object's transform and any Blender collection parents.
+    // The exported character space becomes the custom rig's bind-pose space.
+    object.matrix.copy(bone.matrixWorld).invert().multiply(root.matrixWorld)
+      .multiply(sourceInverse).multiply(source.matrixWorld);
+    object.visible = false;
+    bone.add(object);
+    attached.push({ ...wear, object });
+  }
+  return attached;
+}
+function restoreFootwearOffset(entry, game) {
+  if (!entry.shoeOffsetSuppressed) return;
+  const nativeItem = game.app?.$items?.bottom?.[entry.actor.outfit?.bottom];
+  entry.actor.shoesOffset = nativeItem ? nativeItem.shoesOffset || 0 : entry.nativeShoesOffset;
+  entry.shoeOffsetSuppressed = false;
+}
+function fittedWear(entry, part, item) {
+  const expected = CUSTOM_WEAR.filter((wear) => wear.part === part && wear.item === item);
+  const matches = entry.custom.filter((wear) => wear.part === part && wear.item === item);
+  return expected.length && matches.length === expected.length ? matches : [];
+}
+function syncFootwearOffset(entry, game) {
+  const bottom = game.savestate?.game?.player?.bottom;
+  if (!fittedWear(entry, 'bottom', bottom).length) {
+    restoreFootwearOffset(entry, game);
+    return;
+  }
+  // These soles are authored at the anoa's ground plane. The original shoes'
+  // lift would otherwise raise the entire replacement above the floor.
+  if (!entry.shoeOffsetSuppressed || entry.actor.shoesOffset !== 0) {
+    entry.nativeShoesOffset = entry.actor.shoesOffset;
+  }
+  entry.actor.shoesOffset = 0;
+  entry.shoeOffsetSuppressed = true;
+}
+function detach(entry, game) {
   if (!entry) return;
+  restoreFootwearOffset(entry, game);
   entry.root.removeFromParent(); entry.mesh.skeleton.dispose();
   for (const { mesh } of entry.accessories) mesh.removeFromParent();
+  for (const { object } of entry.custom) object.removeFromParent();
   for (const [mesh, material] of entry.originalMeshes) mesh.material = material;
   entry.hiddenMaterial.dispose();
 }
@@ -169,9 +264,17 @@ function syncAccessories(entry, game) {
     body: character.bodies?.[player.body],
     bottom: character.bottoms?.[player.bottom],
   };
+  const customParts = new Set(), visible = new Set();
+  for (const part of ['head', 'body', 'bottom']) {
+    const matches = fittedWear(entry, part, player[part]);
+    if (matches.length) {
+      customParts.add(part);
+      for (const wear of matches) visible.add(wear.object);
+    }
+  }
   for (const { part, mesh } of entry.accessories) {
     const geometry = parts[part];
-    if (geometry) {
+    if (geometry && !customParts.has(part)) {
       if (mesh.geometry !== geometry) mesh.geometry = geometry;
       mesh.colorId = entry.actor.charMesh.colorId;
       mesh.faceColor = entry.actor.charMesh.faceColor;
@@ -181,6 +284,8 @@ function syncAccessories(entry, game) {
       mesh.visible = false;
     }
   }
+  for (const { object } of entry.custom) object.visible = visible.has(object);
+  syncFootwearOffset(entry, game);
 }
 function animate(entry, game) {
   const { actor, bones, sources, reference, rootIndex, delta } = entry;
@@ -196,6 +301,7 @@ function animate(entry, game) {
       bone.position.fromArray(JOINTS.Root_M).add(delta);
     }
   });
+  entry.animator?.update();
   syncAccessories(entry, game);
   // Native mixer, locomotion, and collisions keep running. Only hide old visuals.
   for (const [mesh] of entry.originalMeshes) mesh.material = entry.hiddenMaterial;
@@ -204,16 +310,36 @@ function animate(entry, game) {
 
 export function installPlayerCharacter(game) {
   if (game.playerCharacter) return;
-  const state = game.playerCharacter = { status: 'loading', mode: 'retargeted', entry: null };
-  const load = () => assets.load(MODEL_URL, { noCache: true }).then((gltf) => {
+  const state = game.playerCharacter = { status: 'loading', mode: 'native-retarget', entry: null };
+  const loadCharacter = () => assets.load(MODEL_URL, { noCache: true }).then((gltf) => {
     convertMaterials(gltf.scene);
     gltf.scene.traverse((o) => { if (!state.source && o.isMesh) state.source = o; });
     if (!state.source) throw new Error('Character model contains no mesh');
+  });
+  const loadAccessories = () => Promise.all(
+    // The bundled loader infers formats with endsWith('.glb'); a version query
+    // therefore needs an explicit loader to keep returning parsed glTF scenes.
+    [ACCESSORY_MODEL_URL, NATIVE_ACCESSORY_MODEL_URL].map((url) => assets.load(url, { noCache: true, loader: 'gltf' })
+      .catch((error) => { console.error('[Player accessories]', error); return null; })),
+  ).then((models) => {
+    const group = new Group();
+    group.name = 'Custom accessories';
+    for (const model of models) {
+      if (!model) continue;
+      convertMaterials(model.scene);
+      group.add(model.scene);
+    }
+    state.customSource = group;
+  });
+  const load = () => Promise.all([loadCharacter(), loadAccessories()]).then(() => {
     state.status = 'ready';
   }).catch((error) => { state.status = 'error'; console.error('[Player character]', error); });
   game.hooks.beforePreload.watch(() => game.app.$preloader.task(load()));
+  game.hooks.beforeUpdate.watch(() => {
+    if (state.entry) syncFootwearOffset(state.entry, game);
+  });
   game.hooks.beforeRender.watch(() => {
-    if (!state.source) return;
+    if (state.status !== 'ready' || !state.source) return;
     const scene = game.scenes?.current;
     const actor = scene?.player || (scene?.id === 'IslandIntro' ? scene.npcIntro : null);
     if (!state.defaultsApplied && game.app?.$items?.headDefault) {
@@ -226,7 +352,7 @@ export function installPlayerCharacter(game) {
       }
       state.defaultsApplied = true;
     }
-    if (state.entry && state.entry.actor !== actor) { detach(state.entry); state.entry = null; }
+    if (state.entry && state.entry.actor !== actor) { detach(state.entry, game); state.entry = null; }
     if (!actor?.armature || !actor?.skeleton || !actor?.charMesh) return;
     if (!state.template) {
       state.template = getTemplate(game);

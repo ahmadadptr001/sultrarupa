@@ -18,7 +18,12 @@ function toBasicMaterial(source) {
   const material = new MeshBasicMaterial({
     color: 0xffffff,
     map: texture,
+    vertexColors: Boolean(source.vertexColors),
     side: DoubleSide, // the glTF material is declared doubleSided
+    transparent: Boolean(source.transparent),
+    opacity: source.opacity ?? 1,
+    alphaTest: source.alphaTest || 0,
+    depthWrite: source.depthWrite !== false,
     fog: true, // matches the other meshes in the intro scene
     toneMapped: false,
   });

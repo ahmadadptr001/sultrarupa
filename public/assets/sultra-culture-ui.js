@@ -1,4 +1,4 @@
-import { aS as Vector3 } from './vendor.75f6e6ae65453426.js';
+﻿import { aS as Vector3 } from './vendor.75f6e6ae65453426.js';
 import islandLayout from './sultra-island-layout.js';
 import { getStoryPages } from './sultra-story-pages.js';
 
@@ -88,9 +88,6 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
   const toolbar = element('div', 'sc-panel-toolbar');
   const backButton = action('sc-back-button', 'Kembali ke peta budaya', 'back');
   backButton.append(element('span', '', 'Peta budaya'));
-  const storyBackButton = action('sc-back-button sc-story-back', 'Kembali ke cerita', 'back');
-  storyBackButton.append(element('span', '', 'Kembali ke cerita'));
-  storyBackButton.hidden = true;
   const panelBrand = element('span', 'sc-panel-brand', 'RUANG CERITA');
   const voiceControls = element('div', 'sc-voice-controls');
   voiceControls.hidden = true;
@@ -98,7 +95,7 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
   dialogueHint.hidden = true;
   const closeButton = action('sc-close-button', 'Tutup informasi budaya', 'close');
   closeButton.title = 'Tutup (Esc)';
-  toolbar.append(backButton, storyBackButton, panelBrand, voiceControls, dialogueHint, closeButton);
+  toolbar.append(backButton, panelBrand, voiceControls, dialogueHint, closeButton);
   const body = element('div', 'sc-panel-body');
   body.tabIndex = -1;
   panel.append(toolbar, body);
@@ -169,6 +166,7 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
     } else {
       inertNodes.forEach((node) => { node.inert = false; });
       inertNodes = [];
+      root.classList.remove('sc-phone-detail');
       if (returnFocus?.isConnected && !returnFocus.closest('[hidden]')) {
         returnFocus.focus({ preventScroll: true });
       }
@@ -205,6 +203,26 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
     return image;
   }
 
+  function storyExcerpt(text, limit = 195) {
+    const clean = String(text || '').replace(/\s+/gu, ' ').trim();
+    if (clean.length <= limit) return clean;
+    const sentences = clean.match(/[^.!?]+[.!?]+(?=\s|$)/gu) || [];
+    let result = '';
+    for (const sentence of sentences) {
+      const next = `${result} ${sentence.trim()}`.trim();
+      if (result && next.length > limit) break;
+      result = next;
+    }
+    if (!result) result = clean;
+    if (result.length > limit) {
+      const cut = result.slice(0, limit);
+      const boundary = Math.max(cut.lastIndexOf(' '), cut.lastIndexOf(','));
+      result = boundary > 60 ? cut.slice(0, boundary) : cut;
+    }
+    if (result === clean) return result;
+    return /[.!?]$/u.test(result) ? result : `${result.replace(/[,\s]+$/u, '')}...`;
+  }
+
   function showStoryPage(page = 0) {
     if (!story || destroyed) return;
     story.page = Math.max(0, Math.min(page, story.pages.length - 1));
@@ -213,25 +231,28 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
     root.classList.add('sc-house-dialog');
     mapPlayer = null;
     backButton.hidden = true;
-    storyBackButton.hidden = true;
     panelBrand.hidden = true;
     dialogueHint.hidden = false;
     voiceControls.hidden = !voiceControls.childElementCount;
     body.replaceChildren();
 
-    const header = element('header', 'sc-story-header');
-    const title = element('h2', 'sc-story-title', activeTarget.title);
-    title.id = headingId;
-    const count = element('span', 'sc-story-count', `${story.page + 1} / ${story.pages.length}`);
-    count.setAttribute('aria-label', `Bagian ${story.page + 1} dari ${story.pages.length}`);
-    header.append(title, count);
-    const copy = element('p', 'sc-story-text', story.pages[story.page]);
+    const intro = element('div', 'sc-story-intro');
+    const media = element('figure', 'sc-story-media');
+    const image = photo(activeTarget, 'sc-story-photo');
+    if (image) media.append(image);
+    else intro.classList.add('sc-story-intro-text');
+    const heading = element('div', 'sc-story-heading');
+    heading.append(
+      element('p', 'sc-story-kicker', `Rumah adat - ${activeTarget.region || 'Sulawesi Tenggara'}`),
+      element('h2', 'sc-story-title', activeTarget.title),
+    );
+    if (activeTarget.subtitle) heading.append(element('p', 'sc-story-subtitle', activeTarget.subtitle));
+    heading.querySelector('.sc-story-title').id = headingId;
+    intro.append(media, heading);
+    const copy = element('p', 'sc-story-text', storyExcerpt(story.pages[story.page]));
     copy.setAttribute('aria-live', 'polite');
     copy.setAttribute('aria-atomic', 'true');
     const navigation = element('div', 'sc-story-navigation');
-    const details = action('sc-story-details', 'Info lengkap');
-    details.textContent = 'Info lengkap';
-    details.addEventListener('click', () => showTarget(story.target, false, { retainStory: true }));
     const steps = element('div', 'sc-story-steps');
     const previous = action('sc-story-previous', 'Bagian sebelumnya', 'back');
     previous.append(element('span', '', 'Kembali'));
@@ -241,8 +262,8 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
     next.append(element('span', '', story.page === story.pages.length - 1 ? 'Selesai' : 'Lanjut'), icon('arrow'));
     next.addEventListener('click', advanceStory);
     steps.append(previous, next);
-    navigation.append(details, steps);
-    body.append(header, copy, navigation);
+    navigation.append(steps);
+    body.append(intro, copy, navigation);
     setOpen(true);
     body.scrollTop = 0;
     panel.focus({ preventScroll: true });
@@ -255,7 +276,7 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
     else close();
   }
 
-  function showTarget(target, viaMap = false, { presentation = 'panel', retainStory = false } = {}) {
+  function showTarget(target, viaMap = false, { presentation = 'panel', fromPhone = false } = {}) {
     if (!target || destroyed) return;
     if (target.kind === 'house' && presentation === 'house-dialog') {
       const pages = getStoryPages(target);
@@ -265,16 +286,16 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
         return;
       }
     }
-    if (!retainStory) story = null;
+    story = null;
     activeTarget = target;
     activePresentation = 'panel';
     root.classList.remove('sc-house-dialog');
+    root.classList.toggle('sc-phone-detail', fromPhone);
     dialogueHint.hidden = true;
     voiceControls.hidden = !voiceControls.childElementCount;
     mapPlayer = null;
     backButton.hidden = !viaMap;
-    storyBackButton.hidden = !story;
-    panelBrand.hidden = viaMap || Boolean(story);
+    panelBrand.hidden = viaMap;
     body.replaceChildren();
     body.append(titleBlock(
       `${target.kind === 'guide' ? 'PANDUAN BUDAYA' : 'RUMAH ADAT'}${target.region ? ` · ${target.region.toUpperCase()}` : ''}`,
@@ -332,11 +353,10 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
     activeTarget = null;
     activePresentation = 'panel';
     story = null;
-    root.classList.remove('sc-house-dialog');
+    root.classList.remove('sc-house-dialog', 'sc-phone-detail');
     dialogueHint.hidden = true;
     voiceControls.hidden = true;
     backButton.hidden = true;
-    storyBackButton.hidden = true;
     panelBrand.hidden = false;
     body.replaceChildren();
     body.append(titleBlock('JELAJAH SULAWESI TENGGARA', 'Peta budaya', 'Kenali rumah adat dan cerita masyarakat di baliknya. Pilih sebuah tempat untuk mulai membaca.'));
@@ -491,7 +511,6 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
   }
 
   backButton.addEventListener('click', showMap);
-  storyBackButton.addEventListener('click', () => showStoryPage(story?.page));
   closeButton.addEventListener('click', close);
   backdrop.addEventListener('click', (event) => { if (event.target === backdrop) close(); });
   ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'click', 'wheel'].forEach((name) => {
@@ -603,3 +622,5 @@ export function createCultureUI({ onOpenChange = () => {}, onStoryPage = () => {
     },
   };
 }
+
+

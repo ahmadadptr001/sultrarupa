@@ -1,6 +1,6 @@
 /* Global player-facing copy for the Sultra Rupa edition of the game shell. */
 (() => {
-  const title = 'Sultra Rupa — Jelajah Budaya Sulawesi Tenggara';
+  const title = 'Sultra Rupa | Jelajah Budaya Sulawesi Tenggara';
   const description = 'Jelajahi rumah adat, tari, musik, dan cerita masyarakat Sulawesi Tenggara dalam pengalaman 3D Sultra Rupa.';
   const legacyHost = /(?:coastalworld|coastalbank)\.com/i;
   const SULTRA_INTRO_DIALOG = {
@@ -105,6 +105,12 @@
   const SHELL_STYLES = `
     .app-header .logo .sultra-wordmark { width: 100%; height: 100%; color: #fff; }
     .menu .menu-infos > .sultra-wordmark { color: #3b3777; }
+    .menu .menu-infos .menu-cta.button,
+    .start-login, .start-desc,
+    .notification.hint-register,
+    .page-customize .color-picker,
+    .color-picker[data-v-ad64405c],
+    .form-container, .form-overlay { display: none !important; }
   `;
 
   function installStyles() {
@@ -113,6 +119,46 @@
     style.dataset.sultraShellCopy = '';
     style.textContent = SHELL_STYLES;
     document.head.append(style);
+  }
+
+  function openCulturePhone() {
+    const game = window.__sultraMobileControls?.game;
+    const app = game?.app;
+    if (!app?.$router || !app?.$store) return false;
+    const tab = app.$store.phone?.tab;
+    if (tab) {
+      tab.id = 'Fintechs';
+      tab.props = null;
+    }
+    app.$store.isMenuOpen = false;
+    game.audio?.playSound?.('sfx_phone_click_medium');
+    app.$router.push({ name: 'Phone' });
+    return true;
+  }
+
+  function closeSaveForm() {
+    const app = window.__sultraMobileControls?.game?.app;
+    if (app?.$store?.isFormOpen) app.$store.isFormOpen = false;
+  }
+
+  function bindShellActions() {
+    if (window.__sultraShellActions) return;
+    window.__sultraShellActions = true;
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+      if (target.closest('.menu-infos .menu-cta.a')) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openCulturePhone();
+        return;
+      }
+      if (target.closest('.start-login, .menu-infos .menu-cta.button, .notification.hint-register')) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        closeSaveForm();
+      }
+    }, true);
   }
 
   function installIntroDialogCopy() {
@@ -228,7 +274,7 @@
     };
     site.menu = {
       privacy: 'Tentang Sultra Rupa', privacylink: '#', terms: 'Catatan penggunaan', termslink: '#',
-      cookies: 'Pengaturan lokal', cookieslink: '#', credits: 'Sultra Rupa — Jelajah Budaya Sulawesi Tenggara', coastallink: '#',
+      cookies: 'Pengaturan lokal', cookieslink: '#', credits: 'Sultra Rupa | Jelajah Budaya Sulawesi Tenggara', coastallink: '#',
     };
     site.game = {
       timer: { timetobeat: 'Waktu terbaik', besttime: 'Waktu terbaikmu', seconds: 'detik', target: data.site.game?.timer?.target || {} },
@@ -291,6 +337,7 @@
 
   function localizeDocument() {
     installStyles();
+    closeSaveForm();
     replaceWordmarks();
     document.documentElement.lang = 'id';
     if (document.title !== title) document.title = title;
@@ -303,7 +350,7 @@
     setMeta('meta[property="og:locale"]', 'id_ID');
     setMeta('meta[name="twitter:title"]', title);
     setMeta('meta[name="twitter:description"]', description);
-    setText('#preloader .default', 'Sultra Rupa adalah ruang jelajah budaya Sulawesi Tenggara.');
+    setText('#preloader .default', 'Sultra Rupa: Jelajah Budaya Sulawesi Tenggara');
     setText('#preloader .colored', 'Kenali rumah adat, tari, musik, dan cerita lokal.');
     setText('.ot-sdk-show-settings', 'Pengaturan cookie');
     const phoneNavLabels = {
@@ -332,6 +379,7 @@
 
   installIntroDialogCopy();
   applyData();
+  bindShellActions();
   localizeDocument();
   let queued = false;
   const observer = new MutationObserver(() => {

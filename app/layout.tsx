@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Sultra Rupa — Jelajah Budaya Sulawesi Tenggara",
+    default: "Sultra Rupa | Jelajah Budaya Sulawesi Tenggara",
     template: "%s | Sultra Rupa",
   },
   description:
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "id_ID",
-    title: "Sultra Rupa — Jelajah Budaya Sulawesi Tenggara",
+    title: "Sultra Rupa | Jelajah Budaya Sulawesi Tenggara",
     description:
       "Jelajahi rumah adat, tari, musik, dan cerita masyarakat Sulawesi Tenggara dalam pengalaman 3D.",
     siteName: "Sultra Rupa",
@@ -40,20 +40,20 @@ export const metadata: Metadata = {
         url: "/share/sultrarupa-share.png",
         width: 1200,
         height: 630,
-        alt: "Sultra Rupa — Jelajah Budaya Sulawesi Tenggara",
+        alt: "Sultra Rupa | Jelajah Budaya Sulawesi Tenggara",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sultra Rupa — Jelajah Budaya Sulawesi Tenggara",
+    title: "Sultra Rupa | Jelajah Budaya Sulawesi Tenggara",
     description:
       "Jelajahi rumah adat, tari, musik, dan cerita masyarakat Sulawesi Tenggara dalam pengalaman 3D.",
     images: ["/share/sultrarupa-share.png"],
   },
   icons: {
-    icon: "/icons/favicon_light.svg",
-    apple: "/icons/icon_180.png",
+    icon: "/icons/favicon_light.svg?v=sultra-icon-20261022",
+    apple: "/icons/icon_180.png?v=sultra-icon-20261022",
   },
 };
 

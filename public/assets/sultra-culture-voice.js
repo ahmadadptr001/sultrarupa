@@ -1,6 +1,8 @@
 import narrationManifest from './sultra-narration-manifest.js';
 
 const MAX_CHUNK_LENGTH = 220;
+const LISTEN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>';
+const STOP_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2.5" fill="currentColor"/></svg>';
 
 function narrationChunks(target) {
   const list = (value) => Array.isArray(value) ? value : value ? [value] : [];
@@ -37,6 +39,13 @@ export function createCultureVoice(game, { onStateChange = () => {} } = {}) {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'sultra-culture-voice-button';
+  const buttonIcon = document.createElement('span');
+  buttonIcon.className = 'sultra-culture-voice-icon';
+  buttonIcon.setAttribute('aria-hidden', 'true');
+  buttonIcon.innerHTML = LISTEN_ICON;
+  const buttonLabel = document.createElement('span');
+  buttonLabel.className = 'sultra-culture-voice-label';
+  button.append(buttonIcon, buttonLabel);
   const status = document.createElement('p');
   status.className = 'sultra-culture-voice-status';
   status.setAttribute('role', 'status');
@@ -81,7 +90,11 @@ export function createCultureVoice(game, { onStateChange = () => {} } = {}) {
 
   function render(message = '') {
     element.hidden = !target;
-    button.textContent = speaking ? 'Hentikan narasi' : 'Dengarkan';
+    const label = speaking ? 'Hentikan narasi' : 'Dengarkan narasi';
+    buttonLabel.textContent = speaking ? 'Hentikan narasi' : 'Dengarkan';
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    buttonIcon.innerHTML = speaking ? STOP_ICON : LISTEN_ICON;
     button.setAttribute('aria-pressed', String(speaking));
     button.disabled = !supported || !target || !chunks.length || muted();
     status.textContent = !supported
@@ -118,7 +131,7 @@ export function createCultureVoice(game, { onStateChange = () => {} } = {}) {
     // Never let a foreign/default voice read Indonesian with the wrong accent.
     const selectedVoice = voice();
     if (!selectedVoice) {
-      stop('Narasi belum tersedia. Tekan Dengarkan untuk mencoba lagi.');
+      stop('Narasi belum tersedia. Tekan tombol suara untuk mencoba lagi.');
       return;
     }
     const utterance = new window.SpeechSynthesisUtterance(chunks[chunkIndex]);
@@ -146,16 +159,16 @@ export function createCultureVoice(game, { onStateChange = () => {} } = {}) {
     utterance.onerror = (event) => {
       if (token !== generation) return;
       const message = event.error === 'not-allowed'
-        ? 'Tekan Dengarkan untuk memulai narasi.'
+        ? 'Tekan tombol suara untuk memulai narasi.'
         : ['voice-unavailable', 'language-unavailable', 'synthesis-unavailable'].includes(event.error)
           ? 'Suara belum tersedia di perangkat ini. Informasi tetap dapat dibaca.'
           : ['canceled', 'interrupted'].includes(event.error)
-            ? '' : 'Narasi belum dapat diputar. Tekan Dengarkan untuk mencoba lagi.';
+            ? '' : 'Narasi belum dapat diputar. Tekan tombol suara untuk mencoba lagi.';
       stop(message);
     };
     startTimeout = window.setTimeout(() => {
       if (token === generation && currentUtterance === utterance) {
-        stop('Suara belum tersedia. Tekan Dengarkan untuk mencoba lagi.');
+        stop('Suara belum tersedia. Tekan tombol suara untuk mencoba lagi.');
       }
     }, 8000);
     try {
@@ -178,7 +191,7 @@ export function createCultureVoice(game, { onStateChange = () => {} } = {}) {
       startTimeout = null;
       releaseAudio();
       if (voice()) speakNext(token);
-      else stop('Narasi belum dapat dimuat. Tekan Dengarkan untuk mencoba lagi.');
+      else stop('Narasi belum dapat dimuat. Tekan tombol suara untuk mencoba lagi.');
     };
     audio.onplaying = () => {
       if (!active()) return;
@@ -201,7 +214,7 @@ export function createCultureVoice(game, { onStateChange = () => {} } = {}) {
       const promise = audio.play();
       promise?.catch((error) => {
         if (!active()) return;
-        if (error.name === 'NotAllowedError') stop('Tekan Dengarkan untuk memulai narasi.');
+        if (error.name === 'NotAllowedError') stop('Tekan tombol suara untuk memulai narasi.');
         else fallback();
       });
     } catch {
@@ -244,7 +257,7 @@ export function createCultureVoice(game, { onStateChange = () => {} } = {}) {
   }
 
   function onVisibility() {
-    if (document.hidden && speaking) stop('Tekan Dengarkan untuk memulai lagi.');
+    if (document.hidden && speaking) stop('Tekan tombol suara untuk memulai lagi.');
   }
 
   function onVoicesChanged() {

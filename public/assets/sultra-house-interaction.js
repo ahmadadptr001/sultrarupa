@@ -8,7 +8,7 @@ const NO_RAYCAST = () => {};
 
 // Use the existing renderer and house geometry. Only the nearby house receives
 // a soft additive wash; photographs, textures and the distant skyline stay intact.
-export function createHouseInteractions(game, ui) {
+export function createHouseInteractions(game, ui, interior) {
   const raycaster = new Raycaster();
   const pointer = new Vector2();
   const prompt = document.createElement('div');
@@ -17,9 +17,18 @@ export function createHouseInteractions(game, ui) {
   prompt.setAttribute('role', 'status');
   const key = document.createElement('kbd');
   key.textContent = 'Space';
-  const label = document.createElement('span');
-  label.textContent = 'Lihat rumah · bisa juga klik rumah';
-  prompt.append(key, label);
+  const copy = document.createElement('span');
+  copy.className = 'sc-house-prompt-copy';
+  const title = document.createElement('strong');
+  title.textContent = 'Masuk rumah';
+  const hint = document.createElement('span');
+  hint.className = 'sc-house-prompt-hint';
+  hint.textContent = 'Bisa juga klik rumah';
+  copy.append(title, hint);
+  const touch = document.createElement('span');
+  touch.className = 'sc-house-prompt-touch';
+  touch.textContent = 'Ketuk rumah untuk masuk';
+  prompt.append(key, copy, touch);
   document.body.append(prompt);
 
   let entries = [];
@@ -66,7 +75,7 @@ export function createHouseInteractions(game, ui) {
 
   function available() {
     return scene?.id === 'IslandWest' && scene === game.scenes.current
-      && scene.player?.canMove && !ui.isOpen
+      && scene.player?.canMove && !ui.isOpen && !interior?.isOpen
       && !game.store.onPhone?.value && !game.store.inDialog?.value;
   }
 
@@ -121,6 +130,7 @@ export function createHouseInteractions(game, ui) {
   function openHouse(entry) {
     if (!entry || !available()) return false;
     game.input?.keyboard?.unpressAllKeys();
+    if (interior?.open(entry)) return true;
     return ui.openTarget(entry.id, { presentation: 'house-dialog' });
   }
 
