@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "assets:cache": "node scripts/build-asset-cache.mjs",
+    "assets:compress": "node scripts/compress-scene-geometry.mjs && npm run assets:cache",
+    "predev": "npm run assets:cache",
+    "prebuild": "npm run assets:cache",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -14,10 +18,13 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "draco3dgltf": "^1.5.9",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
     "tailwindcss": "^4",

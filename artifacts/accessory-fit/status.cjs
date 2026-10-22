@@ -1,0 +1,2 @@
+﻿const {chromium}=require('C:/Users/user/AppData/Local/npm-cache/_npx/420ff84f11983ee5/node_modules/playwright');
+(async()=>{const browser=await chromium.connectOverCDP('http://localhost:9333');const page=browser.contexts()[0].pages()[0];console.log(await page.evaluate(()=>{const a=window.__testApp,g=a.$webgl; return {scene:g.scenes.current?.id,route:a.$route.name,player:!!g.scenes.current?.player,entry:g.playerCharacter.status,text:document.body.innerText.slice(-2500),scenesKeys:Object.keys(g.scenes),transition:JSON.stringify(g.store.transition)};}));process.exit(0);})();

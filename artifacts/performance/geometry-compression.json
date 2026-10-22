@@ -1,0 +1,93 @@
+{
+  "quantizationBits": {
+    "position": 20,
+    "normal": 16,
+    "uv": 20
+  },
+  "reports": [
+    {
+      "file": "models/opening-boat.glb",
+      "before": 4171664,
+      "after": 1591908,
+      "gzipBefore": 3109072,
+      "gzipAfter": 1576165,
+      "decodeMs": 192.96889999999985,
+      "texturesUnchanged": true,
+      "triangles": 80000,
+      "maxPositionError": 0.0000015614433301366,
+      "maxBoundsError": 6.556510925292969e-7
+    },
+    {
+      "file": "models/culture/laika.glb",
+      "before": 3254188,
+      "after": 1291912,
+      "gzipBefore": 2621662,
+      "gzipAfter": 1286219,
+      "decodeMs": 70.91990000000078,
+      "texturesUnchanged": true,
+      "triangles": 99996,
+      "maxPositionError": 0.0000015727785635670651,
+      "maxBoundsError": 5.960464477539062e-7
+    },
+    {
+      "file": "models/culture/mekongga.glb",
+      "before": 4025912,
+      "after": 1410468,
+      "gzipBefore": 2743866,
+      "gzipAfter": 1405767,
+      "decodeMs": 72.47010000000046,
+      "texturesUnchanged": true,
+      "triangles": 99906,
+      "maxPositionError": 0.000001603831644093126,
+      "maxBoundsError": 7.152557373046875e-7
+    },
+    {
+      "file": "models/culture/banua-tada.glb",
+      "before": 4331016,
+      "after": 1495144,
+      "gzipBefore": 2866217,
+      "gzipAfter": 1486118,
+      "decodeMs": 71.56869999999981,
+      "texturesUnchanged": true,
+      "triangles": 99888,
+      "maxPositionError": 0.0000016369588547777484,
+      "maxBoundsError": 6.556510925292969e-7
+    },
+    {
+      "file": "models/culture/bharugano-wuna.glb",
+      "before": 3970884,
+      "after": 1250684,
+      "gzipBefore": 2589851,
+      "gzipAfter": 1242838,
+      "decodeMs": 76.68790000000081,
+      "texturesUnchanged": true,
+      "triangles": 99972,
+      "maxPositionError": 0.0000015577238017764067,
+      "maxBoundsError": 4.76837158203125e-7
+    },
+    {
+      "file": "models/culture/tugu-mtq.glb",
+      "before": 2322056,
+      "after": 842276,
+      "gzipBefore": 1822117,
+      "gzipAfter": 833593,
+      "decodeMs": 55.63550000000032,
+      "texturesUnchanged": true,
+      "triangles": 69588,
+      "maxPositionError": 0.0000016134077025623044,
+      "maxBoundsError": 7.152557373046875e-7
+    },
+    {
+      "file": "models/culture/patung-oputa.glb",
+      "before": 2618836,
+      "after": 1037232,
+      "gzipBefore": 2223138,
+      "gzipAfter": 1029274,
+      "decodeMs": 63.759399999999005,
+      "texturesUnchanged": true,
+      "triangles": 89996,
+      "maxPositionError": 0.0000015615855283774644,
+      "maxBoundsError": 7.748603820800781e-7
+    }
+  ]
+}

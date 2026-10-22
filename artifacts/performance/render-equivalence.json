@@ -1,0 +1,19 @@
+{
+  "dance": {
+    "maxPoseDifference": 0,
+    "scalarPoseSamples": 201600,
+    "before": {
+      "frames": 180,
+      "mathAllocations": 67200,
+      "matrixUpdates": 284880,
+      "elapsedMs": 53.900000002235174
+    },
+    "after": {
+      "frames": 180,
+      "mathAllocations": 0,
+      "matrixUpdates": 31920,
+      "elapsedMs": 21.799999997019768
+    }
+  },
+  "accessoryCases": 1449
+}

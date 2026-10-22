@@ -9,6 +9,7 @@ import {
 } from './vendor.75f6e6ae65453426.js';
 import { convertMaterials } from './opening-boat.js';
 import { HOUSE_EXHIBITS } from './sultra-culture-data.js';
+import { assetUrl } from './asset-urls.js';
 
 const MODEL_URL = '/models/interiors/ruangan-kotak-besar.glb?v=traditional-room-20261021';
 const EYE_HEIGHT = 1.65;
@@ -275,7 +276,7 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
   function loadModel() {
     if (state.model) return Promise.resolve(state.model);
     if (state.modelPromise) return state.modelPromise;
-    state.modelPromise = assets.load(MODEL_URL, { noCache: true, loader: 'gltf' }).then((gltf) => {
+    state.modelPromise = assets.load(assetUrl(MODEL_URL), { noCache: true, loader: 'gltf' }).then((gltf) => {
       const model = gltf.scene;
       convertMaterials(model);
       model.traverse((object) => {
@@ -540,6 +541,14 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     loadingTitle.textContent = `Memasuki ${state.target.title || 'rumah adat'}`;
     state.previousFocus = document.activeElement;
     state.open = true;
+    // The full-screen room has its own renderer. Suspend the hidden island's
+    // simulation, skinning and draw calls until this room closes.
+    state.outdoorWasStarted = Boolean(game.time?.isStarted);
+    game.time?.stop();
+    state.stopOutdoorWatch = game.store?.renderStopped?.watch((stopped) => {
+      if (!stopped) state.outdoorWasStarted = true;
+      game.time?.stop();
+    });
     root.classList.remove('is-ready');
     loading.hidden = false;
     error.hidden = true;
@@ -554,6 +563,7 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     window.addEventListener('keydown', onKeyDown, true);
     window.addEventListener('keyup', onKeyUp, true);
     window.addEventListener('resize', resize);
+    document.addEventListener('visibilitychange', onVisibilityChange);
     startLoop();
   }
 
@@ -566,6 +576,9 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     doorButton.hidden = true;
     document.documentElement.classList.remove('sc-interior-open');
     stopLoop();
+    if (state.stopOutdoorWatch) game.store.renderStopped.unwatch(state.stopOutdoorWatch);
+    state.stopOutdoorWatch = null;
+    if (state.outdoorWasStarted && !game.store?.renderStopped?.value) game.time?.start();
     state.open = false;
     state.keys.clear();
     state.look.id = null;
@@ -576,7 +589,13 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     window.removeEventListener('keydown', onKeyDown, true);
     window.removeEventListener('keyup', onKeyUp, true);
     window.removeEventListener('resize', resize);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
     isolate(false);
+  }
+
+  function onVisibilityChange() {
+    if (document.hidden) stopLoop();
+    else if (state.open) startLoop();
   }
 
   function close({ reason = 'close', restoreFocus = true } = {}) {

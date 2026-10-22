@@ -49,37 +49,56 @@ function armChain(actor, side) {
 
 // Rotate a joint in world space, then transform the result back to its parent.
 // Bone translations, lengths, weights and the shared animation clips are untouched.
-function aimBone(bone, child, destination) {
-  const origin = bone.getWorldPosition(new Vector3());
-  const current = child.getWorldPosition(new Vector3()).sub(origin);
-  const desired = destination.clone().sub(origin);
+function createDanceScratch() {
+  return {
+    origin: new Vector3(), elbow: new Vector3(), wrist: new Vector3(),
+    direction: new Vector3(), hand: new Vector3(), bendAxis: new Vector3(), targetElbow: new Vector3(),
+    aimOrigin: new Vector3(), current: new Vector3(), desired: new Vector3(),
+    delta: new Quaternion(), rotation: new Quaternion(), parentRotation: new Quaternion(),
+    matrixPosition: new Vector3(), matrixScale: new Vector3(),
+    inward: new Vector3(), leftShoulder: new Vector3(), target: new Vector3(), shoulder: new Vector3(),
+  };
+}
+
+function aimBone(bone, child, destination, scratch) {
+  // The actor was updated once before solving, and each joint update propagates
+  // to its children. Reading these matrices avoids updating every ancestor for
+  // every getWorldPosition/getWorldQuaternion call in the two-arm solver.
+  const origin = scratch.aimOrigin.setFromMatrixPosition(bone.matrixWorld);
+  const current = scratch.current.setFromMatrixPosition(child.matrixWorld).sub(origin);
+  const desired = scratch.desired.copy(destination).sub(origin);
   if (current.lengthSq() < 1e-8 || desired.lengthSq() < 1e-8) return;
-  const delta = new Quaternion().setFromUnitVectors(current.normalize(), desired.normalize());
-  const rotation = bone.getWorldQuaternion(new Quaternion()).premultiply(delta);
-  if (bone.parent) rotation.premultiply(bone.parent.getWorldQuaternion(new Quaternion()).invert());
+  const delta = scratch.delta.setFromUnitVectors(current.normalize(), desired.normalize());
+  const rotation = scratch.rotation;
+  bone.matrixWorld.decompose(scratch.matrixPosition, rotation, scratch.matrixScale);
+  rotation.premultiply(delta);
+  if (bone.parent) {
+    bone.parent.matrixWorld.decompose(scratch.matrixPosition, scratch.parentRotation, scratch.matrixScale);
+    rotation.premultiply(scratch.parentRotation.invert());
+  }
   bone.quaternion.copy(rotation);
   bone.updateMatrixWorld(true);
 }
 
-function reachHand(chain, destination, inward) {
+function reachHand(chain, destination, inward, scratch) {
   const { shoulder, elbow, wrist } = chain;
-  const origin = shoulder.getWorldPosition(new Vector3());
-  const elbowNow = elbow.getWorldPosition(new Vector3());
-  const wristNow = wrist.getWorldPosition(new Vector3());
+  const origin = scratch.origin.setFromMatrixPosition(shoulder.matrixWorld);
+  const elbowNow = scratch.elbow.setFromMatrixPosition(elbow.matrixWorld);
+  const wristNow = scratch.wrist.setFromMatrixPosition(wrist.matrixWorld);
   const upper = origin.distanceTo(elbowNow), lower = elbowNow.distanceTo(wristNow);
   if (upper < .01 || lower < .01) return;
-  const direction = destination.clone().sub(origin);
+  const direction = scratch.direction.copy(destination).sub(origin);
   const distance = clamp(direction.length(), Math.abs(upper - lower) + .005, (upper + lower) * .98);
   direction.normalize();
-  const hand = origin.clone().addScaledVector(direction, distance);
+  const hand = scratch.hand.copy(origin).addScaledVector(direction, distance);
   const along = (upper * upper - lower * lower + distance * distance) / (2 * distance);
   const bend = Math.sqrt(Math.max(0, upper * upper - along * along));
   // Relaxed elbows sit below the hand line and slightly toward the circle.
-  const bendAxis = inward.clone().multiplyScalar(.3).addScaledVector(UP, -1);
+  const bendAxis = scratch.bendAxis.copy(inward).multiplyScalar(.3).addScaledVector(UP, -1);
   bendAxis.addScaledVector(direction, -bendAxis.dot(direction)).normalize();
-  const targetElbow = origin.clone().addScaledVector(direction, along).addScaledVector(bendAxis, bend);
-  aimBone(shoulder, elbow, targetElbow);
-  aimBone(elbow, wrist, hand);
+  const targetElbow = scratch.targetElbow.copy(origin).addScaledVector(direction, along).addScaledVector(bendAxis, bend);
+  aimBone(shoulder, elbow, targetElbow, scratch);
+  aimBone(elbow, wrist, hand, scratch);
 }
 
 function updateDancers(game, state, scene) {
@@ -87,13 +106,16 @@ function updateDancers(game, state, scene) {
   const clock = state.element && !state.element.paused
     ? state.element.currentTime : (game.time?.elapsed ?? 0) / 1000;
   const sway = Math.sin(clock * Math.PI * 2 / 1.06) * .035;
-  const actors = [];
+  const actors = state.actorSlots;
+  const scratch = state.scratch;
+  let count = 0;
   for (let index = 0; index < stage.count; index++) {
-    const actor = scene.actors?.[`${PREFIX}${index}`];
+    const actor = scene.actors?.[state.actorIds[index]];
+    actors[index] = null;
     if (!actor?.isBodyReady || !actor.skeleton || !actor.animationMixer) continue;
     let dancer = state.dancers.get(actor);
     if (!dancer) {
-      dancer = { left: armChain(actor, 'L'), right: armChain(actor, 'R') };
+      dancer = { actor, left: armChain(actor, 'L'), right: armChain(actor, 'R') };
       state.dancers.set(actor, dancer);
       actor.canLookPlayer = false;
     }
@@ -112,27 +134,31 @@ function updateDancers(game, state, scene) {
     // A complete yaw quaternion keeps every dancer facing the ring centre.
     actor.base.quaternion.setFromAxisAngle(UP, angle + Math.PI);
     actor.baseQuaternion.copy(actor.base.quaternion);
-    actor.base.updateMatrixWorld(true);
-    actors.push({ actor, dancer, index });
+    if (actor.charMesh?.visible) actor.base.updateMatrixWorld(true);
+    actors[index] = dancer;
+    count++;
   }
-  const byIndex = new Map(actors.map((entry) => [entry.index, entry]));
-  for (const { actor, dancer, index } of actors) {
+  for (let index = 0; index < stage.count; index++) {
+    const dancer = actors[index];
+    if (!dancer) continue;
+    const { actor } = dancer;
     if (!actor.charMesh?.visible || !dancer.left || !dancer.right) continue;
-    const previous = byIndex.get((index + stage.count - 1) % stage.count)?.actor;
-    const next = byIndex.get((index + 1) % stage.count)?.actor;
+    const previous = actors[(index + stage.count - 1) % stage.count]?.actor;
+    const next = actors[(index + 1) % stage.count]?.actor;
     if (!previous || !next) continue;
-    const inward = new Vector3(stage.x - actor.base.position.x, 0, stage.z - actor.base.position.z).normalize();
-    const leftShoulder = dancer.left.shoulder.getWorldPosition(new Vector3());
+    const inward = scratch.inward.set(stage.x - actor.base.position.x, 0, stage.z - actor.base.position.z).normalize();
+    const leftShoulder = scratch.leftShoulder.setFromMatrixPosition(dancer.left.shoulder.matrixWorld);
     const leftNeighbor = leftShoulder.distanceToSquared(previous.base.position)
       < leftShoulder.distanceToSquared(next.base.position) ? previous : next;
-    for (const [chain, neighbor] of [[dancer.left, leftNeighbor], [dancer.right, leftNeighbor === previous ? next : previous]]) {
-      const target = actor.base.position.clone().add(neighbor.base.position).multiplyScalar(.5);
-      target.y = chain.shoulder.getWorldPosition(new Vector3()).y - .16 + Math.sin(clock * Math.PI * 2 / 1.06) * .035;
-      reachHand(chain, target, inward);
+    for (let side = 0; side < 2; side++) {
+      const chain = side === 0 ? dancer.left : dancer.right;
+      const neighbor = side === 0 ? leftNeighbor : leftNeighbor === previous ? next : previous;
+      const target = scratch.target.copy(actor.base.position).add(neighbor.base.position).multiplyScalar(.5);
+      target.y = scratch.shoulder.setFromMatrixPosition(chain.shoulder.matrixWorld).y - .16 + sway;
+      reachHand(chain, target, inward, scratch);
     }
-    actor.base.updateMatrixWorld(true);
   }
-  state.dancerCount = actors.length;
+  state.dancerCount = count;
 }
 
 export function installSultraLulo(game, layout) {
@@ -142,6 +168,9 @@ export function installSultraLulo(game, layout) {
     element: null, volume: 0, targetVolume: 0, distance: Infinity,
     loading: false, blocked: false, disposed: false, error: null,
   };
+  state.actorSlots = new Array(state.stage.count).fill(null);
+  state.actorIds = Array.from({ length: state.stage.count }, (_, index) => `${PREFIX}${index}`);
+  state.scratch = createDanceScratch();
   const speaker = layout.stage?.speakers || { x: -30, z: -16 };
   let lastUpdate = performance.now(), lastAttempt = -Infinity, playPending = false;
   let mediaSource = null, bgmSuspended = false;
@@ -224,6 +253,7 @@ export function installSultraLulo(game, layout) {
     if (scene !== state.scene) {
       state.scene = scene;
       state.dancers.clear();
+      state.actorSlots.fill(null);
       state.dancerCount = 0;
     }
     if (scene?.id === 'IslandWest') updateDancers(game, state, scene);
@@ -248,6 +278,7 @@ export function installSultraLulo(game, layout) {
     mediaSource?.disconnect();
     if (bgmSuspended) game.audio?.bgm?.suspend(false);
     state.dancers.clear();
+    state.actorSlots.fill(null);
     if (game.sultraLulo === state) delete game.sultraLulo;
   };
   return state;

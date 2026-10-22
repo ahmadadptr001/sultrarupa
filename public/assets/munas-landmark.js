@@ -4,6 +4,7 @@ import { installPlayerCharacter } from './player-character.js';
 import { installSultraMobileControls } from './sultra-mobile-controls.js';
 import { installSultraIntroWordmark } from './sultra-intro-wordmark.js';
 import { installSultraIsland } from './sultra-island.js';
+import { assetUrl } from './asset-urls.js';
 import {
   b6 as BufferAttribute, b7 as BufferGeometry, b5 as Mesh,
   a$ as MeshBasicMaterial, cd as Group, ct as Texture,
@@ -77,7 +78,7 @@ function positionBehindIsland(logo, scene) {
 // Reader for our static, uncompressed, baked-transform GLB. Materials use the
 // original logo colours, independent of the game's daylight or fog settings.
 async function loadLogo() {
-  const response = await fetch(MODEL_URL);
+  const response = await fetch(assetUrl(MODEL_URL));
   if (!response.ok) throw new Error(`Logo request failed: ${response.status}`);
   const buffer = await response.arrayBuffer();
   const view = new DataView(buffer);
@@ -158,7 +159,7 @@ export function installMunasLandmark(game) {
     status: 'loading', object: null, haze: null, scene: null,
     sky: null, skyScale: null,
   };
-  const promise = loadLogo().then((logo) => {
+  const load = () => loadLogo().then((logo) => {
     state.object = logo;
     state.haze = createCloudHaze();
     state.status = 'ready';
@@ -167,7 +168,11 @@ export function installMunasLandmark(game) {
     console.error('[MUNAS landmark]', error);
   });
   // Include the asset in the existing loading screen rather than popping it in.
-  game.hooks.beforePreload.watch(() => game.app.$preloader.task(promise));
+  game.hooks.beforePreload.watch(() => {
+    // Saved progress is attached by init(), after plugin installation.
+    if (game.savestate.getVariable('isIntroCompleted')) { state.status = 'skipped'; return; }
+    game.app.$preloader.task(load());
+  });
   game.hooks.beforeRender.watch(() => {
     const scene = game.scenes?.current, logo = state.object;
     if (!scene?.base || !logo) return;

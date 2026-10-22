@@ -2,11 +2,12 @@ import {
   b6 as BufferAttribute,
   b7 as BufferGeometry,
 } from './vendor.75f6e6ae65453426.js';
+import { assetUrl } from './asset-urls.js';
 
 const WORDMARK_URL = '/models/sultra-rupa-wordmark.json';
 
 async function loadWordmarkGeometry() {
-  const response = await fetch(WORDMARK_URL);
+  const response = await fetch(assetUrl(WORDMARK_URL));
   if (!response.ok) throw new Error(`Wordmark request failed: ${response.status}`);
   const { positions, indices } = await response.json();
   if (!Array.isArray(positions) || positions.length < 9 || positions.length % 3
@@ -36,7 +37,7 @@ export function installSultraIntroWordmark(game) {
   const state = game.sultraIntroWordmark = {
     status: 'loading', geometry: null, logo: null, fit: null, error: null,
   };
-  const promise = loadWordmarkGeometry().then((geometry) => {
+  const load = () => loadWordmarkGeometry().then((geometry) => {
     state.geometry = geometry;
     state.status = 'ready';
   }).catch((error) => {
@@ -45,7 +46,11 @@ export function installSultraIntroWordmark(game) {
     // Keep the original mesh available if the replacement asset cannot load.
     console.error('[Sultra Rupa intro wordmark]', error);
   });
-  game.hooks.beforePreload.watch(() => game.app.$preloader.task(promise));
+  game.hooks.beforePreload.watch(() => {
+    // Saved progress is attached by init(), after plugin installation.
+    if (game.savestate.getVariable('isIntroCompleted')) { state.status = 'skipped'; return; }
+    game.app.$preloader.task(load());
+  });
   game.hooks.beforeRender.watch(() => {
     const scene = game.scenes?.current;
     const logo = scene?.id === 'IslandIntro' ? scene.logo : null;

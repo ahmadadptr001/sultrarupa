@@ -1,6 +1,7 @@
 ﻿import { cD as assets, cd as Group, b6 as BufferAttribute } from './vendor.75f6e6ae65453426.js';
 import { convertMaterials } from './opening-boat.js';
 import { createAnoaAnimator } from './anoa-animation.js';
+import { assetUrl } from './asset-urls.js';
 
 const MODEL_URL = '/models/player-anoa.glb';
 const ACCESSORY_MODEL_URL = '/models/player-anoa-accessories.glb?v=anoa-fit-v3';
@@ -36,6 +37,13 @@ const CUSTOM_WEAR = [
     part: 'bottom', item, node: `Wear_${item}_${side}`, bone: `Ankle_${side}`,
   }))),
 ];
+const WEAR_PARTS = ['head', 'body', 'bottom'];
+const WEAR_COLLECTIONS = { head: 'heads', body: 'bodies', bottom: 'bottoms' };
+const EMPTY_WEAR = [];
+const EXPECTED_WEAR = { head: new Map(), body: new Map(), bottom: new Map() };
+for (const { part, item } of CUSTOM_WEAR) {
+  EXPECTED_WEAR[part].set(item, (EXPECTED_WEAR[part].get(item) || 0) + 1);
+}
 const SHORT_NAME = 'Chara_Low_RigGameSkeleton';
 // Joint centres measured on the anoa replacement, in its authored Y-up space.
 // Legs are hidden above the skirt hem, so hip and knee sit at their anatomical
@@ -172,7 +180,7 @@ function attach(actor, template, state) {
   const custom = attachCustomAccessories(root, bones, state);
   const accessoryMaterial = actor.charMesh.material;
   const accessorySkeleton = actor.charMesh.skeleton || actor.skeleton;
-  const accessories = ['head', 'body', 'bottom'].map((part) => {
+  const accessories = WEAR_PARTS.map((part) => {
     const accessory = new template.source.constructor(
       new template.source.geometry.constructor(), accessoryMaterial);
     accessory.name = `Custom player ${part} accessory`;
@@ -186,10 +194,22 @@ function attach(actor, template, state) {
     accessory.visible = false;
     actor.charMesh.add(accessory);
     accessory.bind(accessorySkeleton, actor.charMesh.bindMatrix);
-    return { part, mesh: accessory };
+    return { part, mesh: accessory, emptyGeometry: accessory.geometry };
   });
+  const fitted = { head: new Map(), body: new Map(), bottom: new Map() };
+  for (const wear of custom) {
+    const items = fitted[wear.part];
+    if (!items.has(wear.item)) items.set(wear.item, []);
+    items.get(wear.item).push(wear);
+  }
+  for (const part of WEAR_PARTS) {
+    for (const [item, matches] of fitted[part]) {
+      if (matches.length !== EXPECTED_WEAR[part].get(item)) fitted[part].delete(item);
+    }
+  }
   const entry = { actor, root, mesh, bones, originalMeshes, hiddenMaterial, reference, accessories,
-    custom, sources: reference.map((bone) => byName.get(bone.name)), delta: root.position.clone(),
+    custom, fitted, selection: {}, selectedGeometry: {},
+    sources: reference.map((bone) => byName.get(bone.name)), delta: root.position.clone(),
     rootIndex: reference.findIndex((bone) => !bone.parent?.isBone),
   };
   entry.animator = createAnoaAnimator(entry, template);
@@ -228,9 +248,7 @@ function restoreFootwearOffset(entry, game) {
   entry.shoeOffsetSuppressed = false;
 }
 function fittedWear(entry, part, item) {
-  const expected = CUSTOM_WEAR.filter((wear) => wear.part === part && wear.item === item);
-  const matches = entry.custom.filter((wear) => wear.part === part && wear.item === item);
-  return expected.length && matches.length === expected.length ? matches : [];
+  return entry.fitted[part].get(item) || EMPTY_WEAR;
 }
 function syncFootwearOffset(entry, game) {
   const bottom = game.savestate?.game?.player?.bottom;
@@ -250,7 +268,10 @@ function detach(entry, game) {
   if (!entry) return;
   restoreFootwearOffset(entry, game);
   entry.root.removeFromParent(); entry.mesh.skeleton.dispose();
-  for (const { mesh } of entry.accessories) mesh.removeFromParent();
+  for (const { mesh, emptyGeometry } of entry.accessories) {
+    mesh.removeFromParent();
+    emptyGeometry.dispose();
+  }
   for (const { object } of entry.custom) object.removeFromParent();
   for (const [mesh, material] of entry.originalMeshes) mesh.material = material;
   entry.hiddenMaterial.dispose();
@@ -259,32 +280,33 @@ function syncAccessories(entry, game) {
   const character = game.character;
   const player = game.savestate?.game?.player;
   if (!character || !player) return;
-  const parts = {
-    head: character.heads?.[player.head],
-    body: character.bodies?.[player.body],
-    bottom: character.bottoms?.[player.bottom],
-  };
-  const customParts = new Set(), visible = new Set();
-  for (const part of ['head', 'body', 'bottom']) {
-    const matches = fittedWear(entry, part, player[part]);
-    if (matches.length) {
-      customParts.add(part);
-      for (const wear of matches) visible.add(wear.object);
+  let changed = !entry.accessoriesSynced;
+  for (const part of WEAR_PARTS) {
+    const geometry = character[WEAR_COLLECTIONS[part]]?.[player[part]];
+    if (entry.selection[part] !== player[part] || entry.selectedGeometry[part] !== geometry) {
+      entry.selection[part] = player[part];
+      entry.selectedGeometry[part] = geometry;
+      changed = true;
     }
   }
-  for (const { part, mesh } of entry.accessories) {
-    const geometry = parts[part];
-    if (geometry && !customParts.has(part)) {
-      if (mesh.geometry !== geometry) mesh.geometry = geometry;
+  if (changed) {
+    for (const { object } of entry.custom) object.visible = false;
+    for (const { part, mesh } of entry.accessories) {
+      const matches = fittedWear(entry, part, player[part]);
+      for (const { object } of matches) object.visible = true;
+      const geometry = entry.selectedGeometry[part];
+      mesh.visible = Boolean(geometry && !matches.length);
+      if (mesh.visible && mesh.geometry !== geometry) mesh.geometry = geometry;
+    }
+    entry.accessoriesSynced = true;
+  }
+  for (const { mesh } of entry.accessories) {
+    if (mesh.visible) {
       mesh.colorId = entry.actor.charMesh.colorId;
       mesh.faceColor = entry.actor.charMesh.faceColor;
       mesh.faceData = entry.actor.charMesh.faceData;
-      mesh.visible = true;
-    } else {
-      mesh.visible = false;
     }
   }
-  for (const { object } of entry.custom) object.visible = visible.has(object);
   syncFootwearOffset(entry, game);
 }
 function animate(entry, game) {
@@ -292,7 +314,8 @@ function animate(entry, game) {
   entry.root.scale.setScalar(actor.charMesh.scale.x * 100 * HEIGHT_RATIO);
   entry.root.position.copy(actor.charMesh.position);
   entry.root.visible = actor.charMesh.visible;
-  bones.forEach((bone, i) => {
+  for (let i = 0; i < bones.length; i++) {
+    const bone = bones[i];
     bone.quaternion.copy(sources[i].quaternion);
     if (i === rootIndex) {
       bone.quaternion.premultiply(actor.charMesh.quaternion);
@@ -300,7 +323,7 @@ function animate(entry, game) {
         .applyQuaternion(actor.charMesh.quaternion).multiplyScalar(.01 / HEIGHT_RATIO);
       bone.position.fromArray(JOINTS.Root_M).add(delta);
     }
-  });
+  }
   entry.animator?.update();
   syncAccessories(entry, game);
   // Native mixer, locomotion, and collisions keep running. Only hide old visuals.
@@ -311,7 +334,7 @@ function animate(entry, game) {
 export function installPlayerCharacter(game) {
   if (game.playerCharacter) return;
   const state = game.playerCharacter = { status: 'loading', mode: 'native-retarget', entry: null };
-  const loadCharacter = () => assets.load(MODEL_URL, { noCache: true }).then((gltf) => {
+  const loadCharacter = () => assets.load(assetUrl(MODEL_URL), { noCache: true }).then((gltf) => {
     convertMaterials(gltf.scene);
     gltf.scene.traverse((o) => { if (!state.source && o.isMesh) state.source = o; });
     if (!state.source) throw new Error('Character model contains no mesh');
@@ -319,7 +342,7 @@ export function installPlayerCharacter(game) {
   const loadAccessories = () => Promise.all(
     // The bundled loader infers formats with endsWith('.glb'); a version query
     // therefore needs an explicit loader to keep returning parsed glTF scenes.
-    [ACCESSORY_MODEL_URL, NATIVE_ACCESSORY_MODEL_URL].map((url) => assets.load(url, { noCache: true, loader: 'gltf' })
+    [ACCESSORY_MODEL_URL, NATIVE_ACCESSORY_MODEL_URL].map((url) => assets.load(assetUrl(url), { noCache: true, loader: 'gltf' })
       .catch((error) => { console.error('[Player accessories]', error); return null; })),
   ).then((models) => {
     const group = new Group();

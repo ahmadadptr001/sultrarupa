@@ -182,7 +182,17 @@ export function installSultraPhoneCulture(game, {
     document.querySelectorAll('.phone-tab.fintechs').forEach(attach);
   }
 
-  const observer = new MutationObserver(scan);
+  const observer = new MutationObserver((records) => {
+    for (const record of records) {
+      for (const added of record.addedNodes) {
+        if (added.nodeType !== 1) continue;
+        if (added.matches('.phone-tab.fintechs') || added.querySelector('.phone-tab.fintechs')) {
+          scan();
+          return;
+        }
+      }
+    }
+  });
   observer.observe(document.body, { childList: true, subtree: true });
   scan();
   const state = game.sultraPhoneCulture = {

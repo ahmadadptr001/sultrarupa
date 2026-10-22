@@ -9,6 +9,7 @@ import { createHouseInterior } from './sultra-house-interior.js';
 import { createCultureVoice } from './sultra-culture-voice.js';
 import { registerLuloDancers, installSultraLulo } from './sultra-lulo.js';
 import { convertMaterials } from './opening-boat.js';
+import { assetUrl } from './asset-urls.js';
 import {
   cD as assets, cd as Group, cx as Box3, aS as Vector3, aU as Matrix4, bm as Quaternion,
   b7 as BufferGeometry, b5 as Mesh, a$ as MeshBasicMaterial,
@@ -207,7 +208,7 @@ async function loadEnvironment(game, state) {
     const url = manifest.assets?.[id]?.url;
     if (!url) return;
     try {
-      const gltf = await assets.load(url, { noCache: true });
+      const gltf = await assets.load(assetUrl(url), { noCache: true });
       const geometry = visualGeometry(gltf.scene);
       if (geometry) geometries.set(id, geometry);
     } catch (error) {
@@ -1005,7 +1006,7 @@ function configureScenes(game, state) {
   const introTrees = forestProps(manifest, true);
   const spawn = [...layout.spawn, 1, 1, 1, 0, 0, 0, 1];
   Object.assign(manifest.scenes[MAIN], {
-    url: '/models/culture/sulawesi-island.glb',
+    url: assetUrl('/models/culture/sulawesi-island.glb'),
     bounds: copy(layout.bounds), useBaseAsCollider: true,
     props: mainTrees, assets: [...new Set(mainTrees.map((entry) => entry.asset))],
     actors: { ...registerGuides(game), ...registerMonumentGuides(game), ...registerJoggers(game), ...registerLuloDancers(game, layout) },
@@ -1022,7 +1023,7 @@ function configureScenes(game, state) {
       && (actor.params?.subtype === 'Intro' || actor.className === 'NPCIntro'
         || game.app.$characters.npcs[actor.params?.subtype]?.script === 'Intro')));
   Object.assign(manifest.scenes[INTRO], {
-    url: '/models/culture/sulawesi-intro.glb',
+    url: assetUrl('/models/culture/sulawesi-intro.glb'),
     bounds: copy(layout.introBounds), useBaseAsCollider: true,
     props: introTrees, assets: [...new Set(introTrees.map((entry) => entry.asset))],
     actors: introActors, curves: {}, areas: {},
@@ -1030,8 +1031,8 @@ function configureScenes(game, state) {
   delete manifest.ao[MAIN];
   delete manifest.ao[INTRO];
   for (const id of SCENES) {
-    manifest.textures[`Scene_${id}_TerrainSplatting`] = { default: '/models/culture/terrain-splat.png' };
-    manifest.textures[`Scene_${id}_GrassSplatting`] = { default: '/models/culture/grass-splat.png' };
+    manifest.textures[`Scene_${id}_TerrainSplatting`] = { default: assetUrl('/models/culture/terrain-splat.png') };
+    manifest.textures[`Scene_${id}_GrassSplatting`] = { default: assetUrl('/models/culture/grass-splat.png') };
   }
   // Invalidate persistent asset caches when regenerated terrain/masks change.
   manifest.timestamp = Number(state.backup.timestamp) + 2026101302;
@@ -1072,7 +1073,7 @@ function configureScenes(game, state) {
 async function loadHouses(state) {
   const exhibits = [...HOUSE_EXHIBITS, ...(layout.monuments || [])];
   await Promise.all(exhibits.map(async (entry) => {
-    const gltf = await assets.load(entry.model, { noCache: true });
+    const gltf = await assets.load(assetUrl(entry.model), { noCache: true });
     convertMaterials(gltf.scene);
     if (entry.unlit) gltf.scene.traverse((object) => {
       if (!object.isMesh) return;

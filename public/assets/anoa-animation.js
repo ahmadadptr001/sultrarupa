@@ -38,6 +38,9 @@ export function createAnoaAnimator(entry, template) {
   const sourceWorld = bones.map(() => new Quaternion());
   const targetWorld = bones.map(() => new Quaternion());
   const done = new Uint8Array(bones.length), inverseParent = new Quaternion();
+  const actions = Object.entries(actor.allAnims || {}).map(([name, action]) => ({
+    action, status: { name, weight: 0, time: 0 },
+  }));
   function solve(index) {
     if (done[index]) return;
     const parent = parents[index];
@@ -60,8 +63,12 @@ export function createAnoaAnimator(entry, template) {
       done.fill(0);
       for (let i = 0; i < bones.length; i++) solve(i);
       this.active.length = 0;
-      for (const [name, action] of Object.entries(actor.allAnims || {})) {
-        if (action.enabled !== false && action.weight > .0001) this.active.push({ name, weight: action.weight, time: action.time });
+      for (const { action, status } of actions) {
+        if (action.enabled !== false && action.weight > .0001) {
+          status.weight = action.weight;
+          status.time = action.time;
+          this.active.push(status);
+        }
       }
     },
   };

@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-10-22T02:12:08.779Z",
+  "note": "Geometry, UVs, accessors, indices, materials and animations unchanged. Preview: original left, optimized right.",
+  "originalBytes": 38922296,
+  "optimizedBytes": 19753664,
+  "savedBytes": 19168632,
+  "files": [
+    {
+      "file": "models/opening-boat.glb",
+      "originalBytes": 8510012,
+      "optimizedBytes": 4171664,
+      "savedBytes": 4338348,
+      "originalSha256": "ced877fe41e2d752b528ae3f7f17d519f5bf09cef27ebd4fd57b4f3e0f7f1947",
+      "optimizedSha256": "3fb6832552acb192cfdb943d31f82c13345bcfbde7f2f87c76ecdef816e839c2",
+      "texture": {
+        "originalBytes": 4886868,
+        "optimizedBytes": 548517,
+        "width": 2048,
+        "height": 2048,
+        "quality": 88,
+        "chromaSubsampling": "4:4:4"
+      },
+      "unchangedGeometryViews": 4,
+      "accessorsChecked": 4
+    },
+    {
+      "file": "models/culture/mekongga.glb",
+      "originalBytes": 8052724,
+      "optimizedBytes": 4025912,
+      "savedBytes": 4026812,
+      "originalSha256": "465c4401697062b23559eaf40b83677bcedf2c7e9026b192d3af3a3ff93bf52e",
+      "optimizedSha256": "300c8c69394cc3e55f35a920747753d22acaed7f0b11152d568b903ab292e366",
+      "texture": {
+        "originalBytes": 4673164,
+        "optimizedBytes": 646350,
+        "width": 2048,
+        "height": 2048,
+        "quality": 88,
+        "chromaSubsampling": "4:4:4"
+      },
+      "unchangedGeometryViews": 4,
+      "accessorsChecked": 4
+    },
+    {
+      "file": "models/culture/laika.glb",
+      "originalBytes": 7793200,
+      "optimizedBytes": 3254188,
+      "savedBytes": 4539012,
+      "originalSha256": "072f8591e6cf9d8a622adb8acc1d728478ca30f63bc4b2f79ad064b8cd563d37",
+      "optimizedSha256": "88781b32f4eefade924d55420687c55220d6f174871fc83ed9653803e017c4ea",
+      "texture": {
+        "originalBytes": 5095232,
+        "optimizedBytes": 556219,
+        "width": 2048,
+        "height": 2048,
+        "quality": 88,
+        "chromaSubsampling": "4:4:4"
+      },
+      "unchangedGeometryViews": 4,
+      "accessorsChecked": 4
+    },
+    {
+      "file": "models/culture/banua-tada.glb",
+      "originalBytes": 7778104,
+      "optimizedBytes": 4331016,
+      "savedBytes": 3447088,
+      "originalSha256": "e9fd9013e1865f65fba69143e5bc2bdb87ab7a9befba3d0dab5adab4e0c05b96",
+      "optimizedSha256": "a18a652ae830effc8afbdb94900ec43fa23720a7b7b4fda3d3f789a25eaac213",
+      "texture": {
+        "originalBytes": 4150721,
+        "optimizedBytes": 703631,
+        "width": 2048,
+        "height": 2048,
+        "quality": 88,
+        "chromaSubsampling": "4:4:4"
+      },
+      "unchangedGeometryViews": 4,
+      "accessorsChecked": 4
+    },
+    {
+      "file": "models/culture/bharugano-wuna.glb",
+      "originalBytes": 6788256,
+      "optimizedBytes": 3970884,
+      "savedBytes": 2817372,
+      "originalSha256": "6cff93525755d78db6dea7fa65cc7519eb222968e64179cadd0419dd031f5c7c",
+      "optimizedSha256": "94493e3343c22c774133b5d46d3d82d458b96dc225507e9be14309286edcb57c",
+      "texture": {
+        "originalBytes": 3297143,
+        "optimizedBytes": 479769,
+        "width": 2048,
+        "height": 2048,
+        "quality": 88,
+        "chromaSubsampling": "4:4:4"
+      },
+      "unchangedGeometryViews": 4,
+      "accessorsChecked": 4
+    }
+  ]
+}

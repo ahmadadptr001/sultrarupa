@@ -111,6 +111,12 @@
     .page-customize .color-picker,
     .color-picker[data-v-ad64405c],
     .form-container, .form-overlay { display: none !important; }
+    .menu-infos .sultra-reset-wrap { display: flex; width: 150px; margin: -4px 0 20px; opacity: 0; transform: translate(200%); transition: transform .9s cubic-bezier(.23, 1, .32, 1), opacity .9s cubic-bezier(.23, 1, .32, 1); }
+    .menu.is-open .menu-infos .sultra-reset-wrap.is-ready { opacity: 1; transform: translate(0); }
+    .menu-infos .sultra-reset-button { display: inline-flex; align-items: center; justify-content: center; width: 150px; min-height: 44px; margin: 0; padding: 0 16px; border: 2px solid rgb(195 82 91 / 24%); border-radius: 22px; background: #fff; color: #c5525b; font: 700 11px/1.15 Gilmer, "Avenir Next", "Segoe UI", sans-serif; letter-spacing: .01em; cursor: pointer; transition: background .2s ease, border-color .2s ease, transform .2s ease; }
+    .menu-infos .sultra-reset-button:hover,
+    .menu-infos .sultra-reset-button:focus-visible { border-color: rgb(195 82 91 / 48%); background: #fff5f5; color: #a93f48; transform: translateY(-1px); }
+    .menu-infos .sultra-reset-button:active { transform: translateY(1px); }
   `;
 
   function installStyles() {
@@ -139,6 +145,55 @@
   function closeSaveForm() {
     const app = window.__sultraMobileControls?.game?.app;
     if (app?.$store?.isFormOpen) app.$store.isFormOpen = false;
+  }
+
+  async function resetGameProgress() {
+    const game = window.__sultraMobileControls?.game;
+    try {
+      localStorage.removeItem('player_position');
+      localStorage.removeItem('sultrarupa-island-layout');
+      sessionStorage.removeItem('coastal_session_id');
+      if (game?.savestate?.resetSavestate) {
+        await game.savestate.resetSavestate();
+      } else {
+        localStorage.removeItem('coastal_savestate');
+      }
+    } catch {
+      try { localStorage.removeItem('coastal_savestate'); } catch {}
+    }
+    window.location.reload();
+  }
+
+  function installMenuCleanup() {
+    for (const link of document.querySelectorAll('.menu-footer nav a')) {
+      const label = link.textContent.trim();
+      const href = link.getAttribute('href');
+      if (label === 'Catatan penggunaan' || (!label && !href)) link.closest('li')?.remove();
+    }
+    for (const item of document.querySelectorAll('.menu-footer .sultra-reset-item')) item.remove();
+  }
+
+  function installResetAction() {
+    const menuInfos = document.querySelector('.menu-infos');
+    const discover = menuInfos?.querySelector('.menu-cta.a');
+    if (!menuInfos || !discover || menuInfos.querySelector('.sultra-reset-wrap')) return;
+    const wrap = document.createElement('span');
+    wrap.className = 'sultra-reset-wrap';
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'sultra-reset-button';
+    button.textContent = 'Hapus cache & mulai ulang';
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const confirmed = window.confirm(
+        'Hapus cache dan mulai dari awal?\n\nProgres perjalanan, koleksi, dan posisi jelajah akan dihapus. Tindakan ini tidak bisa dibatalkan.',
+      );
+      if (confirmed) resetGameProgress();
+    });
+    wrap.append(button);
+    discover.insertAdjacentElement('afterend', wrap);
+    requestAnimationFrame(() => wrap.classList.add('is-ready'));
   }
 
   function bindShellActions() {
@@ -273,8 +328,8 @@
       new: { item: 'baru' },
     };
     site.menu = {
-      privacy: 'Tentang Sultra Rupa', privacylink: '#', terms: 'Catatan penggunaan', termslink: '#',
-      cookies: 'Pengaturan lokal', cookieslink: '#', credits: 'Sultra Rupa | Jelajah Budaya Sulawesi Tenggara', coastallink: '#',
+      privacy: 'Tentang Sultra Rupa', privacylink: '#', terms: '', termslink: '',
+      cookies: 'Pengaturan lokal', cookieslink: '#', credits: 'Sultra Rupa | Jelajah Budaya Sulawesi Tenggara.', coastallink: '#',
     };
     site.game = {
       timer: { timetobeat: 'Waktu terbaik', besttime: 'Waktu terbaikmu', seconds: 'detik', target: data.site.game?.timer?.target || {} },
@@ -338,6 +393,8 @@
   function localizeDocument() {
     installStyles();
     closeSaveForm();
+    installMenuCleanup();
+    installResetAction();
     replaceWordmarks();
     document.documentElement.lang = 'id';
     if (document.title !== title) document.title = title;
@@ -382,7 +439,10 @@
   bindShellActions();
   localizeDocument();
   let queued = false;
-  const observer = new MutationObserver(() => {
+  const observer = new MutationObserver((records) => {
+    // Counters and dialog typewriter text change during play. Only newly
+    // mounted UI needs the document-wide localization pass.
+    if (!records.some(record => Array.from(record.addedNodes).some(node => node.nodeType === 1))) return;
     if (queued) return;
     queued = true;
     requestAnimationFrame(() => {

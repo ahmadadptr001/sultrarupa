@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import assetVersions from "./config/asset-versions.json";
 
 const nextConfig: NextConfig = {
   async redirects() {
@@ -6,6 +7,10 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      ...Object.entries(assetVersions).map(([asset, version]) => ({
+        source: `/asset-cache/${version}${asset}`,
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      })),
       {
         // These originals are content-addressed and are never rewritten.
         source: "/fonts/:path*",
@@ -29,6 +34,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       afterFiles: [
+        ...Object.entries(assetVersions).map(([asset, version]) => ({
+          source: `/asset-cache/${version}${asset}`,
+          destination: asset,
+        })),
         ...["intro", "customize", "mini-game", "phone", "quests"].map((route) => ({
           source: `/${route}`,
           destination: "/",

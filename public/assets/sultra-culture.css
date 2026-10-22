@@ -245,7 +245,7 @@
 }
 @media (hover: none), (pointer: coarse) {
   .sc-nearby { display: none; }
-  .sc-house-prompt { bottom: max(24px, env(safe-area-inset-bottom)); padding: 11px 15px; }
+  .sc-house-prompt { bottom: max(132px, calc(env(safe-area-inset-bottom) + 120px)); padding: 11px 15px; }
   .sc-house-prompt kbd, .sc-house-prompt-copy { display: none; }
   .sc-house-prompt-touch { display: block; }
 }

@@ -5,6 +5,7 @@ import {
   b0 as DoubleSide,
   bQ as SRGBColorSpace,
 } from './vendor.75f6e6ae65453426.js';
+import { assetUrl } from './asset-urls.js';
 
 // The bundled glTF loader builds MeshStandardMaterial for pbrMetallicRoughness.
 // This game's renderer only ever compiles ShaderMaterial and MeshBasicMaterial,
@@ -67,7 +68,7 @@ export function convertMaterials(root) {
 export function installOpeningBoat(game) {
   if (game.openingBoat) return;
   const state = game.openingBoat = { status: 'loading', model: null, boat: null };
-  const load = () => assets.load('/models/opening-boat.glb', { noCache: true }).then((gltf) => {
+  const load = () => assets.load(assetUrl('/models/opening-boat.glb'), { noCache: true }).then((gltf) => {
     convertMaterials(gltf.scene);
     const model = new Group();
     model.name = 'Custom opening boat';
@@ -104,7 +105,11 @@ export function installOpeningBoat(game) {
     state.status = 'error';
     console.error('[Opening boat]', error);
   });
-  game.hooks.beforePreload.watch(() => game.app.$preloader.task(load()));
+  game.hooks.beforePreload.watch(() => {
+    // The game binds savestate during init(), after this plugin is installed.
+    if (game.savestate.getVariable('isIntroCompleted')) { state.status = 'skipped'; return; }
+    game.app.$preloader.task(load());
+  });
   game.hooks.beforeRender.watch(() => {
     const scene = game.scenes?.current;
     const boat = scene?.id === 'IslandIntro' ? scene.boat?.base : null;
