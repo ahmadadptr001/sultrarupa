@@ -1,6 +1,6 @@
 import { aS as Vector3, bm as Quaternion } from './vendor.75f6e6ae65453426.js';
 
-const AUDIO_URL = '/audio/lulo.mp3';
+const AUDIO_URL = '/audio/lulo.m4a';
 const PREFIX = 'NPC_SultraLulo_';
 const BONE_PREFIX = 'Chara_Low_RigGameSkeleton';
 const COLORS = [22, 23, 25, 19, 21, 24];

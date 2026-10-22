@@ -88,6 +88,72 @@
       "triangles": 89996,
       "maxPositionError": 0.0000015615855283774644,
       "maxBoundsError": 7.748603820800781e-7
+    },
+    {
+      "file": "models/player-anoa.glb",
+      "before": 1144924,
+      "after": 498404,
+      "gzipBefore": 950385,
+      "gzipAfter": 484903,
+      "decodeMs": 47.356599999999986,
+      "texturesUnchanged": true,
+      "triangles": 33286,
+      "maxPositionError": 0.000001601164266546194,
+      "maxBoundsError": 2.384185791015625e-7
+    },
+    {
+      "file": "models/player-anoa-native-accessories.glb",
+      "before": 2360292,
+      "after": 518780,
+      "gzipBefore": 1576273,
+      "gzipAfter": 469041,
+      "decodeMs": 52.944999999999936,
+      "texturesUnchanged": true,
+      "triangles": 95452,
+      "maxPositionError": 8.09065816432132e-7,
+      "maxBoundsError": 3.5762786865234375e-7
+    },
+    {
+      "file": "models/interiors/ruangan-kotak-besar.glb",
+      "before": 2117020,
+      "after": 710648,
+      "gzipBefore": 779112,
+      "gzipAfter": 619307,
+      "decodeMs": 27.496000000000095,
+      "texturesUnchanged": true,
+      "triangles": 21430,
+      "maxPositionError": 0.000013368459481121242,
+      "maxBoundsError": 0.000009059906005859375
+    },
+    {
+      "file": "models/culture/sulawesi-intro.glb",
+      "before": 1624816,
+      "after": 58972,
+      "gzipBefore": 250086,
+      "gzipAfter": 50611,
+      "decodeMs": 8.248199999999997,
+      "texturesUnchanged": true,
+      "triangles": 11994,
+      "maxPositionError": 0.00014396692244645387,
+      "maxBoundsError": 0.0000762939453125
+    },
+    {
+      "file": "models/culture/sulawesi-island.glb",
+      "before": 1624812,
+      "after": 58900,
+      "gzipBefore": 251835,
+      "gzipAfter": 50491,
+      "decodeMs": 8.675600000000031,
+      "texturesUnchanged": true,
+      "triangles": 11994,
+      "maxPositionError": 0.00023466590123609194,
+      "maxBoundsError": 0.000091552734375
+    }
+  ],
+  "skipped": [
+    {
+      "file": "models/player-anoa-accessories.glb",
+      "reason": "Triangle count changed\n\n11040 !== 10968\n"
     }
   ]
 }

@@ -24,10 +24,14 @@
   const STYLES = `
     html.sultra-about-open,
     html.sultra-about-open body { overflow: hidden !important; }
-    .sultra-about { position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center; padding: 24px; font-family: Gilmer, "Avenir Next", "Segoe UI", sans-serif; color: #26233f; }
+    /* Some engines intersect touch-action across the full ancestor chain, so the
+       body-level touch-action:none from the game must be released while open or
+       the dialog cannot pan on touch devices. */
+    html.sultra-about-open body { touch-action: pan-y; }
+    .sultra-about { position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center; padding: 24px; font-family: Gilmer, "Avenir Next", "Segoe UI", sans-serif; color: #26233f; touch-action: pan-y; overscroll-behavior: contain; }
     .sultra-about[hidden] { display: none !important; }
     .sultra-about__backdrop { position: absolute; inset: 0; background: rgb(28 24 52 / 62%); backdrop-filter: blur(6px); animation: sultra-about-fade .22s ease-out both; }
-    .sultra-about__dialog { position: relative; width: min(880px, 100%); max-height: min(90vh, 900px); overflow: auto; overscroll-behavior: contain; background: #fbfaf7; border-radius: 30px; box-shadow: 0 30px 90px rgb(18 15 35 / 35%); animation: sultra-about-rise .28s cubic-bezier(.2,.8,.2,1) both; cursor: grab; touch-action: pan-y; scrollbar-width: none; -ms-overflow-style: none; }
+    .sultra-about__dialog { position: relative; width: min(880px, 100%); max-height: min(90vh, 900px); overflow: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; background: #fbfaf7; border-radius: 30px; box-shadow: 0 30px 90px rgb(18 15 35 / 35%); animation: sultra-about-rise .28s cubic-bezier(.2,.8,.2,1) both; cursor: grab; touch-action: pan-y; scrollbar-width: none; -ms-overflow-style: none; }
     .sultra-about__dialog::-webkit-scrollbar { display: none; }
     .sultra-about__dialog.is-dragging { cursor: grabbing; }
     .sultra-about__dialog.is-dragging, .sultra-about__dialog.is-dragging * { user-select: none; }
@@ -36,7 +40,7 @@
     .sultra-about__close:hover { background: rgb(255 255 255 / 28%); transform: rotate(4deg); }
     .sultra-about__close:focus-visible { outline: 3px solid #f6d35f; outline-offset: 3px; }
     .sultra-about__close svg { width: 20px; height: 20px; }
-    .sultra-about__hero { position: relative; overflow: hidden; padding: 44px 46px 34px; background: linear-gradient(135deg, #332f68 0%, #4d4890 55%, #028c7a 130%); color: #fff; }
+    .sultra-about__hero { position: relative; overflow: hidden; padding: 44px 46px 34px; background: linear-gradient(135deg, #332f68 0%, #4d4890 55%, #028c7a 130%); color: #fff; touch-action: pan-y; }
     .sultra-about__hero::before { content: ""; position: absolute; width: 280px; height: 280px; right: -75px; top: -120px; border: 1px solid rgb(255 255 255 / 22%); border-radius: 50%; box-shadow: 0 0 0 42px rgb(255 255 255 / 5%), 0 0 0 84px rgb(255 255 255 / 4%); }
     .sultra-about__hero::after { content: ""; position: absolute; width: 160px; height: 160px; left: -54px; bottom: -94px; border-radius: 50%; background: #02c6a7; opacity: .2; }
     .sultra-about__kicker { position: relative; z-index: 1; margin: 0 0 12px; color: #9ff1e1; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
@@ -52,7 +56,7 @@
     .sultra-about__anoa .anoa-leg--far-back,
     .sultra-about__anoa .anoa-leg--near-front { animation-delay: -.45s; }
     .sultra-about__anoa .anoa-tail { transform-box: fill-box; transform-origin: 100% 8%; animation: sultra-anoa-tail 2.2s ease-in-out infinite; }
-    .sultra-about__body { padding: 34px 46px 42px; }
+    .sultra-about__body { padding: 34px 46px 42px; touch-action: pan-y; }
     .sultra-about__section + .sultra-about__section { margin-top: 30px; padding-top: 28px; border-top: 1px solid #e7e2d8; }
     .sultra-about__eyebrow { margin: 0 0 8px; color: #008f7c; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
     .sultra-about__body h3 { margin: 0 0 12px; color: #302b5e; font-size: 21px; line-height: 1.2; letter-spacing: -.02em; }

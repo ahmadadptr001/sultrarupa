@@ -31,6 +31,7 @@ const fs = require('node:fs');
   await page.evaluate(async () => {
     const app = (await import('/assets/vendor.75f6e6ae65453426.js')).b;
     app.$savestate.setVariable('isIntroCompleted', true);
+    localStorage.setItem(app.$savestate.LS_KEY, JSON.stringify(await app.$savestate.getSaveObject()));
   });
   await page.waitForTimeout(1200);
   reports.push(await measure('returning-player-4Mbps'));
