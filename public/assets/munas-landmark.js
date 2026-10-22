@@ -4,6 +4,7 @@ import { installPlayerCharacter } from './player-character.js';
 import { installSultraMobileControls } from './sultra-mobile-controls.js';
 import { installSultraIntroWordmark } from './sultra-intro-wordmark.js';
 import { installSultraIsland } from './sultra-island.js';
+import { installSultraStartup } from './sultra-startup.js';
 import { assetUrl } from './asset-urls.js';
 import {
   b6 as BufferAttribute, b7 as BufferGeometry, b5 as Mesh,
@@ -91,7 +92,8 @@ async function loadLogo() {
   function attribute(index) {
     const accessor = gltf.accessors[index], data = gltf.bufferViews[accessor.bufferView];
     const Type = types[accessor.componentType], size = sizes[accessor.type];
-    if (!Type || !size || data.byteStride || accessor.sparse) throw new Error('Unsupported logo accessor');
+    if (!Type || !size || (data.byteStride && data.byteStride !== Type.BYTES_PER_ELEMENT * size)
+      || accessor.sparse) throw new Error('Unsupported logo accessor');
     const offset = binaryOffset + (data.byteOffset || 0) + (accessor.byteOffset || 0);
     return new BufferAttribute(new Type(buffer, offset, accessor.count * size), size);
   }
@@ -149,6 +151,7 @@ async function loadLogo() {
 }
 
 export function installMunasLandmark(game) {
+  installSultraStartup(game);
   installSultraIsland(game);
   installOpeningBoat(game);
   installPlayerCharacter(game);

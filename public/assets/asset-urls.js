@@ -336,7 +336,7 @@ const versions = {
   "/models/culture/terrain-splat.png": "227017a1aab40911",
   "/models/culture/tugu-mtq.glb": "cadae492a0f2a291",
   "/models/interiors/ruangan-kotak-besar.glb": "5d7362c0be50fa1d",
-  "/models/munas-ix-logo-hd.glb": "519444a961c45c3a",
+  "/models/munas-ix-logo-hd.glb": "518810905ed3cee3",
   "/models/opening-boat.glb": "0c64ea3fab0e3f6c",
   "/models/player-anoa-accessories.glb": "07ac2d8e81a21ba9",
   "/models/player-anoa-native-accessories.glb": "271374fb97238fdf",

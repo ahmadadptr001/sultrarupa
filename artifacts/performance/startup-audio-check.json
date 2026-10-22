@@ -1,0 +1,100 @@
+{
+  "environment": "Chromium CDP localhost:9333, fresh context, localhost:3000, 1100x760; software WebGL timings are not user-device estimates",
+  "hiddenAt": 4419.89999999851,
+  "audioRequests": [
+    {
+      "url": "/assets/sfx_amb_beach_loop.be1083c965453426.m4a",
+      "at": 8428.19999999553
+    },
+    {
+      "url": "/assets/audiosprites.5d69e49165453426.m4a",
+      "at": 8703.69999999553
+    },
+    {
+      "url": "/assets/music_intro.552fc27765453426.m4a",
+      "at": 8704
+    }
+  ],
+  "hooks": [
+    {
+      "name": "beforePreload",
+      "at": 480.3999999985099
+    },
+    {
+      "name": "afterPreload",
+      "at": 4369.79999999702
+    },
+    {
+      "name": "beforeStart",
+      "at": 4370.19999999553
+    },
+    {
+      "name": "afterStart",
+      "at": 4373.69999999553
+    },
+    {
+      "name": "beforePrerender",
+      "at": 4373.69999999553
+    },
+    {
+      "name": "afterPrerender",
+      "at": 4395.79999999702
+    }
+  ],
+  "longRendererCalls": [
+    {
+      "at": 4075.60000000149,
+      "duration": 291.19999999552965
+    },
+    {
+      "at": 4492.19999999553,
+      "duration": 123.40000000596046
+    }
+  ],
+  "unlocked": true,
+  "contextState": "running",
+  "nativePreloadRestored": true,
+  "pageErrors": [],
+  "separateSoundStartProbe": {
+    "unlocked": true,
+    "starts": [
+      {
+        "bufferDuration": 18.923979166666665,
+        "loop": true,
+        "at": 13324
+      }
+    ],
+    "note": "Confirms native ambience source playback after interaction. Probe stopped at first long audio source, before verifying intro BGM."
+  },
+  "lint": "npx eslint public/assets/sultra-startup.js public/assets/munas-landmark.js passed, exit 0",
+  "bgmPlaybackProbe": {
+    "clickAt": 9228.39999999851,
+    "observedAt": 11378.59999999404,
+    "isAudioMuted": false,
+    "unlocked": true,
+    "contextState": "running",
+    "sounds": [
+      {
+        "id": "sfx_amb_beach_loop",
+        "at": 9839.89999999851,
+        "isPlaying": true,
+        "loaded": true,
+        "path": "/assets/sfx_amb_beach_loop.be1083c965453426.m4a",
+        "duration": 18.923979166666665,
+        "loop": true,
+        "volume": 0.7400044534295835
+      },
+      {
+        "id": "music_intro",
+        "at": 11071.69999999553,
+        "isPlaying": true,
+        "loaded": true,
+        "path": "/assets/music_intro.552fc27765453426.m4a",
+        "duration": 54,
+        "loop": true,
+        "volume": 0.4297370561562095
+      }
+    ],
+    "errors": []
+  }
+}

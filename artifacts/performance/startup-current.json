@@ -1,0 +1,1156 @@
+{
+  "title": "Sultra Rupa | Jelajah Budaya Sulawesi Tenggara",
+  "navigation": {
+    "name": "http://localhost:3000/",
+    "entryType": "navigation",
+    "startTime": 0,
+    "duration": 426.69999999552965,
+    "navigationId": 1223,
+    "initiatorType": "navigation",
+    "deliveryType": "",
+    "nextHopProtocol": "http/1.1",
+    "renderBlockingStatus": "non-blocking",
+    "contentType": "text/html",
+    "contentEncoding": "",
+    "workerStart": 0,
+    "workerRouterEvaluationStart": 0,
+    "workerCacheLookupStart": 0,
+    "workerMatchedSourceType": "",
+    "workerFinalSourceType": "",
+    "redirectStart": 0,
+    "redirectEnd": 0,
+    "fetchStart": 0.7999999970197678,
+    "domainLookupStart": 9.799999997019768,
+    "domainLookupEnd": 11.799999997019768,
+    "connectStart": 11.799999997019768,
+    "secureConnectionStart": 0,
+    "connectEnd": 13.199999995529652,
+    "requestStart": 15.099999994039536,
+    "responseStart": 66.79999999701977,
+    "firstInterimResponseStart": 0,
+    "finalResponseHeadersStart": 66.79999999701977,
+    "responseEnd": 75.09999999403954,
+    "transferSize": 212597,
+    "encodedBodySize": 212297,
+    "decodedBodySize": 212297,
+    "responseStatus": 200,
+    "serverTiming": [],
+    "unloadEventStart": 0,
+    "unloadEventEnd": 0,
+    "domInteractive": 204.59999999403954,
+    "domContentLoadedEventStart": 346.59999999403954,
+    "domContentLoadedEventEnd": 351.59999999403954,
+    "domComplete": 426.5,
+    "loadEventStart": 426.69999999552965,
+    "loadEventEnd": 426.69999999552965,
+    "type": "navigate",
+    "redirectCount": 0,
+    "activationStart": 0,
+    "criticalCHRestart": 0,
+    "notRestoredReasons": null,
+    "confidence": {
+      "randomizedTriggerRate": 0.4994798,
+      "value": "high"
+    }
+  },
+  "resources": [
+    {
+      "url": "http://localhost:3000/assets/main.35e6243a65453426.js",
+      "start": 94.09999999403954,
+      "duration": 46.600000001490116,
+      "transfer": 44951,
+      "encoded": 44651,
+      "decoded": 130783,
+      "initiator": "other"
+    },
+    {
+      "url": "http://localhost:3000/assets/webgl.3250e36a65453426.js",
+      "start": 94.39999999850988,
+      "duration": 51.600000001490116,
+      "transfer": 80341,
+      "encoded": 80041,
+      "decoded": 270223,
+      "initiator": "other"
+    },
+    {
+      "url": "http://localhost:3000/assets/vendor.a83843c365453426.css",
+      "start": 94.5,
+      "duration": 44.69999999552965,
+      "transfer": 11746,
+      "encoded": 11446,
+      "decoded": 75200,
+      "initiator": "link"
+    },
+    {
+      "url": "http://localhost:3000/assets/Gilmer-Medium.dfe209dd65453426.woff2",
+      "start": 95.39999999850988,
+      "duration": 38.69999999552965,
+      "transfer": 33588,
+      "encoded": 33288,
+      "decoded": 33288,
+      "initiator": "link"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-shell-copy.js",
+      "start": 96.19999999552965,
+      "duration": 42.20000000298023,
+      "transfer": 6946,
+      "encoded": 6646,
+      "decoded": 21981,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-about.js",
+      "start": 96.29999999701977,
+      "duration": 42.5,
+      "transfer": 6773,
+      "encoded": 6473,
+      "decoded": 22779,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/Gilmer-Bold.b4e74cd165453426.woff2",
+      "start": 185.59999999403954,
+      "duration": 35.400000005960464,
+      "transfer": 33948,
+      "encoded": 33648,
+      "decoded": 33648,
+      "initiator": "css"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-loading.js",
+      "start": 204.39999999850988,
+      "duration": 17.799999997019768,
+      "transfer": 1796,
+      "encoded": 1496,
+      "decoded": 3709,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/vendor.75f6e6ae65453426.js",
+      "start": 204.5,
+      "duration": 78.29999999701977,
+      "transfer": 380837,
+      "encoded": 380537,
+      "decoded": 1346261,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/munas-landmark.js",
+      "start": 352.5,
+      "duration": 5.699999995529652,
+      "transfer": 4123,
+      "encoded": 3823,
+      "decoded": 10049,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/fintechs_en.json?v=65453426",
+      "start": 424.5,
+      "duration": 30.5,
+      "transfer": 6103,
+      "encoded": 5803,
+      "decoded": 19684,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/items_en.json?v=65453426",
+      "start": 424.8999999985099,
+      "duration": 29.5,
+      "transfer": 1138,
+      "encoded": 838,
+      "decoded": 3644,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/opening-boat.js",
+      "start": 432.79999999701977,
+      "duration": 31.399999998509884,
+      "transfer": 2702,
+      "encoded": 2402,
+      "decoded": 5734,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/player-character.js",
+      "start": 432.8999999985099,
+      "duration": 32.29999999701977,
+      "transfer": 6632,
+      "encoded": 6332,
+      "decoded": 19348,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-mobile-controls.js",
+      "start": 433,
+      "duration": 31.899999998509884,
+      "transfer": 1575,
+      "encoded": 1275,
+      "decoded": 3717,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-intro-wordmark.js",
+      "start": 433,
+      "duration": 31.5,
+      "transfer": 1750,
+      "encoded": 1450,
+      "decoded": 3492,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-island.js",
+      "start": 433.09999999403954,
+      "duration": 45,
+      "transfer": 14873,
+      "encoded": 14573,
+      "decoded": 54357,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/asset-urls.js",
+      "start": 433.19999999552965,
+      "duration": 44.100000001490116,
+      "transfer": 7686,
+      "encoded": 7386,
+      "decoded": 25157,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/quests_en.json?v=65453426",
+      "start": 458.79999999701977,
+      "duration": 20.299999997019768,
+      "transfer": 3094,
+      "encoded": 2794,
+      "decoded": 14524,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/anoa-animation.js",
+      "start": 467.79999999701977,
+      "duration": 10.799999997019768,
+      "transfer": 1514,
+      "encoded": 1214,
+      "decoded": 3317,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/Comfortaa-Regular.d3d2e80c65453426.woff2",
+      "start": 498.59999999403954,
+      "duration": 68.30000000447035,
+      "transfer": 23100,
+      "encoded": 22800,
+      "decoded": 22800,
+      "initiator": "css"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-GraduationHat-256.d9428d1f65453426.avif",
+      "start": 514.0999999940395,
+      "duration": 28.200000002980232,
+      "transfer": 2676,
+      "encoded": 2376,
+      "decoded": 2376,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-BikeHelmet-256.563759e965453426.avif",
+      "start": 514.1999999955297,
+      "duration": 28.600000001490116,
+      "transfer": 2678,
+      "encoded": 2378,
+      "decoded": 2378,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Bottom-Sandals-256.e49ebb9d65453426.avif",
+      "start": 514.2999999970198,
+      "duration": 29.899999998509884,
+      "transfer": 3830,
+      "encoded": 3530,
+      "decoded": 3530,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-Bob-256.f1bbf8f465453426.avif",
+      "start": 514.2999999970198,
+      "duration": 29.5,
+      "transfer": 2429,
+      "encoded": 2129,
+      "decoded": 2129,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-Scuba-256.b038d77565453426.avif",
+      "start": 514.2999999970198,
+      "duration": 30.5,
+      "transfer": 4211,
+      "encoded": 3911,
+      "decoded": 3911,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Body-PandaBackpack-256.5bee823c65453426.avif",
+      "start": 514.6999999955297,
+      "duration": 30.399999998509884,
+      "transfer": 4293,
+      "encoded": 3993,
+      "decoded": 3993,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Body-Buoy-256.ce9b3ff365453426.avif",
+      "start": 514.7999999970198,
+      "duration": 119.5,
+      "transfer": 3491,
+      "encoded": 3191,
+      "decoded": 3191,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Bottom-Palm-256.985105a565453426.avif",
+      "start": 514.7999999970198,
+      "duration": 123.10000000149012,
+      "transfer": 3762,
+      "encoded": 3462,
+      "decoded": 3462,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-Unicorn-256.b605e3d865453426.avif",
+      "start": 514.7999999970198,
+      "duration": 145.39999999850988,
+      "transfer": 3354,
+      "encoded": 3054,
+      "decoded": 3054,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-MotorcycleHelmet-256.f8dc535465453426.avif",
+      "start": 515,
+      "duration": 145.69999999552965,
+      "transfer": 4405,
+      "encoded": 4105,
+      "decoded": 4105,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Body-OxygenBottle-256.57c6362165453426.avif",
+      "start": 515,
+      "duration": 147,
+      "transfer": 4885,
+      "encoded": 4585,
+      "decoded": 4585,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Bottom-Dino-256.b018bcbf65453426.avif",
+      "start": 515.0999999940395,
+      "duration": 147.20000000298023,
+      "transfer": 3186,
+      "encoded": 2886,
+      "decoded": 2886,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-BearBeanie-256.9b4a2e0065453426.avif",
+      "start": 515.0999999940395,
+      "duration": 147.80000000447035,
+      "transfer": 3867,
+      "encoded": 3567,
+      "decoded": 3567,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-BunnyCap-256.f9bdf9c465453426.avif",
+      "start": 515.1999999955297,
+      "duration": 152.60000000149012,
+      "transfer": 3650,
+      "encoded": 3350,
+      "decoded": 3350,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-VahineCrown-256.642dc25665453426.avif",
+      "start": 515.1999999955297,
+      "duration": 165.70000000298023,
+      "transfer": 5445,
+      "encoded": 5145,
+      "decoded": 5145,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-Fish-256.d1507b5c65453426.avif",
+      "start": 515.2999999970198,
+      "duration": 166.20000000298023,
+      "transfer": 3313,
+      "encoded": 3013,
+      "decoded": 3013,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Body-Shark-256.1f1414ff65453426.avif",
+      "start": 515.3999999985099,
+      "duration": 166.5,
+      "transfer": 2454,
+      "encoded": 2154,
+      "decoded": 2154,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Bottom-FastShoes-256.380b674665453426.avif",
+      "start": 515.3999999985099,
+      "duration": 167.39999999850988,
+      "transfer": 3812,
+      "encoded": 3512,
+      "decoded": 3512,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-Dino-256.427a1f9965453426.avif",
+      "start": 515.3999999985099,
+      "duration": 167.5,
+      "transfer": 3332,
+      "encoded": 3032,
+      "decoded": 3032,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Body-Wings-256.ca31ce0d65453426.avif",
+      "start": 515.5,
+      "duration": 173.29999999701977,
+      "transfer": 3386,
+      "encoded": 3086,
+      "decoded": 3086,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-DeerHat-256.a6d4161865453426.avif",
+      "start": 515.5999999940395,
+      "duration": 195.10000000149012,
+      "transfer": 4313,
+      "encoded": 4013,
+      "decoded": 4013,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Head-AstronautHelmet-256.1ff5b2ca65453426.avif",
+      "start": 515.6999999955297,
+      "duration": 196.20000000298023,
+      "transfer": 3837,
+      "encoded": 3537,
+      "decoded": 3537,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Body-Dino-256.c831d53f65453426.avif",
+      "start": 515.6999999955297,
+      "duration": 248.39999999850988,
+      "transfer": 3995,
+      "encoded": 3695,
+      "decoded": 3695,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/item-Body-JetPack-256.4e02a36b65453426.avif",
+      "start": 515.7999999970198,
+      "duration": 261.8999999985099,
+      "transfer": 3783,
+      "encoded": 3483,
+      "decoded": 3483,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/phone-map-128.9d96132f65453426.avif",
+      "start": 515.8999999985099,
+      "duration": 106,
+      "transfer": 1964,
+      "encoded": 1664,
+      "decoded": 1664,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/phone-fintech-128.12cc9ab965453426.avif",
+      "start": 516.2999999970198,
+      "duration": 115.70000000298023,
+      "transfer": 2149,
+      "encoded": 1849,
+      "decoded": 1849,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/phone-point-128.9015a99765453426.avif",
+      "start": 516.3999999985099,
+      "duration": 101.39999999850988,
+      "transfer": 2307,
+      "encoded": 2007,
+      "decoded": 2007,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/phone-customization-128.7538481565453426.avif",
+      "start": 516.5,
+      "duration": 105.19999999552965,
+      "transfer": 2319,
+      "encoded": 2019,
+      "decoded": 2019,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/phone-quest-128.3056aaa865453426.avif",
+      "start": 516.5999999940395,
+      "duration": 116.60000000149012,
+      "transfer": 2005,
+      "encoded": 1705,
+      "decoded": 1705,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/characters_en.json?v=65453426",
+      "start": 517.2999999970198,
+      "duration": 57.5,
+      "transfer": 2795,
+      "encoded": 2495,
+      "decoded": 24909,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/dialogs_en.json?v=65453426",
+      "start": 517.6999999955297,
+      "duration": 67.10000000149012,
+      "transfer": 18710,
+      "encoded": 18410,
+      "decoded": 123106,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-culture-data.js",
+      "start": 518.3999999985099,
+      "duration": 55,
+      "transfer": 4579,
+      "encoded": 4279,
+      "decoded": 12920,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-island-layout.js",
+      "start": 518.3999999985099,
+      "duration": 65.19999999552965,
+      "transfer": 22478,
+      "encoded": 22178,
+      "decoded": 84901,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-culture-ui.js",
+      "start": 518.5,
+      "duration": 55.29999999701977,
+      "transfer": 7788,
+      "encoded": 7488,
+      "decoded": 26261,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-phone-map.js",
+      "start": 518.5,
+      "duration": 69.79999999701977,
+      "transfer": 6312,
+      "encoded": 6012,
+      "decoded": 19925,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-phone-culture.js",
+      "start": 518.5999999940395,
+      "duration": 79.30000000447035,
+      "transfer": 4823,
+      "encoded": 4523,
+      "decoded": 15111,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-guide-dialogs.js",
+      "start": 518.5999999940395,
+      "duration": 80.10000000149012,
+      "transfer": 1506,
+      "encoded": 1206,
+      "decoded": 2387,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-house-interaction.js",
+      "start": 518.5999999940395,
+      "duration": 80.40000000596046,
+      "transfer": 3484,
+      "encoded": 3184,
+      "decoded": 9529,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-house-interior.js",
+      "start": 518.6999999955297,
+      "duration": 89.80000000447035,
+      "transfer": 8249,
+      "encoded": 7949,
+      "decoded": 28556,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-culture-voice.js",
+      "start": 518.6999999955297,
+      "duration": 90.5,
+      "transfer": 3442,
+      "encoded": 3142,
+      "decoded": 10311,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-lulo.js",
+      "start": 518.7999999970198,
+      "duration": 95.10000000149012,
+      "transfer": 4758,
+      "encoded": 4458,
+      "decoded": 13512,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-story-pages.js",
+      "start": 577.1999999955297,
+      "duration": 61.399999998509884,
+      "transfer": 957,
+      "encoded": 657,
+      "decoded": 1370,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-narration-manifest.js",
+      "start": 610.5,
+      "duration": 35.099999994039536,
+      "transfer": 2753,
+      "encoded": 2453,
+      "decoded": 7003,
+      "initiator": "script"
+    },
+    {
+      "url": "http://localhost:3000/vendors/draco/draco_wasm_wrapper.js",
+      "start": 668.0999999940395,
+      "duration": 49,
+      "transfer": 12328,
+      "encoded": 12028,
+      "decoded": 59024,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/vendors/draco/draco_decoder.wasm",
+      "start": 668.3999999985099,
+      "duration": 126.69999999552965,
+      "transfer": 86694,
+      "encoded": 86394,
+      "decoded": 280793,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-culture.css",
+      "start": 676.1999999955297,
+      "duration": 36,
+      "transfer": 6213,
+      "encoded": 5913,
+      "decoded": 27983,
+      "initiator": "link"
+    },
+    {
+      "url": "http://localhost:3000/assets/sultra-interior.css",
+      "start": 678.0999999940395,
+      "duration": 38.20000000298023,
+      "transfer": 4097,
+      "encoded": 3797,
+      "decoded": 16648,
+      "initiator": "link"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/26688b1eacf7363d/models/sultra-rupa-wordmark.json",
+      "start": 731.0999999940395,
+      "duration": 89.5,
+      "transfer": 70702,
+      "encoded": 70402,
+      "decoded": 269716,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/519444a961c45c3a/models/munas-ix-logo-hd.glb",
+      "start": 732,
+      "duration": 193.5,
+      "transfer": 1141052,
+      "encoded": 1140752,
+      "decoded": 1707648,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/f9fc82de1a2d6059/models/culture/laika.glb",
+      "start": 736.8999999985099,
+      "duration": 181.69999999552965,
+      "transfer": 1286519,
+      "encoded": 1286219,
+      "decoded": 1291912,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/af26b27a1ecececa/models/culture/bharugano-wuna.glb",
+      "start": 737.0999999940395,
+      "duration": 179.80000000447035,
+      "transfer": 1243138,
+      "encoded": 1242838,
+      "decoded": 1250684,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/862c2c5719a85a52/models/culture/banua-tada.glb",
+      "start": 737.2999999970198,
+      "duration": 243.10000000149012,
+      "transfer": 1486418,
+      "encoded": 1486118,
+      "decoded": 1495144,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/66db08edf2ee78d8/models/culture/mekongga.glb",
+      "start": 737.3999999985099,
+      "duration": 241.60000000149012,
+      "transfer": 1406067,
+      "encoded": 1405767,
+      "decoded": 1410468,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/cadae492a0f2a291/models/culture/tugu-mtq.glb",
+      "start": 737.5999999940395,
+      "duration": 162,
+      "transfer": 833893,
+      "encoded": 833593,
+      "decoded": 842276,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/718e70e8b275b695/models/culture/patung-oputa.glb",
+      "start": 737.5999999940395,
+      "duration": 341.20000000298023,
+      "transfer": 1029574,
+      "encoded": 1029274,
+      "decoded": 1037232,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_PalmTree.f4a68a0e65453426.glb",
+      "start": 737.8999999985099,
+      "duration": 195.19999999552965,
+      "transfer": 5923,
+      "encoded": 5623,
+      "decoded": 6680,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_TreeRoundA.5a4ba08065453426.glb",
+      "start": 738,
+      "duration": 195.5,
+      "transfer": 3501,
+      "encoded": 3201,
+      "decoded": 4304,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_TreeRoundF.5133ec1365453426.glb",
+      "start": 738.1999999955297,
+      "duration": 202.70000000298023,
+      "transfer": 5860,
+      "encoded": 5560,
+      "decoded": 6688,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_BushA.4e15289965453426.glb",
+      "start": 738.2999999970198,
+      "duration": 212.89999999850988,
+      "transfer": 2732,
+      "encoded": 2432,
+      "decoded": 3548,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_RockA.3a9f348865453426.glb",
+      "start": 738.5,
+      "duration": 214.39999999850988,
+      "transfer": 3778,
+      "encoded": 3478,
+      "decoded": 3860,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/0c64ea3fab0e3f6c/models/opening-boat.glb",
+      "start": 738.5999999940395,
+      "duration": 378.70000000298023,
+      "transfer": 1576465,
+      "encoded": 1576165,
+      "decoded": 1591908,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/746c4bb45a582e50/models/player-anoa.glb",
+      "start": 738.6999999955297,
+      "duration": 321.80000000447035,
+      "transfer": 485203,
+      "encoded": 484903,
+      "decoded": 498404,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/07ac2d8e81a21ba9/models/player-anoa-accessories.glb",
+      "start": 738.8999999985099,
+      "duration": 305.69999999552965,
+      "transfer": 268295,
+      "encoded": 267995,
+      "decoded": 883644,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/271374fb97238fdf/models/player-anoa-native-accessories.glb",
+      "start": 739.0999999940395,
+      "duration": 327.1000000014901,
+      "transfer": 469341,
+      "encoded": 469041,
+      "decoded": 518780,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/audiosprites.5d69e49165453426.m4a",
+      "start": 773.5999999940395,
+      "duration": 265.1000000014901,
+      "transfer": 1972822,
+      "encoded": 1972522,
+      "decoded": 1972522,
+      "initiator": "xmlhttprequest"
+    },
+    {
+      "url": "http://localhost:3000/assets/sprites.d8373bb465453426.json",
+      "start": 774,
+      "duration": 288.29999999701977,
+      "transfer": 1676,
+      "encoded": 1376,
+      "decoded": 11170,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/sprites.ca9a51e965453426.png",
+      "start": 777,
+      "duration": 296.8999999985099,
+      "transfer": 273072,
+      "encoded": 272772,
+      "decoded": 272772,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/character.df6ab95f65453426.glb",
+      "start": 777.5,
+      "duration": 338,
+      "transfer": 778087,
+      "encoded": 777787,
+      "decoded": 1158772,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/music_intro.552fc27765453426.m4a",
+      "start": 2740,
+      "duration": 49,
+      "transfer": 665895,
+      "encoded": 665595,
+      "decoded": 665595,
+      "initiator": "xmlhttprequest"
+    },
+    {
+      "url": "http://localhost:3000/assets/noise_perlin.956753cf65453426.png",
+      "start": 2742.6999999955297,
+      "duration": 22.80000000447035,
+      "transfer": 91204,
+      "encoded": 90904,
+      "decoded": 90904,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/clouds.657c06ba65453426.png",
+      "start": 2742.7999999970198,
+      "duration": 22.899999998509884,
+      "transfer": 22685,
+      "encoded": 22385,
+      "decoded": 22385,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/Assets_Data.7f42e25d65453426.png",
+      "start": 2742.89999999851,
+      "duration": 21.899999998509884,
+      "transfer": 1605,
+      "encoded": 1305,
+      "decoded": 1305,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/SplattingPatterns.67639f9365453426.png",
+      "start": 2742.89999999851,
+      "duration": 25.899999998509884,
+      "transfer": 116793,
+      "encoded": 116493,
+      "decoded": 116493,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/Assets_Gradients.1237e2d365453426.png",
+      "start": 2743,
+      "duration": 25.899999998509884,
+      "transfer": 112401,
+      "encoded": 112101,
+      "decoded": 112101,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/Character_Texture.2c62815965453426.png",
+      "start": 2743,
+      "duration": 44.899999998509884,
+      "transfer": 35968,
+      "encoded": 35668,
+      "decoded": 35668,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/227017a1aab40911/models/culture/terrain-splat.png",
+      "start": 2743,
+      "duration": 49.599999994039536,
+      "transfer": 322885,
+      "encoded": 322585,
+      "decoded": 322585,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/a2f5d27a0c097d60/models/culture/grass-splat.png",
+      "start": 2743,
+      "duration": 48.599999994039536,
+      "transfer": 184103,
+      "encoded": 183803,
+      "decoded": 183803,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/asset-cache/5a2112a95da02ec7/models/culture/sulawesi-intro.glb",
+      "start": 3765,
+      "duration": 45.19999999552965,
+      "transfer": 50911,
+      "encoded": 50611,
+      "decoded": 58972,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_Taxi.9d714b7c65453426.glb",
+      "start": 3765.0999999940395,
+      "duration": 37.20000000298023,
+      "transfer": 8287,
+      "encoded": 7987,
+      "decoded": 10228,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_BoatYellow.9ec7874765453426.glb",
+      "start": 3765.2999999970198,
+      "duration": 37.70000000298023,
+      "transfer": 8715,
+      "encoded": 8415,
+      "decoded": 9600,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_JoystickRaw.da301e9265453426.glb",
+      "start": 3765.5999999940395,
+      "duration": 37.600000001490116,
+      "transfer": 4115,
+      "encoded": 3815,
+      "decoded": 4984,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_Wall.0a094ddd65453426.glb",
+      "start": 3767.5999999940395,
+      "duration": 35.900000005960464,
+      "transfer": 1330,
+      "encoded": 1030,
+      "decoded": 2172,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_SpeakersOn.e617dbf365453426.glb",
+      "start": 3767.89999999851,
+      "duration": 35.899999998509884,
+      "transfer": 12168,
+      "encoded": 11868,
+      "decoded": 14108,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/Asset_CoastalWorld.e8c2b2cb65453426.glb",
+      "start": 3768.1999999955297,
+      "duration": 42.20000000298023,
+      "transfer": 5971,
+      "encoded": 5671,
+      "decoded": 6552,
+      "initiator": "fetch"
+    },
+    {
+      "url": "http://localhost:3000/assets/interactions-yes-256.dd627c7e65453426.avif",
+      "start": 5024.0999999940395,
+      "duration": 16.600000001490116,
+      "transfer": 2874,
+      "encoded": 2574,
+      "decoded": 2574,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/phone-map-64.a97628e265453426.avif",
+      "start": 5024.29999999702,
+      "duration": 16.799999997019768,
+      "transfer": 1417,
+      "encoded": 1117,
+      "decoded": 1117,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/phone-fintech-64.384003b765453426.avif",
+      "start": 5024.29999999702,
+      "duration": 17.5,
+      "transfer": 1561,
+      "encoded": 1261,
+      "decoded": 1261,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/phone-quest-64.b3e8adf065453426.avif",
+      "start": 5024.39999999851,
+      "duration": 17.19999999552965,
+      "transfer": 1465,
+      "encoded": 1165,
+      "decoded": 1165,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/assets/phone-customization-64.e87662da65453426.avif",
+      "start": 5024.39999999851,
+      "duration": 17.399999998509884,
+      "transfer": 1635,
+      "encoded": 1335,
+      "decoded": 1335,
+      "initiator": "img"
+    },
+    {
+      "url": "http://localhost:3000/branding/sultra-rupa.svg#wordmark",
+      "start": 5243.89999999851,
+      "duration": 6.100000001490116,
+      "transfer": 2117,
+      "encoded": 1817,
+      "decoded": 6433,
+      "initiator": "other"
+    }
+  ],
+  "longTasks": [
+    {
+      "start": 297.29999999701977,
+      "duration": 55
+    },
+    {
+      "start": 353.79999999701977,
+      "duration": 72
+    },
+    {
+      "start": 646.8999999985099,
+      "duration": 92
+    },
+    {
+      "start": 1039.8999999985099,
+      "duration": 51
+    },
+    {
+      "start": 1125.8999999985099,
+      "duration": 274
+    },
+    {
+      "start": 1402,
+      "duration": 290
+    },
+    {
+      "start": 1693.0999999940395,
+      "duration": 315
+    },
+    {
+      "start": 2120.0999999940395,
+      "duration": 198
+    },
+    {
+      "start": 2319.39999999851,
+      "duration": 281
+    },
+    {
+      "start": 2603.5999999940395,
+      "duration": 109
+    },
+    {
+      "start": 2747.7999999970198,
+      "duration": 330
+    },
+    {
+      "start": 3083.1999999955297,
+      "duration": 330
+    },
+    {
+      "start": 3413.7999999970198,
+      "duration": 337
+    },
+    {
+      "start": 4025.5999999940395,
+      "duration": 253
+    },
+    {
+      "start": 4309.5,
+      "duration": 99
+    },
+    {
+      "start": 4441.79999999702,
+      "duration": 520
+    },
+    {
+      "start": 4965.5999999940395,
+      "duration": 65
+    },
+    {
+      "start": 5031.19999999553,
+      "duration": 3903
+    },
+    {
+      "start": 8953.5,
+      "duration": 583
+    },
+    {
+      "start": 9542.19999999553,
+      "duration": 280
+    }
+  ],
+  "paints": [
+    {
+      "name": "first-paint",
+      "start": 220
+    },
+    {
+      "name": "first-contentful-paint",
+      "start": 256
+    }
+  ],
+  "label": "startup-current",
+  "readiness": {
+    "time": 9542.09999999404,
+    "ready": true
+  },
+  "errors": [],
+  "failed": []
+}
