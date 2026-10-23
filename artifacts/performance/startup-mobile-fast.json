@@ -1,0 +1,2654 @@
+{
+  "reports": [
+    {
+      "readyMs": 30561.90000000596,
+      "scene": "IslandIntro",
+      "savedIntroCompleted": false,
+      "boat": "ready",
+      "logo": "ready",
+      "wordmark": "ready",
+      "character": "ready",
+      "houseTemplates": 6,
+      "initialBytes": 14073636,
+      "initialTransfer": 14086642,
+      "initialAudio": [],
+      "resources": [
+        {
+          "url": "http://localhost:3001/assets/main.35e6243a65453426.js",
+          "start": 111.09999999403954,
+          "end": 572.7999999970198,
+          "transfer": 44951,
+          "encoded": 44651,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+          "start": 111.5,
+          "end": 653.2999999970198,
+          "transfer": 80349,
+          "encoded": 80049,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/vendor.a83843c365453426.css",
+          "start": 111.59999999403954,
+          "end": 350.29999999701977,
+          "transfer": 11746,
+          "encoded": 11446,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/Gilmer-Medium.dfe209dd65453426.woff2",
+          "start": 111.79999999701977,
+          "end": 544.9000000059605,
+          "transfer": 33588,
+          "encoded": 33288,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/Gilmer-Bold.b4e74cd165453426.woff2",
+          "start": 111.90000000596046,
+          "end": 536.2000000029802,
+          "transfer": 33948,
+          "encoded": 33648,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-shell-copy.js",
+          "start": 162.29999999701977,
+          "end": 339.40000000596046,
+          "transfer": 6946,
+          "encoded": 6646,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-about.js",
+          "start": 162.40000000596046,
+          "end": 496.5,
+          "transfer": 6773,
+          "encoded": 6473,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-loading.js",
+          "start": 577.2000000029802,
+          "end": 684.4000000059605,
+          "transfer": 1796,
+          "encoded": 1496,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+          "start": 577.4000000059605,
+          "end": 1462.2000000029802,
+          "transfer": 380837,
+          "encoded": 380537,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/munas-landmark.js",
+          "start": 1524.5,
+          "end": 1633.5999999940395,
+          "transfer": 4175,
+          "encoded": 3875,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/fintechs_en.json?v=65453426",
+          "start": 1552.7999999970198,
+          "end": 1666.5,
+          "transfer": 6103,
+          "encoded": 5803,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/items_en.json?v=65453426",
+          "start": 1553.0999999940395,
+          "end": 1642,
+          "transfer": 1138,
+          "encoded": 838,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/icons/favicon_light.svg?v=sultra-icon-20261022",
+          "start": 1579.0999999940395,
+          "end": 1671.0999999940395,
+          "transfer": 924,
+          "encoded": 624,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/opening-boat.js",
+          "start": 1635.7000000029802,
+          "end": 1737,
+          "transfer": 2702,
+          "encoded": 2402,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/player-character.js",
+          "start": 1635.7000000029802,
+          "end": 1753.9000000059605,
+          "transfer": 6927,
+          "encoded": 6627,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-mobile-controls.js",
+          "start": 1635.7999999970198,
+          "end": 1736.5999999940395,
+          "transfer": 1575,
+          "encoded": 1275,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-intro-wordmark.js",
+          "start": 1635.9000000059605,
+          "end": 1744,
+          "transfer": 1750,
+          "encoded": 1450,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-island.js",
+          "start": 1636,
+          "end": 1798.2000000029802,
+          "transfer": 16121,
+          "encoded": 15821,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-startup.js",
+          "start": 1636.0999999940395,
+          "end": 1757.5,
+          "transfer": 826,
+          "encoded": 526,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/asset-urls.js",
+          "start": 1636.0999999940395,
+          "end": 1861.2000000029802,
+          "transfer": 7686,
+          "encoded": 7386,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/quests_en.json?v=65453426",
+          "start": 1669.5999999940395,
+          "end": 1849.5999999940395,
+          "transfer": 3094,
+          "encoded": 2794,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/favicon.ico?v=sultra-icon-20261022",
+          "start": 1675.2999999970198,
+          "end": 1858.2999999970198,
+          "transfer": 4417,
+          "encoded": 4117,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/anoa-animation.js",
+          "start": 1755.9000000059605,
+          "end": 1854.0999999940395,
+          "transfer": 1514,
+          "encoded": 1214,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-island-layout.js",
+          "start": 1800.7999999970198,
+          "end": 1974.9000000059605,
+          "transfer": 22478,
+          "encoded": 22178,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture-data.js",
+          "start": 1801,
+          "end": 1916.0999999940395,
+          "transfer": 4579,
+          "encoded": 4279,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture-ui.js",
+          "start": 1801.0999999940395,
+          "end": 2005.2999999970198,
+          "transfer": 7788,
+          "encoded": 7488,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-phone-map.js",
+          "start": 1801.2000000029802,
+          "end": 2000.7000000029802,
+          "transfer": 6312,
+          "encoded": 6012,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-phone-culture.js",
+          "start": 1801.7999999970198,
+          "end": 2000.2999999970198,
+          "transfer": 4823,
+          "encoded": 4523,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-guide-dialogs.js",
+          "start": 1801.9000000059605,
+          "end": 1974.5,
+          "transfer": 1506,
+          "encoded": 1206,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-house-interaction.js",
+          "start": 1802,
+          "end": 2086.0999999940395,
+          "transfer": 3484,
+          "encoded": 3184,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-house-interior.js",
+          "start": 1802.0999999940395,
+          "end": 2114.7999999970198,
+          "transfer": 8249,
+          "encoded": 7949,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture-voice.js",
+          "start": 1802.2000000029802,
+          "end": 2115.5,
+          "transfer": 3442,
+          "encoded": 3142,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-lulo.js",
+          "start": 1802.2999999970198,
+          "end": 2119.2999999970198,
+          "transfer": 4758,
+          "encoded": 4458,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/Comfortaa-Regular.d3d2e80c65453426.woff2",
+          "start": 1850,
+          "end": 2063.7999999970198,
+          "transfer": 23100,
+          "encoded": 22800,
+          "initiator": "css"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-GraduationHat-256.d9428d1f65453426.avif",
+          "start": 1870.2000000029802,
+          "end": 2319.2999999970198,
+          "transfer": 2676,
+          "encoded": 2376,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-BikeHelmet-256.563759e965453426.avif",
+          "start": 1870.2999999970198,
+          "end": 2314.5999999940395,
+          "transfer": 2678,
+          "encoded": 2378,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Bob-256.f1bbf8f465453426.avif",
+          "start": 1870.4000000059605,
+          "end": 2332.2999999970198,
+          "transfer": 2429,
+          "encoded": 2129,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-Sandals-256.e49ebb9d65453426.avif",
+          "start": 1870.4000000059605,
+          "end": 2343.9000000059605,
+          "transfer": 3830,
+          "encoded": 3530,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Scuba-256.b038d77565453426.avif",
+          "start": 1870.4000000059605,
+          "end": 2374.2000000029802,
+          "transfer": 4211,
+          "encoded": 3911,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-PandaBackpack-256.5bee823c65453426.avif",
+          "start": 1870.7999999970198,
+          "end": 2416.5,
+          "transfer": 4293,
+          "encoded": 3993,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Buoy-256.ce9b3ff365453426.avif",
+          "start": 1870.7999999970198,
+          "end": 2424.7999999970198,
+          "transfer": 3491,
+          "encoded": 3191,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-Palm-256.985105a565453426.avif",
+          "start": 1870.9000000059605,
+          "end": 2432.7999999970198,
+          "transfer": 3762,
+          "encoded": 3462,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Unicorn-256.b605e3d865453426.avif",
+          "start": 1871,
+          "end": 20621,
+          "transfer": 3354,
+          "encoded": 3054,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-MotorcycleHelmet-256.f8dc535465453426.avif",
+          "start": 1871,
+          "end": 20766.20000000298,
+          "transfer": 4405,
+          "encoded": 4105,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-OxygenBottle-256.57c6362165453426.avif",
+          "start": 1871.0999999940395,
+          "end": 20913.90000000596,
+          "transfer": 4885,
+          "encoded": 4585,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-Dino-256.b018bcbf65453426.avif",
+          "start": 1871.2000000029802,
+          "end": 21054.90000000596,
+          "transfer": 3186,
+          "encoded": 2886,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-BearBeanie-256.9b4a2e0065453426.avif",
+          "start": 1871.2999999970198,
+          "end": 21184.70000000298,
+          "transfer": 3867,
+          "encoded": 3567,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-BunnyCap-256.f9bdf9c465453426.avif",
+          "start": 1871.4000000059605,
+          "end": 21321,
+          "transfer": 3650,
+          "encoded": 3350,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-VahineCrown-256.642dc25665453426.avif",
+          "start": 1871.5,
+          "end": 21482.79999999702,
+          "transfer": 5445,
+          "encoded": 5145,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Fish-256.d1507b5c65453426.avif",
+          "start": 1871.5999999940395,
+          "end": 21599.70000000298,
+          "transfer": 3313,
+          "encoded": 3013,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Shark-256.1f1414ff65453426.avif",
+          "start": 1871.5999999940395,
+          "end": 21632.90000000596,
+          "transfer": 2454,
+          "encoded": 2154,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-FastShoes-256.380b674665453426.avif",
+          "start": 1871.5999999940395,
+          "end": 21718.59999999404,
+          "transfer": 3812,
+          "encoded": 3512,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Dino-256.427a1f9965453426.avif",
+          "start": 1871.7000000029802,
+          "end": 21758.40000000596,
+          "transfer": 3332,
+          "encoded": 3032,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Wings-256.ca31ce0d65453426.avif",
+          "start": 1871.7999999970198,
+          "end": 21851.29999999702,
+          "transfer": 3386,
+          "encoded": 3086,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-DeerHat-256.a6d4161865453426.avif",
+          "start": 1871.7999999970198,
+          "end": 21889.20000000298,
+          "transfer": 4313,
+          "encoded": 4013,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-AstronautHelmet-256.1ff5b2ca65453426.avif",
+          "start": 1872,
+          "end": 21976.59999999404,
+          "transfer": 3837,
+          "encoded": 3537,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Dino-256.c831d53f65453426.avif",
+          "start": 1872,
+          "end": 22018,
+          "transfer": 3995,
+          "encoded": 3695,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-JetPack-256.4e02a36b65453426.avif",
+          "start": 1872.4000000059605,
+          "end": 22103.90000000596,
+          "transfer": 3783,
+          "encoded": 3483,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-fintech-128.12cc9ab965453426.avif",
+          "start": 1873.7000000029802,
+          "end": 2225.5999999940395,
+          "transfer": 2149,
+          "encoded": 1849,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-map-128.9d96132f65453426.avif",
+          "start": 1873.7000000029802,
+          "end": 2239.7000000029802,
+          "transfer": 1964,
+          "encoded": 1664,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-point-128.9015a99765453426.avif",
+          "start": 1873.7999999970198,
+          "end": 2239.2000000029802,
+          "transfer": 2307,
+          "encoded": 2007,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-customization-128.7538481565453426.avif",
+          "start": 1873.9000000059605,
+          "end": 2225.0999999940395,
+          "transfer": 2319,
+          "encoded": 2019,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-quest-128.3056aaa865453426.avif",
+          "start": 1874.0999999940395,
+          "end": 2191.4000000059605,
+          "transfer": 2005,
+          "encoded": 1705,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/characters_en.json?v=65453426",
+          "start": 1874.7000000029802,
+          "end": 2115.2999999970198,
+          "transfer": 2795,
+          "encoded": 2495,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/dialogs_en.json?v=65453426",
+          "start": 1875.2000000029802,
+          "end": 2207.0999999940395,
+          "transfer": 18710,
+          "encoded": 18410,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-story-pages.js",
+          "start": 2007.4000000059605,
+          "end": 2283.0999999940395,
+          "transfer": 957,
+          "encoded": 657,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-narration-manifest.js",
+          "start": 2118.4000000059605,
+          "end": 2308.0999999940395,
+          "transfer": 2753,
+          "encoded": 2453,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/vendors/draco/draco_wasm_wrapper.js",
+          "start": 2326,
+          "end": 2473.9000000059605,
+          "transfer": 12328,
+          "encoded": 12028,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/vendors/draco/draco_decoder.wasm",
+          "start": 2326.4000000059605,
+          "end": 3471.0999999940395,
+          "transfer": 86694,
+          "encoded": 86394,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture.css",
+          "start": 2333.5999999940395,
+          "end": 2458.4000000059605,
+          "transfer": 6213,
+          "encoded": 5913,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-interior.css",
+          "start": 2335.9000000059605,
+          "end": 2480,
+          "transfer": 4097,
+          "encoded": 3797,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/f9fc82de1a2d6059/models/culture/laika.glb",
+          "start": 2369.4000000059605,
+          "end": 17732.29999999702,
+          "transfer": 1286519,
+          "encoded": 1286219,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/af26b27a1ecececa/models/culture/bharugano-wuna.glb",
+          "start": 2369.5999999940395,
+          "end": 17263.70000000298,
+          "transfer": 1243138,
+          "encoded": 1242838,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/862c2c5719a85a52/models/culture/banua-tada.glb",
+          "start": 2369.7999999970198,
+          "end": 20182.20000000298,
+          "transfer": 1486418,
+          "encoded": 1486118,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/66db08edf2ee78d8/models/culture/mekongga.glb",
+          "start": 2370.0999999940395,
+          "end": 19268.5,
+          "transfer": 1406067,
+          "encoded": 1405767,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/cadae492a0f2a291/models/culture/tugu-mtq.glb",
+          "start": 2370.2000000029802,
+          "end": 12567.59999999404,
+          "transfer": 833893,
+          "encoded": 833593,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/718e70e8b275b695/models/culture/patung-oputa.glb",
+          "start": 2370.4000000059605,
+          "end": 15827.5,
+          "transfer": 1029574,
+          "encoded": 1029274,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_PalmTree.f4a68a0e65453426.glb",
+          "start": 2370.7999999970198,
+          "end": 12730.70000000298,
+          "transfer": 5923,
+          "encoded": 5623,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_TreeRoundA.5a4ba08065453426.glb",
+          "start": 2371.0999999940395,
+          "end": 12868.5,
+          "transfer": 3501,
+          "encoded": 3201,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_TreeRoundF.5133ec1365453426.glb",
+          "start": 2371.4000000059605,
+          "end": 13030.20000000298,
+          "transfer": 5860,
+          "encoded": 5560,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_BushA.4e15289965453426.glb",
+          "start": 2371.5999999940395,
+          "end": 13143.5,
+          "transfer": 2732,
+          "encoded": 2432,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_RockA.3a9f348865453426.glb",
+          "start": 2371.9000000059605,
+          "end": 13269.79999999702,
+          "transfer": 3778,
+          "encoded": 3478,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/0c64ea3fab0e3f6c/models/opening-boat.glb",
+          "start": 2372.2999999970198,
+          "end": 28256.29999999702,
+          "transfer": 1576465,
+          "encoded": 1576165,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/746c4bb45a582e50/models/player-anoa.glb",
+          "start": 2372.5999999940395,
+          "end": 21523.29999999702,
+          "transfer": 485203,
+          "encoded": 484903,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/07ac2d8e81a21ba9/models/player-anoa-accessories.glb",
+          "start": 2372.9000000059605,
+          "end": 20484.20000000298,
+          "transfer": 268295,
+          "encoded": 267995,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/271374fb97238fdf/models/player-anoa-native-accessories.glb",
+          "start": 2373.0999999940395,
+          "end": 22935,
+          "transfer": 469341,
+          "encoded": 469041,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/26688b1eacf7363d/models/sultra-rupa-wordmark.json",
+          "start": 2373.5999999940395,
+          "end": 20213,
+          "transfer": 70702,
+          "encoded": 70402,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/518810905ed3cee3/models/munas-ix-logo-hd.glb",
+          "start": 2374.2000000029802,
+          "end": 27295.29999999702,
+          "transfer": 884222,
+          "encoded": 883922,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sprites.d8373bb465453426.json",
+          "start": 2398.0999999940395,
+          "end": 20325.79999999702,
+          "transfer": 1676,
+          "encoded": 1376,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/character.df6ab95f65453426.glb",
+          "start": 2398.7999999970198,
+          "end": 26531.90000000596,
+          "transfer": 778087,
+          "encoded": 777787,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sprites.ca9a51e965453426.png",
+          "start": 2398.9000000059605,
+          "end": 24469.29999999702,
+          "transfer": 273072,
+          "encoded": 272772,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/noise_perlin.956753cf65453426.png",
+          "start": 26598.90000000596,
+          "end": 27611.09999999404,
+          "transfer": 91204,
+          "encoded": 90904,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/clouds.657c06ba65453426.png",
+          "start": 26599,
+          "end": 26953.70000000298,
+          "transfer": 22685,
+          "encoded": 22385,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/Assets_Data.7f42e25d65453426.png",
+          "start": 26599.09999999404,
+          "end": 26710.59999999404,
+          "transfer": 1605,
+          "encoded": 1305,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/SplattingPatterns.67639f9365453426.png",
+          "start": 26599.20000000298,
+          "end": 27880.09999999404,
+          "transfer": 116793,
+          "encoded": 116493,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/Assets_Gradients.1237e2d365453426.png",
+          "start": 26599.20000000298,
+          "end": 28450.20000000298,
+          "transfer": 112401,
+          "encoded": 112101,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/Character_Texture.2c62815965453426.png",
+          "start": 26599.29999999702,
+          "end": 28025.40000000596,
+          "transfer": 35968,
+          "encoded": 35668,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/a2f5d27a0c097d60/models/culture/grass-splat.png",
+          "start": 26599.40000000596,
+          "end": 28827.70000000298,
+          "transfer": 184103,
+          "encoded": 183803,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/227017a1aab40911/models/culture/terrain-splat.png",
+          "start": 26599.40000000596,
+          "end": 29119.70000000298,
+          "transfer": 322885,
+          "encoded": 322585,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/5a2112a95da02ec7/models/culture/sulawesi-intro.glb",
+          "start": 26602.70000000298,
+          "end": 27346.5,
+          "transfer": 50911,
+          "encoded": 50611,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_Taxi.9d714b7c65453426.glb",
+          "start": 26604.09999999404,
+          "end": 27166,
+          "transfer": 8287,
+          "encoded": 7987,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_BoatYellow.9ec7874765453426.glb",
+          "start": 26604.5,
+          "end": 27353,
+          "transfer": 8715,
+          "encoded": 8415,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_JoystickRaw.da301e9265453426.glb",
+          "start": 26604.90000000596,
+          "end": 27423.29999999702,
+          "transfer": 4115,
+          "encoded": 3815,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_PalmTree.f4a68a0e65453426.glb",
+          "start": 26605.29999999702,
+          "end": 26607.20000000298,
+          "transfer": 0,
+          "encoded": 5623,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_TreeRoundA.5a4ba08065453426.glb",
+          "start": 26605.79999999702,
+          "end": 26608.59999999404,
+          "transfer": 0,
+          "encoded": 3201,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_TreeRoundF.5133ec1365453426.glb",
+          "start": 26606.09999999404,
+          "end": 26610.90000000596,
+          "transfer": 0,
+          "encoded": 5560,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_RockA.3a9f348865453426.glb",
+          "start": 26606.59999999404,
+          "end": 26611.09999999404,
+          "transfer": 0,
+          "encoded": 3478,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_BushA.4e15289965453426.glb",
+          "start": 26607,
+          "end": 26611.20000000298,
+          "transfer": 0,
+          "encoded": 2432,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_Wall.0a094ddd65453426.glb",
+          "start": 26607.40000000596,
+          "end": 27439.90000000596,
+          "transfer": 1330,
+          "encoded": 1030,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_SpeakersOn.e617dbf365453426.glb",
+          "start": 26607.79999999702,
+          "end": 27555.40000000596,
+          "transfer": 12168,
+          "encoded": 11868,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_CoastalWorld.e8c2b2cb65453426.glb",
+          "start": 26609.79999999702,
+          "end": 27598.20000000298,
+          "transfer": 5971,
+          "encoded": 5671,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/interactions-yes-256.dd627c7e65453426.avif",
+          "start": 30289,
+          "end": 30407,
+          "transfer": 2874,
+          "encoded": 2574,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-map-64.a97628e265453426.avif",
+          "start": 30289.09999999404,
+          "end": 30383.5,
+          "transfer": 1417,
+          "encoded": 1117,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-fintech-64.384003b765453426.avif",
+          "start": 30289.20000000298,
+          "end": 30396.70000000298,
+          "transfer": 1561,
+          "encoded": 1261,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-quest-64.b3e8adf065453426.avif",
+          "start": 30289.20000000298,
+          "end": 30383.70000000298,
+          "transfer": 1465,
+          "encoded": 1165,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-customization-64.e87662da65453426.avif",
+          "start": 30289.29999999702,
+          "end": 30397.09999999404,
+          "transfer": 1635,
+          "encoded": 1335,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/branding/sultra-rupa.svg#wordmark",
+          "start": 30503.90000000596,
+          "end": 30605.5,
+          "transfer": 2117,
+          "encoded": 1817,
+          "initiator": "other"
+        }
+      ],
+      "name": "cold-4Mbps"
+    },
+    {
+      "readyMs": 2060.7000000029802,
+      "scene": "IslandIntro",
+      "savedIntroCompleted": false,
+      "boat": "ready",
+      "logo": "ready",
+      "wordmark": "ready",
+      "character": "ready",
+      "houseTemplates": 6,
+      "initialBytes": 13963945,
+      "initialTransfer": 4717,
+      "initialAudio": [],
+      "resources": [
+        {
+          "url": "http://localhost:3001/assets/main.35e6243a65453426.js",
+          "start": 145,
+          "end": 145,
+          "transfer": 0,
+          "encoded": 44651,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+          "start": 145.20000000298023,
+          "end": 145.20000000298023,
+          "transfer": 0,
+          "encoded": 80049,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/vendor.a83843c365453426.css",
+          "start": 145.20000000298023,
+          "end": 145.20000000298023,
+          "transfer": 0,
+          "encoded": 11446,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/Gilmer-Medium.dfe209dd65453426.woff2",
+          "start": 145.29999999701977,
+          "end": 145.29999999701977,
+          "transfer": 0,
+          "encoded": 33288,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/Gilmer-Bold.b4e74cd165453426.woff2",
+          "start": 145.40000000596046,
+          "end": 145.40000000596046,
+          "transfer": 0,
+          "encoded": 33648,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-shell-copy.js",
+          "start": 145.40000000596046,
+          "end": 145.40000000596046,
+          "transfer": 0,
+          "encoded": 6646,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-about.js",
+          "start": 145.5,
+          "end": 145.5,
+          "transfer": 0,
+          "encoded": 6473,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-loading.js",
+          "start": 161,
+          "end": 161,
+          "transfer": 0,
+          "encoded": 1496,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+          "start": 161.09999999403954,
+          "end": 161.09999999403954,
+          "transfer": 0,
+          "encoded": 380537,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/Comfortaa-Regular.d3d2e80c65453426.woff2",
+          "start": 207,
+          "end": 207,
+          "transfer": 0,
+          "encoded": 22800,
+          "initiator": "css"
+        },
+        {
+          "url": "http://localhost:3001/assets/munas-landmark.js",
+          "start": 210,
+          "end": 210,
+          "transfer": 0,
+          "encoded": 3875,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/fintechs_en.json?v=65453426",
+          "start": 226.90000000596046,
+          "end": 228.20000000298023,
+          "transfer": 0,
+          "encoded": 5803,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/items_en.json?v=65453426",
+          "start": 227.20000000298023,
+          "end": 228.90000000596046,
+          "transfer": 0,
+          "encoded": 838,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/opening-boat.js",
+          "start": 248.90000000596046,
+          "end": 248.90000000596046,
+          "transfer": 0,
+          "encoded": 2402,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/player-character.js",
+          "start": 249,
+          "end": 249,
+          "transfer": 0,
+          "encoded": 6627,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-mobile-controls.js",
+          "start": 249.09999999403954,
+          "end": 249.09999999403954,
+          "transfer": 0,
+          "encoded": 1275,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-intro-wordmark.js",
+          "start": 249.20000000298023,
+          "end": 249.20000000298023,
+          "transfer": 0,
+          "encoded": 1450,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-island.js",
+          "start": 249.5,
+          "end": 249.5,
+          "transfer": 0,
+          "encoded": 15821,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-startup.js",
+          "start": 249.59999999403954,
+          "end": 249.59999999403954,
+          "transfer": 0,
+          "encoded": 526,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/asset-urls.js",
+          "start": 249.59999999403954,
+          "end": 249.59999999403954,
+          "transfer": 0,
+          "encoded": 7386,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/anoa-animation.js",
+          "start": 258.29999999701977,
+          "end": 258.29999999701977,
+          "transfer": 0,
+          "encoded": 1214,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-island-layout.js",
+          "start": 258.59999999403954,
+          "end": 258.59999999403954,
+          "transfer": 0,
+          "encoded": 22178,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture-data.js",
+          "start": 258.59999999403954,
+          "end": 258.59999999403954,
+          "transfer": 0,
+          "encoded": 4279,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture-ui.js",
+          "start": 258.79999999701977,
+          "end": 258.79999999701977,
+          "transfer": 0,
+          "encoded": 7488,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-phone-map.js",
+          "start": 259,
+          "end": 259,
+          "transfer": 0,
+          "encoded": 6012,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-phone-culture.js",
+          "start": 259.09999999403954,
+          "end": 259.09999999403954,
+          "transfer": 0,
+          "encoded": 4523,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-guide-dialogs.js",
+          "start": 259.20000000298023,
+          "end": 259.20000000298023,
+          "transfer": 0,
+          "encoded": 1206,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-house-interaction.js",
+          "start": 259.20000000298023,
+          "end": 259.20000000298023,
+          "transfer": 0,
+          "encoded": 3184,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-house-interior.js",
+          "start": 259.40000000596046,
+          "end": 259.40000000596046,
+          "transfer": 0,
+          "encoded": 7949,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture-voice.js",
+          "start": 259.5,
+          "end": 259.5,
+          "transfer": 0,
+          "encoded": 3142,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-lulo.js",
+          "start": 259.5,
+          "end": 259.5,
+          "transfer": 0,
+          "encoded": 4458,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/icons/favicon_light.svg?v=sultra-icon-20261022",
+          "start": 261.29999999701977,
+          "end": 343.5,
+          "transfer": 300,
+          "encoded": 624,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-story-pages.js",
+          "start": 261.59999999403954,
+          "end": 261.59999999403954,
+          "transfer": 0,
+          "encoded": 657,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-narration-manifest.js",
+          "start": 262,
+          "end": 262,
+          "transfer": 0,
+          "encoded": 2453,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/quests_en.json?v=65453426",
+          "start": 262.90000000596046,
+          "end": 263.59999999403954,
+          "transfer": 0,
+          "encoded": 2794,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/vendors/draco/draco_wasm_wrapper.js",
+          "start": 265.40000000596046,
+          "end": 266.20000000298023,
+          "transfer": 0,
+          "encoded": 12028,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/vendors/draco/draco_decoder.wasm",
+          "start": 265.59999999403954,
+          "end": 267.40000000596046,
+          "transfer": 0,
+          "encoded": 86394,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-GraduationHat-256.d9428d1f65453426.avif",
+          "start": 282.40000000596046,
+          "end": 282.40000000596046,
+          "transfer": 0,
+          "encoded": 2376,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-BikeHelmet-256.563759e965453426.avif",
+          "start": 282.59999999403954,
+          "end": 282.59999999403954,
+          "transfer": 0,
+          "encoded": 2378,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Bob-256.f1bbf8f465453426.avif",
+          "start": 282.79999999701977,
+          "end": 282.79999999701977,
+          "transfer": 0,
+          "encoded": 2129,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-Sandals-256.e49ebb9d65453426.avif",
+          "start": 282.90000000596046,
+          "end": 282.90000000596046,
+          "transfer": 0,
+          "encoded": 3530,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Scuba-256.b038d77565453426.avif",
+          "start": 283,
+          "end": 283,
+          "transfer": 0,
+          "encoded": 3911,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-PandaBackpack-256.5bee823c65453426.avif",
+          "start": 283.09999999403954,
+          "end": 283.09999999403954,
+          "transfer": 0,
+          "encoded": 3993,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Buoy-256.ce9b3ff365453426.avif",
+          "start": 283.20000000298023,
+          "end": 283.20000000298023,
+          "transfer": 0,
+          "encoded": 3191,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-Palm-256.985105a565453426.avif",
+          "start": 283.29999999701977,
+          "end": 283.29999999701977,
+          "transfer": 0,
+          "encoded": 3462,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Unicorn-256.b605e3d865453426.avif",
+          "start": 283.40000000596046,
+          "end": 283.40000000596046,
+          "transfer": 0,
+          "encoded": 3054,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-MotorcycleHelmet-256.f8dc535465453426.avif",
+          "start": 283.5,
+          "end": 283.5,
+          "transfer": 0,
+          "encoded": 4105,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-OxygenBottle-256.57c6362165453426.avif",
+          "start": 283.70000000298023,
+          "end": 283.70000000298023,
+          "transfer": 0,
+          "encoded": 4585,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-Dino-256.b018bcbf65453426.avif",
+          "start": 283.79999999701977,
+          "end": 283.79999999701977,
+          "transfer": 0,
+          "encoded": 2886,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-BearBeanie-256.9b4a2e0065453426.avif",
+          "start": 283.90000000596046,
+          "end": 283.90000000596046,
+          "transfer": 0,
+          "encoded": 3567,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-BunnyCap-256.f9bdf9c465453426.avif",
+          "start": 292.90000000596046,
+          "end": 292.90000000596046,
+          "transfer": 0,
+          "encoded": 3350,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-VahineCrown-256.642dc25665453426.avif",
+          "start": 293.09999999403954,
+          "end": 293.09999999403954,
+          "transfer": 0,
+          "encoded": 5145,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Fish-256.d1507b5c65453426.avif",
+          "start": 293.29999999701977,
+          "end": 293.29999999701977,
+          "transfer": 0,
+          "encoded": 3013,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Shark-256.1f1414ff65453426.avif",
+          "start": 293.40000000596046,
+          "end": 293.40000000596046,
+          "transfer": 0,
+          "encoded": 2154,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-FastShoes-256.380b674665453426.avif",
+          "start": 293.5,
+          "end": 293.5,
+          "transfer": 0,
+          "encoded": 3512,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Dino-256.427a1f9965453426.avif",
+          "start": 293.70000000298023,
+          "end": 293.70000000298023,
+          "transfer": 0,
+          "encoded": 3032,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Wings-256.ca31ce0d65453426.avif",
+          "start": 293.79999999701977,
+          "end": 293.79999999701977,
+          "transfer": 0,
+          "encoded": 3086,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-DeerHat-256.a6d4161865453426.avif",
+          "start": 293.90000000596046,
+          "end": 293.90000000596046,
+          "transfer": 0,
+          "encoded": 4013,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-AstronautHelmet-256.1ff5b2ca65453426.avif",
+          "start": 294,
+          "end": 294,
+          "transfer": 0,
+          "encoded": 3537,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Dino-256.c831d53f65453426.avif",
+          "start": 294.09999999403954,
+          "end": 294.09999999403954,
+          "transfer": 0,
+          "encoded": 3695,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-JetPack-256.4e02a36b65453426.avif",
+          "start": 294.40000000596046,
+          "end": 294.40000000596046,
+          "transfer": 0,
+          "encoded": 3483,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-map-128.9d96132f65453426.avif",
+          "start": 299.29999999701977,
+          "end": 299.29999999701977,
+          "transfer": 0,
+          "encoded": 1664,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-fintech-128.12cc9ab965453426.avif",
+          "start": 299.59999999403954,
+          "end": 299.59999999403954,
+          "transfer": 0,
+          "encoded": 1849,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-point-128.9015a99765453426.avif",
+          "start": 299.90000000596046,
+          "end": 299.90000000596046,
+          "transfer": 0,
+          "encoded": 2007,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-customization-128.7538481565453426.avif",
+          "start": 300.09999999403954,
+          "end": 300.09999999403954,
+          "transfer": 0,
+          "encoded": 2019,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-quest-128.3056aaa865453426.avif",
+          "start": 300.20000000298023,
+          "end": 300.20000000298023,
+          "transfer": 0,
+          "encoded": 1705,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/characters_en.json?v=65453426",
+          "start": 300.70000000298023,
+          "end": 301.79999999701977,
+          "transfer": 0,
+          "encoded": 2495,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/dialogs_en.json?v=65453426",
+          "start": 300.90000000596046,
+          "end": 302.59999999403954,
+          "transfer": 0,
+          "encoded": 18410,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture.css",
+          "start": 301.5,
+          "end": 301.5,
+          "transfer": 0,
+          "encoded": 5913,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-interior.css",
+          "start": 301.90000000596046,
+          "end": 301.90000000596046,
+          "transfer": 0,
+          "encoded": 3797,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/f9fc82de1a2d6059/models/culture/laika.glb",
+          "start": 319.70000000298023,
+          "end": 323.70000000298023,
+          "transfer": 0,
+          "encoded": 1286219,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/af26b27a1ecececa/models/culture/bharugano-wuna.glb",
+          "start": 320,
+          "end": 328.20000000298023,
+          "transfer": 0,
+          "encoded": 1242838,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/862c2c5719a85a52/models/culture/banua-tada.glb",
+          "start": 320.20000000298023,
+          "end": 340.09999999403954,
+          "transfer": 0,
+          "encoded": 1486118,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/66db08edf2ee78d8/models/culture/mekongga.glb",
+          "start": 320.29999999701977,
+          "end": 339.79999999701977,
+          "transfer": 0,
+          "encoded": 1405767,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/cadae492a0f2a291/models/culture/tugu-mtq.glb",
+          "start": 320.90000000596046,
+          "end": 337.59999999403954,
+          "transfer": 0,
+          "encoded": 833593,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/718e70e8b275b695/models/culture/patung-oputa.glb",
+          "start": 321.29999999701977,
+          "end": 344.90000000596046,
+          "transfer": 0,
+          "encoded": 1029274,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_PalmTree.f4a68a0e65453426.glb",
+          "start": 321.59999999403954,
+          "end": 346.29999999701977,
+          "transfer": 0,
+          "encoded": 5623,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_TreeRoundA.5a4ba08065453426.glb",
+          "start": 321.79999999701977,
+          "end": 346.29999999701977,
+          "transfer": 0,
+          "encoded": 3201,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_TreeRoundF.5133ec1365453426.glb",
+          "start": 322,
+          "end": 346.90000000596046,
+          "transfer": 0,
+          "encoded": 5560,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_BushA.4e15289965453426.glb",
+          "start": 322.20000000298023,
+          "end": 347.70000000298023,
+          "transfer": 0,
+          "encoded": 2432,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_RockA.3a9f348865453426.glb",
+          "start": 322.40000000596046,
+          "end": 347.70000000298023,
+          "transfer": 0,
+          "encoded": 3478,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/0c64ea3fab0e3f6c/models/opening-boat.glb",
+          "start": 322.70000000298023,
+          "end": 353.09999999403954,
+          "transfer": 0,
+          "encoded": 1576165,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/746c4bb45a582e50/models/player-anoa.glb",
+          "start": 322.79999999701977,
+          "end": 357.20000000298023,
+          "transfer": 0,
+          "encoded": 484903,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/07ac2d8e81a21ba9/models/player-anoa-accessories.glb",
+          "start": 323.20000000298023,
+          "end": 357.59999999403954,
+          "transfer": 0,
+          "encoded": 267995,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/271374fb97238fdf/models/player-anoa-native-accessories.glb",
+          "start": 323.29999999701977,
+          "end": 360.59999999403954,
+          "transfer": 0,
+          "encoded": 469041,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/26688b1eacf7363d/models/sultra-rupa-wordmark.json",
+          "start": 323.40000000596046,
+          "end": 363.29999999701977,
+          "transfer": 0,
+          "encoded": 70402,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/518810905ed3cee3/models/munas-ix-logo-hd.glb",
+          "start": 323.59999999403954,
+          "end": 364.90000000596046,
+          "transfer": 0,
+          "encoded": 883922,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sprites.d8373bb465453426.json",
+          "start": 343.29999999701977,
+          "end": 362.29999999701977,
+          "transfer": 0,
+          "encoded": 1376,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sprites.ca9a51e965453426.png",
+          "start": 343.59999999403954,
+          "end": 343.59999999403954,
+          "transfer": 0,
+          "encoded": 272772,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/character.df6ab95f65453426.glb",
+          "start": 343.90000000596046,
+          "end": 369.70000000298023,
+          "transfer": 0,
+          "encoded": 777787,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/favicon.ico?v=sultra-icon-20261022",
+          "start": 416.09999999403954,
+          "end": 513.7000000029802,
+          "transfer": 4417,
+          "encoded": 4117,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/noise_perlin.956753cf65453426.png",
+          "start": 760.5999999940395,
+          "end": 760.5999999940395,
+          "transfer": 0,
+          "encoded": 90904,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/clouds.657c06ba65453426.png",
+          "start": 761.0999999940395,
+          "end": 761.0999999940395,
+          "transfer": 0,
+          "encoded": 22385,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/Assets_Data.7f42e25d65453426.png",
+          "start": 761.5,
+          "end": 761.5,
+          "transfer": 0,
+          "encoded": 1305,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/SplattingPatterns.67639f9365453426.png",
+          "start": 762.2000000029802,
+          "end": 762.2000000029802,
+          "transfer": 0,
+          "encoded": 116493,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/Assets_Gradients.1237e2d365453426.png",
+          "start": 762.2999999970198,
+          "end": 762.2999999970198,
+          "transfer": 0,
+          "encoded": 112101,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/Character_Texture.2c62815965453426.png",
+          "start": 762.5999999940395,
+          "end": 762.5999999940395,
+          "transfer": 0,
+          "encoded": 35668,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/227017a1aab40911/models/culture/terrain-splat.png",
+          "start": 763,
+          "end": 763,
+          "transfer": 0,
+          "encoded": 322585,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/a2f5d27a0c097d60/models/culture/grass-splat.png",
+          "start": 763.2000000029802,
+          "end": 763.2000000029802,
+          "transfer": 0,
+          "encoded": 183803,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/interactions-yes-256.dd627c7e65453426.avif",
+          "start": 1874.2999999970198,
+          "end": 1874.2999999970198,
+          "transfer": 0,
+          "encoded": 2574,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-map-64.a97628e265453426.avif",
+          "start": 1878.5,
+          "end": 1878.5,
+          "transfer": 0,
+          "encoded": 1117,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-fintech-64.384003b765453426.avif",
+          "start": 1878.7999999970198,
+          "end": 1878.7999999970198,
+          "transfer": 0,
+          "encoded": 1261,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-quest-64.b3e8adf065453426.avif",
+          "start": 1879.2000000029802,
+          "end": 1879.2000000029802,
+          "transfer": 0,
+          "encoded": 1165,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-customization-64.e87662da65453426.avif",
+          "start": 1879.5,
+          "end": 1879.5,
+          "transfer": 0,
+          "encoded": 1335,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/branding/sultra-rupa.svg#wordmark",
+          "start": 2044.5999999940395,
+          "end": 2142.5999999940395,
+          "transfer": 300,
+          "encoded": 0,
+          "initiator": "other"
+        }
+      ],
+      "name": "cached-4Mbps"
+    },
+    {
+      "readyMs": 4618.199999988079,
+      "scene": "IslandWest",
+      "savedIntroCompleted": true,
+      "boat": "skipped",
+      "logo": "skipped",
+      "wordmark": "skipped",
+      "character": "ready",
+      "houseTemplates": 6,
+      "initialBytes": 11483947,
+      "initialTransfer": 55808,
+      "initialAudio": [],
+      "resources": [
+        {
+          "url": "http://localhost:3001/assets/main.35e6243a65453426.js",
+          "start": 136.19999998807907,
+          "end": 136.19999998807907,
+          "transfer": 0,
+          "encoded": 44651,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+          "start": 136.3999999910593,
+          "end": 136.3999999910593,
+          "transfer": 0,
+          "encoded": 80049,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/vendor.a83843c365453426.css",
+          "start": 136.5,
+          "end": 136.5,
+          "transfer": 0,
+          "encoded": 11446,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/Gilmer-Medium.dfe209dd65453426.woff2",
+          "start": 136.69999998807907,
+          "end": 136.69999998807907,
+          "transfer": 0,
+          "encoded": 33288,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/Gilmer-Bold.b4e74cd165453426.woff2",
+          "start": 136.8999999910593,
+          "end": 136.8999999910593,
+          "transfer": 0,
+          "encoded": 33648,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-shell-copy.js",
+          "start": 137.09999999403954,
+          "end": 137.09999999403954,
+          "transfer": 0,
+          "encoded": 6646,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-about.js",
+          "start": 137.19999998807907,
+          "end": 137.19999998807907,
+          "transfer": 0,
+          "encoded": 6473,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-loading.js",
+          "start": 154.69999998807907,
+          "end": 154.69999998807907,
+          "transfer": 0,
+          "encoded": 1496,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+          "start": 154.8999999910593,
+          "end": 154.8999999910593,
+          "transfer": 0,
+          "encoded": 380537,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/Comfortaa-Regular.d3d2e80c65453426.woff2",
+          "start": 174.69999998807907,
+          "end": 174.69999998807907,
+          "transfer": 0,
+          "encoded": 22800,
+          "initiator": "css"
+        },
+        {
+          "url": "http://localhost:3001/assets/munas-landmark.js",
+          "start": 176.59999999403954,
+          "end": 176.59999999403954,
+          "transfer": 0,
+          "encoded": 3875,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/fintechs_en.json?v=65453426",
+          "start": 198.5,
+          "end": 199.5,
+          "transfer": 0,
+          "encoded": 5803,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/items_en.json?v=65453426",
+          "start": 198.79999999701977,
+          "end": 199.8999999910593,
+          "transfer": 0,
+          "encoded": 838,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/opening-boat.js",
+          "start": 200.29999999701977,
+          "end": 200.29999999701977,
+          "transfer": 0,
+          "encoded": 2402,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/player-character.js",
+          "start": 200.59999999403954,
+          "end": 200.59999999403954,
+          "transfer": 0,
+          "encoded": 6627,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-mobile-controls.js",
+          "start": 200.69999998807907,
+          "end": 200.69999998807907,
+          "transfer": 0,
+          "encoded": 1275,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-intro-wordmark.js",
+          "start": 200.79999999701977,
+          "end": 200.79999999701977,
+          "transfer": 0,
+          "encoded": 1450,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-island.js",
+          "start": 201,
+          "end": 201,
+          "transfer": 0,
+          "encoded": 15821,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-startup.js",
+          "start": 201.19999998807907,
+          "end": 201.19999998807907,
+          "transfer": 0,
+          "encoded": 526,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/asset-urls.js",
+          "start": 201.29999999701977,
+          "end": 201.29999999701977,
+          "transfer": 0,
+          "encoded": 7386,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/anoa-animation.js",
+          "start": 212.29999999701977,
+          "end": 212.29999999701977,
+          "transfer": 0,
+          "encoded": 1214,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-island-layout.js",
+          "start": 212.59999999403954,
+          "end": 212.59999999403954,
+          "transfer": 0,
+          "encoded": 22178,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture-data.js",
+          "start": 212.69999998807907,
+          "end": 212.69999998807907,
+          "transfer": 0,
+          "encoded": 4279,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture-ui.js",
+          "start": 212.8999999910593,
+          "end": 212.8999999910593,
+          "transfer": 0,
+          "encoded": 7488,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-phone-map.js",
+          "start": 213.09999999403954,
+          "end": 213.09999999403954,
+          "transfer": 0,
+          "encoded": 6012,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-phone-culture.js",
+          "start": 213.19999998807907,
+          "end": 213.19999998807907,
+          "transfer": 0,
+          "encoded": 4523,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-guide-dialogs.js",
+          "start": 213.29999999701977,
+          "end": 213.29999999701977,
+          "transfer": 0,
+          "encoded": 1206,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-house-interaction.js",
+          "start": 213.3999999910593,
+          "end": 213.3999999910593,
+          "transfer": 0,
+          "encoded": 3184,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-house-interior.js",
+          "start": 213.59999999403954,
+          "end": 213.59999999403954,
+          "transfer": 0,
+          "encoded": 7949,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture-voice.js",
+          "start": 213.69999998807907,
+          "end": 213.69999998807907,
+          "transfer": 0,
+          "encoded": 3142,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-lulo.js",
+          "start": 213.79999999701977,
+          "end": 213.79999999701977,
+          "transfer": 0,
+          "encoded": 4458,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-story-pages.js",
+          "start": 216.19999998807907,
+          "end": 216.19999998807907,
+          "transfer": 0,
+          "encoded": 657,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-narration-manifest.js",
+          "start": 216.79999999701977,
+          "end": 216.79999999701977,
+          "transfer": 0,
+          "encoded": 2453,
+          "initiator": "script"
+        },
+        {
+          "url": "http://localhost:3001/icons/favicon_light.svg?v=sultra-icon-20261022",
+          "start": 216.8999999910593,
+          "end": 301.3999999910593,
+          "transfer": 300,
+          "encoded": 624,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/quests_en.json?v=65453426",
+          "start": 218,
+          "end": 218.79999999701977,
+          "transfer": 0,
+          "encoded": 2794,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/vendors/draco/draco_wasm_wrapper.js",
+          "start": 220.59999999403954,
+          "end": 221.59999999403954,
+          "transfer": 0,
+          "encoded": 12028,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/vendors/draco/draco_decoder.wasm",
+          "start": 220.8999999910593,
+          "end": 223.09999999403954,
+          "transfer": 0,
+          "encoded": 86394,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-GraduationHat-256.d9428d1f65453426.avif",
+          "start": 230,
+          "end": 230,
+          "transfer": 0,
+          "encoded": 2376,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-BikeHelmet-256.563759e965453426.avif",
+          "start": 230.19999998807907,
+          "end": 230.19999998807907,
+          "transfer": 0,
+          "encoded": 2378,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Bob-256.f1bbf8f465453426.avif",
+          "start": 230.3999999910593,
+          "end": 230.3999999910593,
+          "transfer": 0,
+          "encoded": 2129,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-Sandals-256.e49ebb9d65453426.avif",
+          "start": 230.5,
+          "end": 230.5,
+          "transfer": 0,
+          "encoded": 3530,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Scuba-256.b038d77565453426.avif",
+          "start": 230.69999998807907,
+          "end": 230.69999998807907,
+          "transfer": 0,
+          "encoded": 3911,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-PandaBackpack-256.5bee823c65453426.avif",
+          "start": 230.79999999701977,
+          "end": 230.79999999701977,
+          "transfer": 0,
+          "encoded": 3993,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Buoy-256.ce9b3ff365453426.avif",
+          "start": 231,
+          "end": 231,
+          "transfer": 0,
+          "encoded": 3191,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-Palm-256.985105a565453426.avif",
+          "start": 231.09999999403954,
+          "end": 231.09999999403954,
+          "transfer": 0,
+          "encoded": 3462,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Unicorn-256.b605e3d865453426.avif",
+          "start": 231.19999998807907,
+          "end": 231.19999998807907,
+          "transfer": 0,
+          "encoded": 3054,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-MotorcycleHelmet-256.f8dc535465453426.avif",
+          "start": 231.3999999910593,
+          "end": 231.3999999910593,
+          "transfer": 0,
+          "encoded": 4105,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-OxygenBottle-256.57c6362165453426.avif",
+          "start": 231.59999999403954,
+          "end": 231.59999999403954,
+          "transfer": 0,
+          "encoded": 4585,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-Dino-256.b018bcbf65453426.avif",
+          "start": 231.69999998807907,
+          "end": 231.69999998807907,
+          "transfer": 0,
+          "encoded": 2886,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-BearBeanie-256.9b4a2e0065453426.avif",
+          "start": 232,
+          "end": 232,
+          "transfer": 0,
+          "encoded": 3567,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-BunnyCap-256.f9bdf9c465453426.avif",
+          "start": 232.09999999403954,
+          "end": 232.09999999403954,
+          "transfer": 0,
+          "encoded": 3350,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-VahineCrown-256.642dc25665453426.avif",
+          "start": 232.19999998807907,
+          "end": 232.19999998807907,
+          "transfer": 0,
+          "encoded": 5145,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Fish-256.d1507b5c65453426.avif",
+          "start": 232.29999999701977,
+          "end": 232.29999999701977,
+          "transfer": 0,
+          "encoded": 3013,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Shark-256.1f1414ff65453426.avif",
+          "start": 232.5,
+          "end": 232.5,
+          "transfer": 0,
+          "encoded": 2154,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Bottom-FastShoes-256.380b674665453426.avif",
+          "start": 232.59999999403954,
+          "end": 232.59999999403954,
+          "transfer": 0,
+          "encoded": 3512,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-Dino-256.427a1f9965453426.avif",
+          "start": 232.79999999701977,
+          "end": 232.79999999701977,
+          "transfer": 0,
+          "encoded": 3032,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Wings-256.ca31ce0d65453426.avif",
+          "start": 232.8999999910593,
+          "end": 232.8999999910593,
+          "transfer": 0,
+          "encoded": 3086,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-DeerHat-256.a6d4161865453426.avif",
+          "start": 233.09999999403954,
+          "end": 233.09999999403954,
+          "transfer": 0,
+          "encoded": 4013,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Head-AstronautHelmet-256.1ff5b2ca65453426.avif",
+          "start": 233.19999998807907,
+          "end": 233.19999998807907,
+          "transfer": 0,
+          "encoded": 3537,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-Dino-256.c831d53f65453426.avif",
+          "start": 233.5,
+          "end": 233.5,
+          "transfer": 0,
+          "encoded": 3695,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/item-Body-JetPack-256.4e02a36b65453426.avif",
+          "start": 233.69999998807907,
+          "end": 233.69999998807907,
+          "transfer": 0,
+          "encoded": 3483,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-map-128.9d96132f65453426.avif",
+          "start": 237.79999999701977,
+          "end": 237.79999999701977,
+          "transfer": 0,
+          "encoded": 1664,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-fintech-128.12cc9ab965453426.avif",
+          "start": 238.09999999403954,
+          "end": 238.09999999403954,
+          "transfer": 0,
+          "encoded": 1849,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-point-128.9015a99765453426.avif",
+          "start": 238.3999999910593,
+          "end": 238.3999999910593,
+          "transfer": 0,
+          "encoded": 2007,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-customization-128.7538481565453426.avif",
+          "start": 238.69999998807907,
+          "end": 238.69999998807907,
+          "transfer": 0,
+          "encoded": 2019,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-quest-128.3056aaa865453426.avif",
+          "start": 238.8999999910593,
+          "end": 238.8999999910593,
+          "transfer": 0,
+          "encoded": 1705,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/characters_en.json?v=65453426",
+          "start": 239.5,
+          "end": 240.09999999403954,
+          "transfer": 0,
+          "encoded": 2495,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/dialogs_en.json?v=65453426",
+          "start": 239.59999999403954,
+          "end": 240.69999998807907,
+          "transfer": 0,
+          "encoded": 18410,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-culture.css",
+          "start": 240.19999998807907,
+          "end": 240.19999998807907,
+          "transfer": 0,
+          "encoded": 5913,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/assets/sultra-interior.css",
+          "start": 240.69999998807907,
+          "end": 240.69999998807907,
+          "transfer": 0,
+          "encoded": 3797,
+          "initiator": "link"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/f9fc82de1a2d6059/models/culture/laika.glb",
+          "start": 257.09999999403954,
+          "end": 260.8999999910593,
+          "transfer": 0,
+          "encoded": 1286219,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/af26b27a1ecececa/models/culture/bharugano-wuna.glb",
+          "start": 257.29999999701977,
+          "end": 265.5,
+          "transfer": 0,
+          "encoded": 1242838,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/862c2c5719a85a52/models/culture/banua-tada.glb",
+          "start": 257.59999999403954,
+          "end": 277.69999998807907,
+          "transfer": 0,
+          "encoded": 1486118,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/66db08edf2ee78d8/models/culture/mekongga.glb",
+          "start": 257.69999998807907,
+          "end": 277.29999999701977,
+          "transfer": 0,
+          "encoded": 1405767,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/cadae492a0f2a291/models/culture/tugu-mtq.glb",
+          "start": 257.8999999910593,
+          "end": 275,
+          "transfer": 0,
+          "encoded": 833593,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/718e70e8b275b695/models/culture/patung-oputa.glb",
+          "start": 258.09999999403954,
+          "end": 281.79999999701977,
+          "transfer": 0,
+          "encoded": 1029274,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_PalmTree.f4a68a0e65453426.glb",
+          "start": 258.29999999701977,
+          "end": 283.09999999403954,
+          "transfer": 0,
+          "encoded": 5623,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_TreeRoundA.5a4ba08065453426.glb",
+          "start": 258.5,
+          "end": 283.19999998807907,
+          "transfer": 0,
+          "encoded": 3201,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_TreeRoundF.5133ec1365453426.glb",
+          "start": 258.69999998807907,
+          "end": 283.79999999701977,
+          "transfer": 0,
+          "encoded": 5560,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_BushA.4e15289965453426.glb",
+          "start": 258.79999999701977,
+          "end": 284.5,
+          "transfer": 0,
+          "encoded": 2432,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/Asset_RockA.3a9f348865453426.glb",
+          "start": 259.09999999403954,
+          "end": 284.69999998807907,
+          "transfer": 0,
+          "encoded": 3478,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/746c4bb45a582e50/models/player-anoa.glb",
+          "start": 259.29999999701977,
+          "end": 287.29999999701977,
+          "transfer": 0,
+          "encoded": 484903,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/07ac2d8e81a21ba9/models/player-anoa-accessories.glb",
+          "start": 259.5,
+          "end": 293.79999999701977,
+          "transfer": 0,
+          "encoded": 267995,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/271374fb97238fdf/models/player-anoa-native-accessories.glb",
+          "start": 259.69999998807907,
+          "end": 293.29999999701977,
+          "transfer": 0,
+          "encoded": 469041,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sprites.d8373bb465453426.json",
+          "start": 281.3999999910593,
+          "end": 289.29999999701977,
+          "transfer": 0,
+          "encoded": 1376,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/sprites.ca9a51e965453426.png",
+          "start": 281.79999999701977,
+          "end": 281.79999999701977,
+          "transfer": 0,
+          "encoded": 272772,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/character.df6ab95f65453426.glb",
+          "start": 282.09999999403954,
+          "end": 299,
+          "transfer": 0,
+          "encoded": 777787,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/favicon.ico?v=sultra-icon-20261022",
+          "start": 362.09999999403954,
+          "end": 455.19999998807907,
+          "transfer": 4417,
+          "encoded": 4117,
+          "initiator": "other"
+        },
+        {
+          "url": "http://localhost:3001/assets/noise_perlin.956753cf65453426.png",
+          "start": 655.2999999970198,
+          "end": 655.2999999970198,
+          "transfer": 0,
+          "encoded": 90904,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/clouds.657c06ba65453426.png",
+          "start": 655.5999999940395,
+          "end": 655.5999999940395,
+          "transfer": 0,
+          "encoded": 22385,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/Assets_Data.7f42e25d65453426.png",
+          "start": 655.7999999970198,
+          "end": 655.7999999970198,
+          "transfer": 0,
+          "encoded": 1305,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/SplattingPatterns.67639f9365453426.png",
+          "start": 656.0999999940395,
+          "end": 656.0999999940395,
+          "transfer": 0,
+          "encoded": 116493,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/Assets_Gradients.1237e2d365453426.png",
+          "start": 656.3999999910593,
+          "end": 656.3999999910593,
+          "transfer": 0,
+          "encoded": 112101,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/Character_Texture.2c62815965453426.png",
+          "start": 656.5999999940395,
+          "end": 656.5999999940395,
+          "transfer": 0,
+          "encoded": 35668,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/227017a1aab40911/models/culture/terrain-splat.png",
+          "start": 656.6999999880791,
+          "end": 656.6999999880791,
+          "transfer": 0,
+          "encoded": 322585,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/a2f5d27a0c097d60/models/culture/grass-splat.png",
+          "start": 656.8999999910593,
+          "end": 656.8999999910593,
+          "transfer": 0,
+          "encoded": 183803,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/asset-cache/f231e359cfa0d62c/models/culture/sulawesi-island.glb",
+          "start": 658.3999999910593,
+          "end": 859.0999999940395,
+          "transfer": 50791,
+          "encoded": 50491,
+          "initiator": "fetch"
+        },
+        {
+          "url": "http://localhost:3001/assets/interactions-yes-256.dd627c7e65453426.avif",
+          "start": 3735.199999988079,
+          "end": 3735.199999988079,
+          "transfer": 0,
+          "encoded": 2574,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-map-64.a97628e265453426.avif",
+          "start": 3739.0999999940395,
+          "end": 3739.0999999940395,
+          "transfer": 0,
+          "encoded": 1117,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-fintech-64.384003b765453426.avif",
+          "start": 3739.2999999970198,
+          "end": 3739.2999999970198,
+          "transfer": 0,
+          "encoded": 1261,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-quest-64.b3e8adf065453426.avif",
+          "start": 3739.5,
+          "end": 3739.5,
+          "transfer": 0,
+          "encoded": 1165,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/assets/phone-customization-64.e87662da65453426.avif",
+          "start": 3739.7999999970198,
+          "end": 3739.7999999970198,
+          "transfer": 0,
+          "encoded": 1335,
+          "initiator": "img"
+        },
+        {
+          "url": "http://localhost:3001/branding/sultra-rupa.svg#wordmark",
+          "start": 4494,
+          "end": 4588.0999999940395,
+          "transfer": 300,
+          "encoded": 0,
+          "initiator": "other"
+        }
+      ],
+      "name": "returning-4Mbps"
+    }
+  ],
+  "errors": [],
+  "failures": []
+}

@@ -1,30 +1,13 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { siteOrigin, textResponse, withSiteMetadata } from "@/lib/site-seo";
-import assetVersions from "@/config/asset-versions.json";
-
-// These models are visible on both the introduction and returning-player scene.
-// Discover them in the HTML instead of waiting for the game module to initialize.
-const startupPreloads = [
-  "/models/culture/laika.glb",
-  "/models/culture/bharugano-wuna.glb",
-  "/models/culture/banua-tada.glb",
-  "/models/culture/mekongga.glb",
-  "/models/culture/tugu-mtq.glb",
-  "/models/culture/patung-oputa.glb",
-  "/models/player-anoa.glb",
-] as const;
-const preloadLinks = startupPreloads.map(asset =>
-  `<link rel="preload" as="fetch" crossorigin href="/asset-cache/${assetVersions[asset]}${asset}">`
-).join("\n");
 
 let productionHtml: Promise<string> | undefined;
 
 function readHtml(): Promise<string> {
-  const load = async () => {
-    const html = await readFile(path.join(process.cwd(), "public", "coastal_world.html"), "utf-8");
-    return html.replace("</head>", `${preloadLinks}\n</head>`);
-  };
+  // The game requests HD models as soon as its loader is ready. Preloading all
+  // seven here occupied mobile connections before fonts and engine imports.
+  const load = () => readFile(path.join(process.cwd(), "public", "coastal_world.html"), "utf-8");
 
   // Production assets are immutable for the lifetime of a deployment. Keep
   // development reads fresh so edits to the standalone game HTML appear at once.

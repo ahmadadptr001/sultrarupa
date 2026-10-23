@@ -68,10 +68,25 @@ function skinGeometry(source, bones) {
   const indices = new Uint16Array(positions.count * 4);
   const weights = new Float32Array(positions.count * 4);
   const boneIndex = Object.fromEntries(bones.map((bone, i) => [shortName(bone), i]));
+  const limbIndices = ['L', 'R'].map((side) => [
+    boneIndex[`Shoulder_${side}`], boneIndex[`Elbow_${side}`], boneIndex[`Wrist_${side}`],
+  ]);
+  const lowerIndices = ['L', 'R'].map((side, i) => [
+    boneIndex.Root_M, boneIndex[`Ankle_${side}`], boneIndex[`Knee_${side}`],
+    boneIndex[`Hip_${side}`], ...limbIndices[i],
+  ]);
+  const upperIndices = limbIndices.map((limbs) => [
+    boneIndex.Root_M, boneIndex.Spine1_M, boneIndex.Chest_M, boneIndex.Head_M, ...limbs,
+  ]);
+  // Reuse seven anatomical candidates instead of allocating and sorting an
+  // object and several arrays for every vertex. Keep doubles until the final
+  // Float32 write, including the original stable order for equal weights.
+  const influence = new Float64Array(7);
+  const strongest = new Uint8Array(4);
   for (let i = 0; i < positions.count; i++) {
     const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
-    const side = x >= 0 ? 'L' : 'R', influence = {};
-    const add = (name, weight) => { influence[name] = (influence[name] || 0) + weight; };
+    const side = x >= 0 ? 0 : 1;
+    const candidates = y < .80 ? lowerIndices[side] : upperIndices[side];
     // The muzzle juts forward low on the skull, so the head owns forward
     // geometry below the neck line; ears and horns sit far out on x, where the
     // narrow gate that keeps the pauldrons off the head must not reach them.
@@ -95,29 +110,42 @@ function skinGeometry(source, bones) {
       const leg = (1 - smooth(.30, hem, y))
         * smooth(.005, .02 + .10 * smooth(.35, .55, y), Math.abs(x));
       const ankle = 1 - smooth(.20, .32, y), knee = 1 - smooth(.42, .60, y);
-      add('Root_M', 1 - leg);
+      influence[0] = 1 - leg;
       // Keep the shoe rigid on its ankle so its sole cannot tear at the toes.
-      add(`Ankle_${side}`, leg * ankle);
-      add(`Knee_${side}`, leg * (1 - ankle) * knee);
-      add(`Hip_${side}`, leg * (1 - ankle) * (1 - knee));
+      influence[1] = leg * ankle;
+      influence[2] = leg * (1 - ankle) * knee;
+      influence[3] = leg * (1 - ankle) * (1 - knee);
     } else {
       const chest = smooth(.98, 1.26, y), spine = smooth(.76, 1.02, y);
-      add('Root_M', (1 - head) * (1 - chest) * (1 - spine));
-      add('Spine1_M', (1 - head) * (1 - chest) * spine);
-      add('Chest_M', (1 - head) * chest);
-      add('Head_M', head);
+      influence[0] = (1 - head) * (1 - chest) * (1 - spine);
+      influence[1] = (1 - head) * (1 - chest) * spine;
+      influence[2] = (1 - head) * chest;
+      influence[3] = head;
     }
-    for (const name of Object.keys(influence)) influence[name] *= 1 - arm;
+    for (let k = 0; k < 4; k++) influence[k] *= 1 - arm;
     const elbow = 1 - smooth(.86, 1.04, y), wrist = 1 - smooth(.63, .77, y);
-    add(`Shoulder_${side}`, arm * (1 - elbow));
-    add(`Elbow_${side}`, arm * elbow * (1 - wrist));
-    add(`Wrist_${side}`, arm * elbow * wrist);
-    const strongest = Object.entries(influence).filter(([, w]) => w > 0)
-      .sort((a, b) => b[1] - a[1]).slice(0, 4);
-    const total = strongest.reduce((sum, [, w]) => sum + w, 0);
-    strongest.forEach(([name, w], k) => {
-      indices[i * 4 + k] = boneIndex[name]; weights[i * 4 + k] = w / total;
-    });
+    influence[4] = arm * (1 - elbow);
+    influence[5] = arm * elbow * (1 - wrist);
+    influence[6] = arm * elbow * wrist;
+    let count = 0;
+    for (let candidate = 0; candidate < influence.length; candidate++) {
+      const weight = influence[candidate];
+      if (!(weight > 0) || (count === 4 && weight <= influence[strongest[3]])) continue;
+      let slot = Math.min(count, 3);
+      while (slot > 0 && weight > influence[strongest[slot - 1]]) {
+        strongest[slot] = strongest[slot - 1];
+        slot--;
+      }
+      strongest[slot] = candidate;
+      if (count < 4) count++;
+    }
+    let total = 0;
+    for (let k = 0; k < count; k++) total += influence[strongest[k]];
+    for (let k = 0; k < count; k++) {
+      const candidate = strongest[k];
+      indices[i * 4 + k] = candidates[candidate];
+      weights[i * 4 + k] = influence[candidate] / total;
+    }
   }
   geometry.setAttribute('skinIndex', new BufferAttribute(indices, 4));
   geometry.setAttribute('skinWeight', new BufferAttribute(weights, 4));

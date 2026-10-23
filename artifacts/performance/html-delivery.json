@@ -1,0 +1,44 @@
+{
+  "originalBytes": 212603,
+  "reports": [
+    {
+      "accept": "gzip, deflate, br",
+      "encoding": "br",
+      "bytes": 31435
+    },
+    {
+      "accept": "gzip",
+      "encoding": "gzip",
+      "bytes": 33871
+    },
+    {
+      "accept": "br;q=0, gzip",
+      "encoding": "gzip",
+      "bytes": 33871
+    },
+    {
+      "accept": "br;q=0.4, gzip;q=0.8",
+      "encoding": "gzip",
+      "bytes": 33871
+    },
+    {
+      "accept": "br;q=0, gzip;q=0",
+      "encoding": "identity",
+      "bytes": 212603
+    },
+    {
+      "accept": "gzip;q=0.5, identity;q=1",
+      "encoding": "identity",
+      "bytes": 212603
+    },
+    {
+      "accept": "*;q=0.5, br;q=0",
+      "encoding": "gzip",
+      "bytes": 33871
+    }
+  ],
+  "htmlIdentical": true,
+  "etag304": true,
+  "head": true,
+  "seoRoutes": true
+}

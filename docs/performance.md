@@ -10,7 +10,9 @@ The homepage runs the static Three.js/Vue game in `public/assets`; changes to Re
 - `/asset-cache/<content-hash>/models/...` has one-year immutable browser caching. Next routes only the currently generated hash to each asset; arbitrary hashes return 404. Unversioned JavaScript remains revalidated, since some vendored filenames no longer reflect their contents.
 - Returning visitors skip the intro boat, horizon logo and intro wordmark. The checks must run in `beforePreload`, after `game.init()` binds `game.savestate`. Checking during plugin installation causes startup to stall at 60%.
 - House interiors load when opened and reuse the loaded model on subsequent visits.
-- The HTML preloads seven models required by both startup scenes. The preload URLs and loader URLs share the generated content hashes, so the browser reuses each response instead of downloading it twice.
+- Let the game request the seven startup models after its loader initializes. The previous HTML fetch preloads competed with fonts and engine imports on mobile; removing them and preloading both visible Gilmer weights brought the measured LCP back onto the initial paint path. Loading feedback now paints without an entrance fade.
+- `textResponse()` compresses complete HTML with negotiated Brotli/gzip and caches up to eight encoded representations. In this Next version the Route Handler was sending the HTML uncompressed despite `compress: true`. The final document is 212,603 bytes decoded, 31,435 bytes over Brotli or 33,871 over gzip. Content, weak ETag revalidation, `HEAD`, and SEO endpoints are preserved; `Vary` includes both Host and Accept-Encoding.
+- The native GLTF `In()` loader must honor `noCache` before calling `scene.toJSON()`, on both reads and writes. Previously the HD model loaders requested `noCache: true` but still expanded geometry arrays and re-encoded texture images as base64 PNG for a disk cache. This consumed about three seconds of CPU in the local startup profile. The narrow guard removes that work; HTTP asset caching and ordinary native scene-cache hits/misses remain intact. Verify with `node scripts/check-gltf-cache.mjs`.
 - `sultra-startup.js` defers optional sound preloads until the native preloader reveals the game, plus 100 ms. Music keeps its original pending promise and starts after the sound buffer arrives; user-triggered sounds retain their native loading path. This removes about 2.64 MB of audio and its decoding work from the startup path.
 - The horizon logo uses lossless WebP with identical decoded pixels at 1173 × 1341 and unchanged geometry values. Regenerate with `node scripts/optimize-startup-textures.mjs` then `npm run assets:cache`; the original is retained in `backups/performance/pre-lossless`. The lightweight logo reader requires contiguous attributes, so the writer uses `VertexLayout.SEPARATE`. Terrain/grass masks remain PNG because RGB values under transparent pixels are data used by the shaders.
 
@@ -18,6 +20,7 @@ The homepage runs the static Three.js/Vue game in `public/assets`; changes to Re
 
 - Lulo IK reuses scratch vectors and quaternions, reads already propagated world matrices, and skips hidden dancers. An equivalence test over 180 frames compared 201,600 pose scalars with no differences. Math object allocations went from 67,200 to zero; matrix updates went from 284,880 to 31,920.
 - Player accessory selection is indexed once and updated when the outfit/geometry changes. Actor-specific empty geometries are disposed on detachment. Animation diagnostics reuse their objects.
+- Initial player skinning reuses seven candidate slots and a stable top-four selection. All 168,712 skin indices/weights for the 21,089-vertex model are byte-identical to the prior version, including reversed bone order and additional joint-boundary cases. `node artifacts/performance/check-skinning-startup.mjs` reproduces the comparison. This changes preparation cost, not animation or physics.
 - Opening the full-screen interior suspends the outdoor render loop. Closing it restores the prior running state without overriding the native phone/menu stop condition. The interior loop also stops while the document is hidden.
 - Phone DOM observers ignore unrelated game text changes. Shell localization ignores text-only mutations, avoiding global scans for changing counters/typewriter text.
 - Loader progress follows actual tasks. A stalled/offline/error message provides a retry action without pretending the scene is ready. Native task failures are logged instead of silently swallowed.
@@ -33,3 +36,24 @@ Evidence is in `artifacts/performance/`: `performance-current.json`, `network-hd
 These are local functional and workload measurements, not a promised FPS or loading duration on every device/network. Headless software WebGL was too slow to give representative FPS figures. A proposed collision rewrite was reverted after a floor-penetration regression; the original contact math is retained.
 
 Production build and targeted ESLint checks pass. When replacing the vendored engine, preserve the preloader factory/error integration and custom plugin imports.
+
+## Mobile Lighthouse investigation (2026-10-23)
+
+The user's screenshot showed 33 but did not include its URL or individual metrics. It is not the same measurement as the previous local network tests. A first Lighthouse attempt with the old headless-shell browser used SwiftShader and failed Speed Index; that incomplete run is excluded.
+
+The comparison below uses production `localhost:3001`, Lighthouse 13.4.1, the standard simulated mobile profile (1.6 Mbps / 150 ms RTT / 4x CPU), and full Chromium with the AMD Radeon 780M enabled. It uses the automatic game startup with all HD assets; no click-to-start or bot-specific path was added.
+
+| Metric | Before this pass | After this pass |
+| --- | ---: | ---: |
+| Performance score | 29 | 56 |
+| First Contentful Paint | 2.91 s | 2.12 s |
+| Largest Contentful Paint | 16.29 s | 2.49 s |
+| Total Blocking Time | 19.66 s | 3.60 s |
+| Speed Index | 32.71 s | 9.11 s |
+| Layout shift | 0.073 | 0.073 |
+
+Both reports completed without Lighthouse warnings: `artifacts/performance/lighthouse-mobile-gpu-before.json` and `lighthouse-mobile-gpu-final.json`. These are local lab scores, not a deployed PageSpeed retest or a guarantee on other devices. Blocking time remains above the recommended range, with shader compilation and first-frame preparation still significant. LCP measures the HTML loading screen, not the instant the entire 3D world is ready.
+
+`gltf-cache-browser.json` independently verifies all six house/monument templates, player, boat and logo ready with zero page errors and zero canvas PNG encodes. `html-delivery.json` checks byte-identical decompression, accepted encoding preferences, 304, HEAD and SEO endpoints. `startup-mobile-fast.json` records separate 4 Mbps / 80 ms checks on the GPU browser: cold reveal 30.56 seconds, cached intro 2.06 seconds, returning player 4.62 seconds. All passed without page errors, failed requests, duplicate GLB downloads or audio finishing before reveal. The cold visit still downloads about 14 MB of HD assets; these actual game-reveal timings are separate from Lighthouse's simulated loading-screen metrics. They also use a different renderer from the older 36.46-second software-WebGL test, so that older result is not a controlled comparison.
+
+To reproduce mobile reveal checks against a running production server and GPU browser: set `SULTRA_TEST_CDP=http://localhost:9334`, `SULTRA_TEST_MOBILE=1`, then run `node artifacts/performance/check-startup-final.cjs startup-mobile-fast`. Keep the native readiness barrier: all visible scene assets and prerendering must finish before dismissing the loader.

@@ -3,8 +3,11 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
 (async () => {
-  const browser = await chromium.connectOverCDP('http://localhost:9333');
-  const context = await browser.newContext({ viewport: { width: 1365, height: 900 } });
+  const browser = await chromium.connectOverCDP(process.env.SULTRA_TEST_CDP || 'http://localhost:9333');
+  const artifact = process.argv[2] || 'startup-final';
+  const context = await browser.newContext(process.env.SULTRA_TEST_MOBILE === '1'
+    ? { viewport: { width: 412, height: 823 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1.75 }
+    : { viewport: { width: 1365, height: 900 } });
   const page = await context.newPage(), errors = [], failures = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('requestfailed', request => { if (request.failure()?.errorText !== 'net::ERR_ABORTED') failures.push(request.url()); });
@@ -74,8 +77,8 @@ const fs = require('node:fs');
   assert.ok(!returning.resources.some(r => /opening-boat\.glb|munas-ix-logo-hd\.glb|sultra-rupa-wordmark\.json/.test(r.url)));
   assert.deepEqual(errors, []);
   assert.deepEqual(failures, []);
-  fs.writeFileSync('artifacts/performance/startup-final.json', JSON.stringify({ reports, errors, failures }, null, 2));
-  await page.screenshot({ path: 'artifacts/performance/startup-final.png' });
+  fs.writeFileSync(`artifacts/performance/${artifact}.json`, JSON.stringify({ reports, errors, failures }, null, 2));
+  await page.screenshot({ path: `artifacts/performance/${artifact}.png` });
   await context.close();
   process.exit(0);
 })().catch(error => { console.error(error); process.exit(1); });

@@ -80,6 +80,77 @@ function culturePointName(id) {
   return `Culture_${id}`;
 }
 
+const ARRIVAL_CAM_ID = 'sultra-arrival';
+const ARRIVAL_LOOK_AT_POINT = new Vector3();
+const ARRIVAL_CAM_DIR = new Vector3();
+const ARRIVAL_CAM_POS = new Vector3();
+const ARRIVAL_POINT_POS = new Vector3();
+
+// After a phone-map teleport the camera eases to a shot of the destination
+// object (house front, monument or stage) instead of the player's back, then
+// releases into the normal follow camera. Reuses the game's own playerCam
+// target takeover, so controls lock during the shot and release with it.
+function updateArrivalCamera(scene, state, now) {
+  const pending = state.arrival;
+  if (!pending) return;
+  const cam = scene.playerCam;
+  if (!cam?.setTarget || scene.id !== MAIN) {
+    state.arrival = null;
+    return;
+  }
+  const target = cam.targetState;
+  if (!target) {
+    state.arrival = null;
+    return;
+  }
+  if (target.currentID && target.currentID !== ARRIVAL_CAM_ID) {
+    // A dialog, phone or interaction owns the camera; leave it alone.
+    state.arrival = null;
+    return;
+  }
+  if (target.currentID === ARRIVAL_CAM_ID) {
+    if (pending.applied) {
+      if (now < pending.until) return;
+      cam.removeTarget({ id: ARRIVAL_CAM_ID, posEase: .055, lookAtEase: .05 });
+      state.arrival = null;
+      return;
+    }
+    // A fresh arrival replaced an unfinished shot: drop the old target so the
+    // new one can take over on this same pass.
+    cam.removeTarget({ id: ARRIVAL_CAM_ID });
+  }
+  const focus = state.arrivalFocus.get(pending.id);
+  const point = scene.getPoint?.(culturePointName(pending.id));
+  if (!focus || !point || scene.player?.canMove === false) return;
+  if (!scene.physics?.isReady) return;
+  const player = scene.player?.base?.position;
+  if (!player) return;
+  ARRIVAL_POINT_POS.set(point.position.x, GROUND + .2, point.position.z);
+  // Only apply once the physics respawn actually placed the player there; the
+  // shot would otherwise ease toward the old island position mid-transition.
+  if (player.distanceToSquared(ARRIVAL_POINT_POS) > 25) {
+    if (now - pending.since > 6000) state.arrival = null;
+    return;
+  }
+  ARRIVAL_CAM_DIR.set(player.x - focus.x, 0, player.z - focus.z);
+  if (ARRIVAL_CAM_DIR.lengthSq() < .04) {
+    // Spawned basically inside the destination: settle for the point's facing.
+    ARRIVAL_CAM_DIR.set(-point.quaternion.x * 2, 0, -point.quaternion.z * 2);
+  }
+  ARRIVAL_CAM_DIR.normalize();
+  const distance = focus.distance ?? 5.4;
+  ARRIVAL_CAM_POS.copy(player).addScaledVector(ARRIVAL_CAM_DIR, distance);
+  ARRIVAL_CAM_POS.y = player.y + 1.9;
+  ARRIVAL_LOOK_AT_POINT.set(focus.x, focus.y, focus.z);
+  cam.setTarget({
+    id: ARRIVAL_CAM_ID, lockPlayer: true,
+    position: ARRIVAL_CAM_POS, lookAt: ARRIVAL_LOOK_AT_POINT,
+    posEase: .09, lookAtEase: .075,
+  });
+  pending.until = now + 2200;
+  pending.applied = true;
+}
+
 function cultureDestinationPoints() {
   const points = {};
   const add = (id, x, z, rotation = 0) => {
@@ -1116,6 +1187,7 @@ function addHouses(scene, state) {
   group.name = preview ? 'Sultrarupa opening island houses' : 'Sultrarupa traditional houses';
   const targets = [];
   const interactiveHouses = [];
+  if (!preview) state.arrivalFocus.clear();
   for (const site of layout.houses) {
     const source = state.templates.get(site.id);
     const content = HOUSE_EXHIBITS.find((entry) => entry.id === site.id);
@@ -1127,7 +1199,15 @@ function addHouses(scene, state) {
     house.position.set(site.x * offset.scale + offset.x, GROUND, site.z * offset.scale + offset.z);
     house.userData.exhibit = site.id;
     group.add(house);
-    if (!preview) interactiveHouses.push({ id: site.id, object: house });
+    if (!preview) {
+      interactiveHouses.push({ id: site.id, object: house });
+      state.arrivalFocus.set(site.id, {
+        x: site.x * offset.scale + offset.x,
+        z: site.z * offset.scale + offset.z,
+        y: GROUND + Math.max(3.4, source.size.y * scale * offset.scale * .55),
+        distance: 2.9 + source.size.y * scale * offset.scale * .28,
+      });
+    }
     if (!preview) targets.push({
       ...content, kind: 'house',
       position: new Vector3(site.entrance?.x ?? site.x, GROUND + 2.1, site.entrance?.z ?? site.z),
@@ -1149,6 +1229,15 @@ function addHouses(scene, state) {
     monument.position.set(site.x * offset.scale + offset.x, GROUND, site.z * offset.scale + offset.z);
     monument.userData.landmark = site.id;
     group.add(monument);
+    if (!preview) {
+      const height = site.height * offset.scale;
+      state.arrivalFocus.set(site.id, {
+        x: site.x * offset.scale + offset.x,
+        z: site.z * offset.scale + offset.z,
+        y: GROUND + height * .55,
+        distance: Math.max(5.4, height * .5),
+      });
+    }
   }
   scene.base.add(group);
   group.updateMatrixWorld(true);
@@ -1161,10 +1250,15 @@ function addHouses(scene, state) {
       const target = { ...content, kind: 'guide', position: new Vector3(site.x, GROUND + 3.3, site.z) };
       targets.push(target);
       state.guideTargets.push({ target, uid: guideUID(site.id) });
+      state.arrivalFocus.set(site.id, { x: site.x, z: site.z, y: GROUND + 1.7, distance: 5.6 });
     }
     const lulo = CULTURE_GUIDES.find((entry) => entry.id === 'lulo');
     targets.push({ ...lulo, id: 'lulo-stage', title: 'Panggung Lulo', kind: 'guide', worldMarker: 'music',
       position: new Vector3(layout.stage.speakers.x, GROUND + 2.1, layout.stage.speakers.z + 3) });
+    if (layout.stage) {
+      const stage = layout.stage.speakers || layout.stage.dance || layout.stage;
+      state.arrivalFocus.set('lulo-stage', { x: stage.x, z: stage.z, y: GROUND + 2.1, distance: 6.2 });
+    }
     state.ui.setTargets(targets);
     state.houseInteraction.setHouses(interactiveHouses);
   }
@@ -1194,6 +1288,7 @@ export function installSultraIsland(game) {
   const state = game.sultraIsland = {
     status: 'loading', configured: false, backup: null,
     templates: new Map(), scene: null, houses: null, guideTargets: [],
+    arrivalFocus: new Map(), arrival: null,
     environment: null, treeContacts: new Set(), treeContactsReady: false,
     bushContacts: new Set(), bushContactsReady: false, bushLastPosition: new Vector3(),
     joggers: new Map(), joggerTime: 0,
@@ -1278,6 +1373,7 @@ export function installSultraIsland(game) {
       // then place the player at a named, safe destination point.
       game.app.$router?.push({ name: 'Home' });
       game.scenes.teleportTo(MAIN, { point, delay: 400 });
+      state.arrival = { id, since: performance.now(), until: 0, applied: false };
       return true;
     },
   });
@@ -1312,6 +1408,7 @@ export function installSultraIsland(game) {
     if (!state.houses && state.status === 'ready') addHouses(scene, state);
     if (scene.id !== MAIN) return;
     ensureEnvironment(scene, state);
+    updateArrivalCamera(scene, state, performance.now());
     updateJoggers(scene, state, performance.now());
     for (const { target, uid } of state.guideTargets) {
       const actor = scene.actors[uid];

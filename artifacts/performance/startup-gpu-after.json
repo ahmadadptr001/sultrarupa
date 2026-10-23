@@ -1,0 +1,323 @@
+{
+  "metrics": {
+    "tasks": [
+      {
+        "start": 1035.9000000059605,
+        "duration": 52
+      },
+      {
+        "start": 1272.2000000029802,
+        "duration": 313
+      },
+      {
+        "start": 1637.5999999940395,
+        "duration": 63
+      },
+      {
+        "start": 1727.4000000059605,
+        "duration": 328
+      },
+      {
+        "start": 2095.9000000059605,
+        "duration": 51
+      },
+      {
+        "start": 2149.7999999970198,
+        "duration": 153
+      }
+    ],
+    "readyMs": 2859.0999999940395,
+    "paint": [
+      {
+        "name": "first-paint",
+        "start": 84
+      },
+      {
+        "name": "first-contentful-paint",
+        "start": 184
+      }
+    ]
+  },
+  "top": [
+    {
+      "ms": 894.619,
+      "functionName": "(idle)",
+      "scriptId": "0",
+      "url": "",
+      "lineNumber": -1,
+      "columnNumber": -1
+    },
+    {
+      "ms": 368.566,
+      "functionName": "(program)",
+      "scriptId": "0",
+      "url": "",
+      "lineNumber": -1,
+      "columnNumber": -1
+    },
+    {
+      "ms": 139.38,
+      "functionName": "(garbage collector)",
+      "scriptId": "0",
+      "url": "",
+      "lineNumber": -1,
+      "columnNumber": -1
+    },
+    {
+      "ms": 96.489,
+      "functionName": "texSubImage2D",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 812757
+    },
+    {
+      "ms": 70.119,
+      "functionName": "texSubImage2D",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 812757
+    },
+    {
+      "ms": 59.897,
+      "functionName": "setFromEuler",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 510815
+    },
+    {
+      "ms": 52.514,
+      "functionName": "cE",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 768221
+    },
+    {
+      "ms": 44.567,
+      "functionName": "texSubImage2D",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 812757
+    },
+    {
+      "ms": 31.007,
+      "functionName": "add",
+      "scriptId": "7",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 256457
+    },
+    {
+      "ms": 29.772,
+      "functionName": "cE",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 768221
+    },
+    {
+      "ms": 25.767,
+      "functionName": "wM",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 540706
+    },
+    {
+      "ms": 24.067,
+      "functionName": "initGeometry",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 1056628
+    },
+    {
+      "ms": 23.402,
+      "functionName": "Gk",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 958008
+    },
+    {
+      "ms": 22.019,
+      "functionName": "getX",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 590087
+    },
+    {
+      "ms": 19.906,
+      "functionName": "wM",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 540706
+    },
+    {
+      "ms": 18.362,
+      "functionName": "wM",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 540706
+    },
+    {
+      "ms": 17.532,
+      "functionName": "buildTreeEnvironment",
+      "scriptId": "34",
+      "url": "http://localhost:3001/assets/sultra-island.js",
+      "lineNumber": 213,
+      "columnNumber": 29
+    },
+    {
+      "ms": 13.558,
+      "functionName": "subVectors",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 516196
+    },
+    {
+      "ms": 12.582,
+      "functionName": "toJSON",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 591463
+    },
+    {
+      "ms": 12.453,
+      "functionName": "subclip",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 959114
+    },
+    {
+      "ms": 11.73,
+      "functionName": "split",
+      "scriptId": "7",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 163245
+    },
+    {
+      "ms": 10.684,
+      "functionName": "Un",
+      "scriptId": "7",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 134853
+    },
+    {
+      "ms": 10.469,
+      "functionName": "wM",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 540706
+    },
+    {
+      "ms": 10.023,
+      "functionName": "split",
+      "scriptId": "7",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 163245
+    },
+    {
+      "ms": 9.986,
+      "functionName": "",
+      "scriptId": "5",
+      "url": "http://localhost:3001/",
+      "lineNumber": 6,
+      "columnNumber": 17
+    },
+    {
+      "ms": 9.785,
+      "functionName": "computeBox",
+      "scriptId": "19",
+      "url": "",
+      "lineNumber": 3164,
+      "columnNumber": 19
+    },
+    {
+      "ms": 9.084,
+      "functionName": "",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 0,
+      "columnNumber": 0
+    },
+    {
+      "ms": 9.075,
+      "functionName": "intersectsTriangle",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 538969
+    },
+    {
+      "ms": 9.07,
+      "functionName": "",
+      "scriptId": "6",
+      "url": "http://localhost:3001/assets/main.35e6243a65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 10080
+    },
+    {
+      "ms": 8.977,
+      "functionName": "",
+      "scriptId": "7",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 180977
+    },
+    {
+      "ms": 8.973,
+      "functionName": "",
+      "scriptId": "7",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 150424
+    },
+    {
+      "ms": 8.664,
+      "functionName": "e",
+      "scriptId": "7",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 180872
+    },
+    {
+      "ms": 8.612,
+      "functionName": "Ev",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 345898
+    },
+    {
+      "ms": 8.591,
+      "functionName": "cE",
+      "scriptId": "17",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 768221
+    },
+    {
+      "ms": 8.413,
+      "functionName": "",
+      "scriptId": "7",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 110241
+    }
+  ]
+}

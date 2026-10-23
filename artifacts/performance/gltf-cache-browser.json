@@ -1,0 +1,166 @@
+{
+  "readyMs": 2326.300000011921,
+  "scene": "IslandIntro",
+  "character": "ready",
+  "houseTemplates": 6,
+  "boat": "ready",
+  "logo": "ready",
+  "calls": [
+    {
+      "url": "/asset-cache/f9fc82de1a2d6059/models/culture/laika.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/asset-cache/af26b27a1ecececa/models/culture/bharugano-wuna.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/asset-cache/862c2c5719a85a52/models/culture/banua-tada.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/asset-cache/66db08edf2ee78d8/models/culture/mekongga.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/asset-cache/cadae492a0f2a291/models/culture/tugu-mtq.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/asset-cache/718e70e8b275b695/models/culture/patung-oputa.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_PalmTree.f4a68a0e65453426.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_TreeRoundA.5a4ba08065453426.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_TreeRoundF.5133ec1365453426.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_BushA.4e15289965453426.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_RockA.3a9f348865453426.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/asset-cache/0c64ea3fab0e3f6c/models/opening-boat.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/asset-cache/746c4bb45a582e50/models/player-anoa.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/asset-cache/07ac2d8e81a21ba9/models/player-anoa-accessories.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/asset-cache/271374fb97238fdf/models/player-anoa-native-accessories.glb",
+      "noCache": true,
+      "character": false
+    },
+    {
+      "url": "/assets/character.df6ab95f65453426.glb",
+      "noCache": false,
+      "character": true
+    },
+    {
+      "url": "/asset-cache/5a2112a95da02ec7/models/culture/sulawesi-intro.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_Taxi.9d714b7c65453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_BoatYellow.9ec7874765453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_JoystickRaw.da301e9265453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_PalmTree.f4a68a0e65453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_TreeRoundA.5a4ba08065453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_TreeRoundF.5133ec1365453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_RockA.3a9f348865453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_BushA.4e15289965453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_Wall.0a094ddd65453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_SpeakersOn.e617dbf365453426.glb",
+      "noCache": false,
+      "character": false
+    },
+    {
+      "url": "/assets/Asset_CoastalWorld.e8c2b2cb65453426.glb",
+      "noCache": false,
+      "character": false
+    }
+  ],
+  "puts": [
+    "__cache__/assets/Asset_Taxi.9d714b7c65453426.glb.scene.json",
+    "__cache__/assets/Asset_JoystickRaw.da301e9265453426.glb.scene.json",
+    "__cache__/assets/Asset_TreeRoundA.5a4ba08065453426.glb.scene.json",
+    "__cache__/assets/Asset_PalmTree.f4a68a0e65453426.glb.scene.json",
+    "__cache__/assets/Asset_BoatYellow.9ec7874765453426.glb.scene.json",
+    "__cache__/asset-cache/5a2112a95da02ec7/models/culture/sulawesi-intro.glb.scene.json",
+    "__cache__/assets/Asset_TreeRoundF.5133ec1365453426.glb.scene.json",
+    "__cache__/assets/Asset_BushA.4e15289965453426.glb.scene.json",
+    "__cache__/assets/Asset_RockA.3a9f348865453426.glb.scene.json",
+    "__cache__/assets/Asset_Wall.0a094ddd65453426.glb.scene.json",
+    "__cache__/assets/Asset_CoastalWorld.e8c2b2cb65453426.glb.scene.json",
+    "__cache__/assets/Asset_SpeakersOn.e617dbf365453426.glb.scene.json"
+  ],
+  "pngEncodes": [],
+  "errors": []
+}
