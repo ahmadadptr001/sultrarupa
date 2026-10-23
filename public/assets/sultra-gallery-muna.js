@@ -7,6 +7,7 @@ const researchCredit = {
 const research = (id, title, file, summary, details) => ({
   id, title, category: 'Adat & seni pertunjukan', culture: 'Muna',
   image: `/images/culture/gallery/${file}.webp`, alt: `${title}, dokumentasi tradisi Karia di Muna.`,
+  imageRotation: file === 'muna-karia-47' ? Math.PI : 0,
   summary, details, sources: [{ title: 'Penelitian Linda dan Karia — Hermina dkk., 2022', url: source }], credit: researchCredit,
 });
 export const MUNA_GALLERY_ADDITIONS = [

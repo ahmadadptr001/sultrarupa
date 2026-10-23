@@ -41,4 +41,3 @@ Setiap foto merupakan dokumentasi nyata. Sumber dan lisensi ditampilkan pada pan
 - Lisensi: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - Sumber: https://commons.wikimedia.org/wiki/File:Batu_Wolio.jpg
 - Perubahan: Ukuran diperkecil bila perlu dan dikonversi ke WebP; isi foto tidak diubah.
-

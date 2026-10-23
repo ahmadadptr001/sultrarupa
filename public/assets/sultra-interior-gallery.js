@@ -231,6 +231,9 @@ export function createInteriorGallery({ scene, camera, root, stage, onLock }) {
       map: image.texture, fog: false, toneMapped: false,
     }));
     photo.position.set(photoX, photoY, -0.0057);
+    // Some archival photos were embedded with rotation in their source PDF.
+    // Correct the photo independently of the decorative frame orientation.
+    photo.rotation.z = entry.imageRotation || 0;
     const photoWidth = Math.min(width, height * image.ratio);
     photo.scale.set(photoWidth, photoWidth / image.ratio, 1);
     object.add(photo);

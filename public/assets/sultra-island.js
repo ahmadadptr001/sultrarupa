@@ -1397,12 +1397,3 @@ export function installSultraIsland(game) {
   });
   return state;
 }
-
-
-
-
-
-
-
-
-
