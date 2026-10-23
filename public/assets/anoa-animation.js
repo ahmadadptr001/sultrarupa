@@ -35,8 +35,70 @@ export function createAnoaAnimator(entry, template) {
   }
   const correction = bones.map((_, i) => sourceRest[i].clone().invert()
     .multiply(alignment[i]).multiply(targetRest[i]));
+  // The native Idle already crouches and turns its feet outward. Using the
+  // source bind pose as the leg baseline carries that offset onto the anoa's
+  // short legs, making even standing look bowed. Anchor only the legs to the
+  // authored stance; retain every animated change from the source performance.
+  const idle = actor.allAnims?.Idle?._clip;
+  if (idle) {
+    const idleLocal = template.copies.map(bone => bone.quaternion.clone());
+    const sourceNames = new Map(template.copies.map((bone, i) => [bone.name, i]));
+    for (const track of idle.tracks) {
+      const suffix = '.quaternion';
+      if (!track.name.endsWith(suffix)) continue;
+      const index = sourceNames.get(track.name.slice(0, -suffix.length));
+      if (index !== undefined) idleLocal[index].fromArray(track.createInterpolant().evaluate(0));
+    }
+    const idleWorld = bones.map(() => new Quaternion()), ready = new Uint8Array(bones.length);
+    function idleRotation(index) {
+      if (ready[index]) return idleWorld[index];
+      const parent = parents[index];
+      idleWorld[index].copy(parent >= 0 ? idleRotation(parent) : template.neutral.quaternion)
+        .multiply(idleLocal[index]);
+      ready[index] = 1;
+      return idleWorld[index];
+    }
+    for (let i = 0; i < bones.length; i++) {
+      if (/^(Hip|Knee|Ankle|Toes)_/.test(names[i])) {
+        correction[i].copy(idleRotation(i)).invert().multiply(targetRest[i]);
+      }
+    }
+  }
   const sourceWorld = bones.map(() => new Quaternion());
   const targetWorld = bones.map(() => new Quaternion());
+  const targetPosition = bones.map(() => new Vector3());
+  const rootIndex = parents.findIndex(parent => parent < 0);
+  // Straighter legs reach lower than the native crouch. Keep the visual soles
+  // above their authored floor without changing the physics capsule or inputs.
+  // Retain nine low sole samples per hoof; no vertex scan runs during animation.
+  const contacts = [];
+  let soleFloor = Infinity;
+  const positions = mesh.geometry.attributes.position;
+  if (idle) for (const side of ['L', 'R']) {
+    const index = names.indexOf(`Ankle_${side}`);
+    if (index < 0) continue;
+    const points = [];
+    let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i), y = positions.getY(i), z = positions.getZ(i);
+      if (y > .16 || (side === 'L' ? x < .06 : x > -.06)) continue;
+      soleFloor = Math.min(soleFloor, y);
+      points.push(new Vector3(x, y, z));
+      minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+      minZ = Math.min(minZ, z); maxZ = Math.max(maxZ, z);
+    }
+    const cells = new Array(9);
+    for (const point of points) {
+      const x = Math.min(2, Math.floor((point.x - minX) / (maxX - minX || 1) * 3));
+      const z = Math.min(2, Math.floor((point.z - minZ) / (maxZ - minZ || 1) * 3));
+      const cell = x + z * 3;
+      if (!cells[cell] || point.y < cells[cell].y) cells[cell] = point;
+    }
+    for (const point of cells) if (point) contacts.push({
+      index, point: point.applyMatrix4(mesh.skeleton.boneInverses[index]),
+    });
+  }
+  const contactPosition = new Vector3();
   const done = new Uint8Array(bones.length), inverseParent = new Quaternion();
   const actions = Object.entries(actor.allAnims || {}).map(([name, action]) => ({
     action, status: { name, weight: 0, time: 0 },
@@ -53,6 +115,8 @@ export function createAnoaAnimator(entry, template) {
       inverseParent.copy(targetWorld[parent]).invert();
       bones[index].quaternion.premultiply(inverseParent);
     }
+    targetPosition[index].copy(bones[index].position);
+    if (parent >= 0) targetPosition[index].applyQuaternion(targetWorld[parent]).add(targetPosition[parent]);
     done[index] = 1;
   }
   return {
@@ -62,6 +126,12 @@ export function createAnoaAnimator(entry, template) {
     update() {
       done.fill(0);
       for (let i = 0; i < bones.length; i++) solve(i);
+      let soleY = soleFloor;
+      for (const { index, point } of contacts) {
+        contactPosition.copy(point).applyQuaternion(targetWorld[index]).add(targetPosition[index]);
+        soleY = Math.min(soleY, contactPosition.y);
+      }
+      if (rootIndex >= 0 && contacts.length) bones[rootIndex].position.y += soleFloor - soleY;
       this.active.length = 0;
       for (const { action, status } of actions) {
         if (action.enabled !== false && action.weight > .0001) {

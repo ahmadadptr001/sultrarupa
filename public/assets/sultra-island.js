@@ -1,4 +1,4 @@
-import layout from './sultra-island-layout.js';
+﻿import layout from './sultra-island-layout.js';
 import { HOUSE_EXHIBITS, CULTURE_GUIDES } from './sultra-culture-data.js';
 import { createCultureUI } from './sultra-culture-ui.js';
 import { installSultraPhoneMap } from './sultra-phone-map.js';
@@ -28,7 +28,6 @@ const guideUID = (id) => `NPC_SultraGuide_${id}`;
 const guideSubtype = (id) => `SultraGuide_${id}`;
 const MONUMENT_NPC_PREFIX = 'NPC_SultraInfo_';
 const MONUMENT_GUIDE_MODEL = '/models/culture/monument-guide.glb';
-const MONUMENT_GUIDE_LOAD_RADIUS = 90;
 const MONUMENT_GUIDES = {
   'tugu-mtq': {
     title: 'Tugu MTQ: Tugu Religi Sultra',
@@ -899,34 +898,30 @@ function loadMonumentGuideModel(game, state) {
 function attachMonumentGuideNpcs(scene, state) {
   const model = state.guideNpcModel;
   if (!model) return;
-  state.guideNpcSwapped ??= new WeakSet();
   for (const [uid, actor] of Object.entries(scene.actors || {})) {
     if (!uid.startsWith(MONUMENT_NPC_PREFIX) || !actor?.base || !actor.isBodyReady) continue;
-    if (state.guideNpcSwapped.has(actor)) continue;
-    state.guideNpcSwapped.add(actor);
+    if (actor.sultraGuideModel) {
+      // Keep the sculpted model attached if the scene ever rebuilds children.
+      if (actor.sultraGuideModel.parent !== actor.base) actor.base.add(actor.sultraGuideModel);
+      continue;
+    }
     for (const child of actor.base.children) child.visible = false;
     const guide = model.clone(true);
     guide.name = 'Sultrarupa monument guide NPC';
+    actor.sultraGuideModel = guide;
     actor.base.add(guide);
     actor.base.updateMatrixWorld(true);
   }
 }
 
-function updateMonumentGuideNpcs(game, scene, state, player) {
-  if (state.guideNpcModel) {
-    attachMonumentGuideNpcs(scene, state);
+function updateMonumentGuideNpcs(game, scene, state) {
+  if (!state.guideNpcModel) {
+    // Load as soon as the island is live; the guides stand near the two
+    // monuments and the swap is invisible until the file arrives.
+    if (!state.guideNpcRequest) loadMonumentGuideModel(game, state);
     return;
   }
-  if (state.guideNpcRequest || !player) return;
-  for (const site of layout.monuments || []) {
-    if (!MONUMENT_GUIDES[site.id]) continue;
-    const position = monumentGuidePosition(site);
-    const dx = player.x - position.x;
-    const dz = player.z - position.z;
-    if (dx * dx + dz * dz > MONUMENT_GUIDE_LOAD_RADIUS ** 2) continue;
-    loadMonumentGuideModel(game, state);
-    return;
-  }
+  attachMonumentGuideNpcs(scene, state);
 }
 
 function registerJoggers(game) {
@@ -1355,7 +1350,7 @@ export function installSultraIsland(game) {
     environment: null, treeContacts: new Set(), treeContactsReady: false,
     bushContacts: new Set(), bushContactsReady: false, bushLastPosition: new Vector3(),
     joggers: new Map(), joggerTime: 0,
-    guideNpcModel: null, guideNpcRequest: null, guideNpcSwapped: null,
+    guideNpcModel: null, guideNpcRequest: null,
     treeAudio: createTreeTuning(game), bushAudio: createBushTuning(game),
   };
   state.models = createModelStream([...layout.houses, ...(layout.monuments || [])], id => loadHouse(state, id));
@@ -1442,7 +1437,7 @@ export function installSultraIsland(game) {
       const generation = ++navigationGeneration;
       destinationNotice ??= document.createElement('div');
       destinationNotice.setAttribute('role', 'status');
-      destinationNotice.textContent = 'Menyiapkan tujuan…';
+      destinationNotice.textContent = 'Menyiapkan tujuanâ€¦';
       destinationNotice.style.cssText = 'position:fixed;z-index:90;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:16px;background:#34335a;color:white;pointer-events:none';
       document.body.append(destinationNotice);
       state.models.request(id, true).then(() => {
@@ -1517,7 +1512,7 @@ export function installSultraIsland(game) {
     ensureEnvironment(scene, state);
     updateArrivalCamera(scene, state, performance.now());
     updateJoggers(scene, state, performance.now());
-    updateMonumentGuideNpcs(game, scene, state, scene.player?.base?.position);
+    updateMonumentGuideNpcs(game, scene, state);
     for (const { target, uid } of state.guideTargets) {
       const actor = scene.actors[uid];
       if (actor?.base) target.position.copy(actor.base.position).add(GUIDE_OFFSET);
@@ -1544,5 +1539,6 @@ export function installSultraIsland(game) {
   });
   return state;
 }
+
 
 
