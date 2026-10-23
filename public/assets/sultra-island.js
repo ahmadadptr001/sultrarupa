@@ -21,13 +21,15 @@ const INTRO = 'IslandIntro';
 const SCENES = new Set([MAIN, INTRO]);
 const GROUND = layout.groundY ?? 3;
 const GUIDE_OFFSET = new Vector3(0, 3.3, 0);
-const UP = new Vector3(0, 1, 0);
 const TREE_PRECISION = 20;
 const copy = (value) => JSON.parse(JSON.stringify(value));
 const guideUID = (id) => `NPC_SultraGuide_${id}`;
 const guideSubtype = (id) => `SultraGuide_${id}`;
 const MONUMENT_NPC_PREFIX = 'NPC_SultraInfo_';
 const MONUMENT_GUIDE_MODEL = '/models/culture/monument-guide.glb';
+const MONUMENT_GUIDE_LOAD_RADIUS = 90;
+// The island's characters are chunky (~2.6 m player); a 1.9 m guide read as tiny.
+const MONUMENT_GUIDE_HEIGHT = 2.9;
 const MONUMENT_GUIDES = {
   'tugu-mtq': {
     title: 'Tugu MTQ: Tugu Religi Sultra',
@@ -47,33 +49,61 @@ const MONUMENT_GUIDES = {
   },
 };
 function joggerRoute(points, index) {
-  const segments = [];
-  let length = 0;
-  for (let i = 1; i < points.length; i++) {
-    const dx = points[i][0] - points[i - 1][0];
-    const dz = points[i][1] - points[i - 1][1];
-    const segment = Math.hypot(dx, dz);
-    segments.push(segment);
-    length += segment;
-  }
   return {
-    index, points, segments, length,
+    index, points,
     uid: `NPC_SultraJogger_${index}`,
-    speed: 3.05,
+    speed: 6,
   };
 }
 
-const JOGGER_ROUTES = (layout.paths || []).map(joggerRoute).filter((route) => route.length >= 18);
-const JOGGER_PRIMARY = JOGGER_ROUTES.reduce((best, route) => route.length > best.length ? route : best);
-const JOGGER_START = JOGGER_PRIMARY.points[0];
-const JOGGER_PREFIX = JOGGER_ROUTES.find((route) => {
-  const end = route.points[route.points.length - 1];
-  return route !== JOGGER_PRIMARY && Math.hypot(end[0] - JOGGER_START[0], end[1] - JOGGER_START[1]) < 0.01;
-});
-const JOGGER_POINTS = JOGGER_PREFIX
-  ? [...JOGGER_PREFIX.points, ...JOGGER_PRIMARY.points.slice(1)]
-  : JOGGER_PRIMARY.points;
-const JOGGER_PATHS = [joggerRoute(JOGGER_POINTS, JOGGER_PRIMARY.index)];
+const JOGGER_POINTS = [
+  [-59.85, 141.19], [-59.48, 138.82], [-55.68, 131.71], [-40.01, 115.94],
+  [-36.19, 113.57], [-35.69, 112.76], [-36.09, 76.1], [-35.34, 73.35],
+  [-32.3, 67.86], [-31.69, 64.57], [-31.77, 61.12], [-32.59, 57.68],
+  [-32.18, 55.27], [-33.82, 52.29], [-33.55, 48.94], [-32.27, 47],
+  [-29.75, 45.99], [-28.38, 43.95], [-24.68, 41.34], [-18.7, 34.78],
+  [-17.64, 33.02], [-18.13, 31.8], [-21.06, 30.02], [-21.53, 28.77],
+  [-21.17, 5.57], [-21.47, -20.3], [-22.69, -22.75], [-26.41, -26.5],
+  [-30.54, -28.55], [-32.1, -31.98], [-34.9, -33.32], [-35.77, -34.27],
+  [-36.24, -38.29], [-39.08, -40.34], [-39.69, -41.79], [-39.63, -44.19],
+  [-41.99, -48.09], [-42.06, -52.12], [-43.18, -56.39], [-41.73, -62.64],
+  [-41.74, -65.79], [-41.06, -67.12], [-38.82, -68.7], [-38.11, -70.27],
+  [-37.84, -76.02], [-33.03, -80.64], [-32.55, -83.49], [-31.61, -85.02],
+  [-27.94, -86.51], [-23.65, -91.09], [-21.96, -91.73], [-18.99, -91.64],
+  [-12.68, -92.53], [-7.17, -91.93], [15.7, -92.22], [17.67, -93.35],
+  [22.86, -98.3], [25.86, -99.37], [66.83, -99.4], [70.71, -99.09],
+  [73.96, -97.76], [76.52, -99.07], [78.35, -99.4], [106.32, -99.42],
+  [111.86, -98.39], [115.38, -99.33], [121.36, -99.6], [123.05, -100.35],
+  [125.51, -102.81], [129.69, -103.57], [132.49, -107.41], [136.57, -109.09],
+  [138.11, -111.76], [141.21, -112.71], [146.83, -115.93],
+];
+const JOGGER_PATHS = [joggerRoute(JOGGER_POINTS, 12)];
+
+function joggerCurve(route) {
+  const points = route.points;
+  const count = points.length;
+  return {
+    type: 'BEZIER', closed: false,
+    points: points.map((point, index) => {
+      const prev = points[Math.max(0, index - 1)];
+      const next = points[Math.min(count - 1, index + 1)];
+      const dx = next[0] - prev[0];
+      const dz = next[1] - prev[1];
+      const direction = Math.hypot(dx, dz) || 1;
+      const span = Math.min(
+        Math.hypot(point[0] - prev[0], point[1] - prev[1]),
+        Math.hypot(next[0] - point[0], next[1] - point[1]),
+      ) / 3;
+      const tangentX = direction ? (dx / direction) * span : 0;
+      const tangentZ = direction ? (dz / direction) * span : 0;
+      return [
+        point[0], GROUND, point[1],
+        point[0] - tangentX, GROUND, point[1] - tangentZ,
+        point[0] + tangentX, GROUND, point[1] + tangentZ,
+      ];
+    }),
+  };
+}
 
 function transform(x, y, z, rotation = 0, scale = 1) {
   return [x, y, z, scale, scale, scale, 0, Math.sin(rotation / 2), 0, Math.cos(rotation / 2)];
@@ -85,72 +115,52 @@ function culturePointName(id) {
 
 const ARRIVAL_CAM_ID = 'sultra-arrival';
 const ARRIVAL_LOOK_AT_POINT = new Vector3();
-const ARRIVAL_CAM_DIR = new Vector3();
-const ARRIVAL_CAM_POS = new Vector3();
 const ARRIVAL_POINT_POS = new Vector3();
 
-// After a phone-map teleport the camera eases to a shot of the destination
-// object (house front, monument or stage) instead of the player's back, then
-// releases into the normal follow camera. Reuses the game's own playerCam
-// target takeover, so controls lock during the shot and release with it.
+// Arrival uses the ordinary physics follow camera. Only its initial gaze points
+// toward the destination; no dolly, zoom, timed showcase, or player lock.
 function updateArrivalCamera(scene, state, now) {
   const pending = state.arrival;
   if (!pending) return;
   const cam = scene.playerCam;
   if (!cam?.setTarget || scene.id !== MAIN) {
-    state.arrival = null;
+    if (now - pending.since > 12000) state.arrival = null;
     return;
   }
   const target = cam.targetState;
-  if (!target) {
-    state.arrival = null;
+  if (!target) return;
+  if (pending.applied) {
+    const player = scene.player?.base?.position;
+    const moved = player && Math.hypot(player.x - pending.x, player.z - pending.z) > .15;
+    if (moved || cam.isOnPhone || target.currentID !== ARRIVAL_CAM_ID) {
+      cam.removeTarget({ id: ARRIVAL_CAM_ID, instant: true });
+      state.arrival = null;
+    }
     return;
   }
   if (target.currentID && target.currentID !== ARRIVAL_CAM_ID) {
-    // A dialog, phone or interaction owns the camera; leave it alone.
-    state.arrival = null;
+    if (now - pending.since > 12000) state.arrival = null;
     return;
   }
-  if (target.currentID === ARRIVAL_CAM_ID) {
-    if (pending.applied) {
-      if (now < pending.until) return;
-      cam.removeTarget({ id: ARRIVAL_CAM_ID, posEase: .055, lookAtEase: .05 });
-      state.arrival = null;
-      return;
-    }
-    // A fresh arrival replaced an unfinished shot: drop the old target so the
-    // new one can take over on this same pass.
-    cam.removeTarget({ id: ARRIVAL_CAM_ID });
-  }
+  if (cam.isOnPhone || cam.phoneQtProgress > .01) return;
   const focus = state.arrivalFocus.get(pending.id);
   const point = scene.getPoint?.(culturePointName(pending.id));
-  if (!focus || !point || scene.player?.canMove === false) return;
-  if (!scene.physics?.isReady) return;
   const player = scene.player?.base?.position;
-  if (!player) return;
+  if (!focus || !point || !player || !scene.physics?.isReady || scene.player.canMove === false) return;
   ARRIVAL_POINT_POS.set(point.position.x, GROUND + .2, point.position.z);
-  // Only apply once the physics respawn actually placed the player there; the
-  // shot would otherwise ease toward the old island position mid-transition.
   if (player.distanceToSquared(ARRIVAL_POINT_POS) > 25) {
-    if (now - pending.since > 6000) state.arrival = null;
+    if (now - pending.since > 12000) state.arrival = null;
     return;
   }
-  ARRIVAL_CAM_DIR.set(player.x - focus.x, 0, player.z - focus.z);
-  if (ARRIVAL_CAM_DIR.lengthSq() < .04) {
-    // Spawned basically inside the destination: settle for the point's facing.
-    ARRIVAL_CAM_DIR.set(-point.quaternion.x * 2, 0, -point.quaternion.z * 2);
-  }
-  ARRIVAL_CAM_DIR.normalize();
-  const distance = focus.distance ?? 5.4;
-  ARRIVAL_CAM_POS.copy(player).addScaledVector(ARRIVAL_CAM_DIR, distance);
-  ARRIVAL_CAM_POS.y = player.y + 1.9;
-  ARRIVAL_LOOK_AT_POINT.set(focus.x, focus.y, focus.z);
+  // Keep a natural eye-level view even at a very tall monument. Its base and
+  // entrance are the destination, rather than an upward shot of its summit.
+  ARRIVAL_LOOK_AT_POINT.set(focus.x, Math.min(focus.y, player.y + 2), focus.z);
   cam.setTarget({
-    id: ARRIVAL_CAM_ID, lockPlayer: true,
-    position: ARRIVAL_CAM_POS, lookAt: ARRIVAL_LOOK_AT_POINT,
-    posEase: .09, lookAtEase: .075,
+    id: ARRIVAL_CAM_ID, lockPlayer: false, position: false,
+    lookAt: ARRIVAL_LOOK_AT_POINT, instant: true,
   });
-  pending.until = now + 2200;
+  pending.x = player.x;
+  pending.z = player.z;
   pending.applied = true;
 }
 
@@ -632,27 +642,6 @@ function addRockColliders(scene, state) {
   data.sultraRockPhysics = scene.physics;
 }
 
-function monumentBoxGeometry(bounds, Attribute) {
-  const { min, max } = bounds;
-  const corners = [
-    [min.x, min.y, min.z], [max.x, min.y, min.z], [max.x, max.y, min.z], [min.x, max.y, min.z],
-    [min.x, min.y, max.z], [max.x, min.y, max.z], [max.x, max.y, max.z], [min.x, max.y, max.z],
-  ];
-  const triangles = [
-    0, 3, 2, 0, 2, 1, 4, 5, 6, 4, 6, 7, 0, 4, 7, 0, 7, 3,
-    1, 2, 6, 1, 6, 5, 3, 7, 6, 3, 6, 2, 0, 1, 5, 0, 5, 4,
-  ];
-  const values = new Float32Array(triangles.length * 3);
-  for (let i = 0; i < triangles.length; i++) {
-    const corner = corners[triangles[i]];
-    values[i * 3] = corner[0];
-    values[i * 3 + 1] = corner[1];
-    values[i * 3 + 2] = corner[2];
-  }
-  const geometry = new BufferGeometry();
-  geometry.setAttribute('position', new Attribute(values, 3));
-  return geometry;
-}
 
 function addBarBox(target, x, y, z, sizeX, sizeY, sizeZ, yaw = 0) {
   const halfX = sizeX / 2;
@@ -883,7 +872,7 @@ function loadMonumentGuideModel(game, state) {
     // plain public URL still serves it, so keep the swap working there too.
     .catch(() => load(MONUMENT_GUIDE_MODEL))
     .then((gltf) => {
-      convertMaterials(gltf.scene);
+      convertMaterials(gltf.scene, { preserveBakedColors: true });
       state.guideNpcModel = gltf.scene;
     })
     .catch((error) => {
@@ -898,30 +887,59 @@ function loadMonumentGuideModel(game, state) {
 function attachMonumentGuideNpcs(scene, state) {
   const model = state.guideNpcModel;
   if (!model) return;
-  for (const [uid, actor] of Object.entries(scene.actors || {})) {
-    if (!uid.startsWith(MONUMENT_NPC_PREFIX) || !actor?.base || !actor.isBodyReady) continue;
+  // Cache the two guide actors; the per-frame path must stay O(2).
+  if (state.guideNpcScene !== scene) {
+    state.guideNpcScene = scene;
+    state.guideNpcActors = Object.entries(scene.actors || {})
+      .filter(([uid]) => uid.startsWith(MONUMENT_NPC_PREFIX))
+      .map(([, actor]) => actor);
+  }
+  for (const actor of state.guideNpcActors || []) {
+    if (!actor?.base) continue;
     if (actor.sultraGuideModel) {
-      // Keep the sculpted model attached if the scene ever rebuilds children.
+      // The procedural citizen can finish building after the first swap, so
+      // hide every native child on every frame and re-attach ours if the
+      // scene rebuilds its children.
       if (actor.sultraGuideModel.parent !== actor.base) actor.base.add(actor.sultraGuideModel);
+      for (const child of actor.base.children) {
+        if (child !== actor.sultraGuideModel) child.visible = false;
+      }
       continue;
     }
     for (const child of actor.base.children) child.visible = false;
     const guide = model.clone(true);
     guide.name = 'Sultrarupa monument guide NPC';
+    // Scene actors keep a 0.01 root scale (the native citizen is scaled up
+    // 100x inside it), so size the sculpt against its own raw bounds instead
+    // of trusting the file's 1.9 m height.
+    if (!state.guideNpcSourceHeight) {
+      model.updateWorldMatrix(true, true);
+      const bounds = new Box3().setFromObject(model);
+      state.guideNpcSourceHeight = Math.max(.001, bounds.max.y - bounds.min.y);
+    }
+    const baseScale = Math.abs(actor.base.scale.x) || 1;
+    guide.scale.setScalar(MONUMENT_GUIDE_HEIGHT / (state.guideNpcSourceHeight * baseScale));
     actor.sultraGuideModel = guide;
     actor.base.add(guide);
     actor.base.updateMatrixWorld(true);
   }
 }
 
-function updateMonumentGuideNpcs(game, scene, state) {
-  if (!state.guideNpcModel) {
-    // Load as soon as the island is live; the guides stand near the two
-    // monuments and the swap is invisible until the file arrives.
-    if (!state.guideNpcRequest) loadMonumentGuideModel(game, state);
+function updateMonumentGuideNpcs(game, scene, state, player) {
+  if (state.guideNpcModel) {
+    attachMonumentGuideNpcs(scene, state);
     return;
   }
-  attachMonumentGuideNpcs(scene, state);
+  if (state.guideNpcRequest || !player) return;
+  for (const site of layout.monuments || []) {
+    if (!MONUMENT_GUIDES[site.id]) continue;
+    const position = monumentGuidePosition(site);
+    const dx = player.x - position.x;
+    const dz = player.z - position.z;
+    if (dx * dx + dz * dz > MONUMENT_GUIDE_LOAD_RADIUS ** 2) continue;
+    loadMonumentGuideModel(game, state);
+    return;
+  }
 }
 
 function registerJoggers(game) {
@@ -937,175 +955,16 @@ function registerJoggers(game) {
     const start = route.points[0];
     const next = route.points[1];
     actors[route.uid] = {
-      uid: route.uid, type: 'NPC', params: { subtype },
+      uid: route.uid, type: 'NPC',
+      params: {
+        subtype,
+        move: `curve=SultraJoggerCurve_${route.index}, run, pauseMin=0, pauseMax=0, speed=${route.speed}`,
+      },
       transforms: transform(start[0], GROUND, start[1],
         Math.atan2(next[0] - start[0], next[1] - start[1])),
     };
   }
   return actors;
-}
-
-function startJoggerRun(actor, jogger) {
-  const run = actor.moveAnims?.Run;
-  if (!run || !actor.animations) return;
-  delete actor.moveAnims.Run;
-  actor.animations.Run = run;
-  actor.setAnimation?.('Run', { time: Math.random() * (run._clip?.duration || 1) });
-  actor.currentAnimation = 'Run';
-  jogger.runStarted = true;
-}
-
-function sampleJoggerPath(route, distance) {
-  let remaining = Math.max(0, Math.min(distance, route.length));
-  for (let i = 1; i < route.points.length; i++) {
-    const segment = route.segments[i - 1];
-    if (remaining <= segment || i === route.points.length - 1) {
-      const from = route.points[i - 1];
-      const to = route.points[i];
-      const t = segment > 0 ? Math.min(1, remaining / segment) : 0;
-      return {
-        x: from[0] + (to[0] - from[0]) * t,
-        z: from[1] + (to[1] - from[1]) * t,
-        dx: segment > 0 ? (to[0] - from[0]) / segment : 0,
-        dz: segment > 0 ? (to[1] - from[1]) / segment : 0,
-      };
-    }
-    remaining -= segment;
-  }
-  const point = route.points[route.points.length - 1];
-  return { x: point[0], z: point[1], dx: 0, dz: 1 };
-}
-
-function joggerTerrainMesh(scene) {
-  let mesh = null;
-  let vertices = 1000;
-  for (const object of scene.base?.children || []) {
-    if (!object.isMesh || object.isSkinnedMesh) continue;
-    const count = object.geometry?.getAttribute('position')?.count || 0;
-    if (count > vertices) {
-      vertices = count;
-      mesh = object;
-    }
-  }
-  return mesh;
-}
-
-function createTerrainSampler(mesh) {
-  mesh.updateWorldMatrix(true, false);
-  const positions = mesh.geometry.getAttribute('position');
-  const index = mesh.geometry.index;
-  const points = positions.array;
-  const indices = index ? index.array : null;
-  const triangles = indices ? indices.length : positions.count;
-  return (x, z) => {
-    const origin = mesh.worldToLocal(new Vector3(x, 100, z));
-    let best = -Infinity;
-    for (let i = 0; i < triangles; i += 3) {
-      const ia = indices ? indices[i] : i;
-      const ib = indices ? indices[i + 1] : i + 1;
-      const ic = indices ? indices[i + 2] : i + 2;
-      const ax = points[ia * 3];
-      const ay = points[ia * 3 + 1];
-      const az = points[ia * 3 + 2];
-      const bx = points[ib * 3];
-      const by = points[ib * 3 + 1];
-      const bz = points[ib * 3 + 2];
-      const cx = points[ic * 3];
-      const cy = points[ic * 3 + 1];
-      const cz = points[ic * 3 + 2];
-      const e1x = bx - ax;
-      const e1y = by - ay;
-      const e1z = bz - az;
-      const e2x = cx - ax;
-      const e2y = cy - ay;
-      const e2z = cz - az;
-      const determinant = e1z * e2x - e1x * e2z;
-      if (Math.abs(determinant) < 1e-8) continue;
-      const inverse = 1 / determinant;
-      const sx = origin.x - ax;
-      const sy = origin.y - ay;
-      const sz = origin.z - az;
-      const u = inverse * (sz * e2x - sx * e2z);
-      if (u < 0 || u > 1) continue;
-      const qx = sy * e1z - sz * e1y;
-      const qy = sz * e1x - sx * e1z;
-      const qz = sx * e1y - sy * e1x;
-      const v = -inverse * qy;
-      if (v < 0 || u + v > 1) continue;
-      const t = inverse * (e2x * qx + e2y * qy + e2z * qz);
-      if (t <= 0) continue;
-      const y = origin.y - t;
-      if (y > best) best = y;
-    }
-    if (!Number.isFinite(best)) return GROUND;
-    return mesh.localToWorld(new Vector3(origin.x, best, origin.z)).y;
-  };
-}
-
-function prepareJoggerRoute(route, scene) {
-  if (route.heights?.length) return;
-  const mesh = joggerTerrainMesh(scene);
-  if (!mesh) return;
-  const sampler = createTerrainSampler(mesh);
-  const step = .75;
-  const count = Math.max(2, Math.ceil(route.length / step) + 1);
-  const heights = new Array(count);
-  for (let i = 0; i < count; i++) {
-    const sample = sampleJoggerPath(route, route.length * i / (count - 1));
-    heights[i] = sampler(sample.x, sample.z);
-  }
-  route.heights = heights;
-  route.heightStep = route.length / (count - 1);
-}
-
-function joggerHeightAt(route, distance) {
-  if (!route.heights?.length) return GROUND;
-  const scaled = Math.max(0, Math.min(distance / route.heightStep, route.heights.length - 1));
-  const index = Math.floor(scaled);
-  const next = Math.min(index + 1, route.heights.length - 1);
-  return route.heights[index] + (route.heights[next] - route.heights[index]) * (scaled - index);
-}
-
-function updateJoggers(scene, state, now) {
-  if (!state.joggerTime) {
-    state.joggerTime = now;
-    return;
-  }
-  const delta = Math.min(.05, Math.max(0, (now - state.joggerTime) / 1000));
-  state.joggerTime = now;
-  if (!state.joggers.size) {
-    for (const route of JOGGER_PATHS) {
-      if (!scene.actors?.[route.uid]?.base) continue;
-      prepareJoggerRoute(route, scene);
-      state.joggers.set(route.uid, {
-        route,
-        distance: 0,
-        direction: 1,
-      });
-    }
-    if (!state.joggers.size) return;
-  }
-  for (const [uid, jogger] of state.joggers) {
-    const actor = scene.actors?.[uid];
-    if (!actor?.base) continue;
-    prepareJoggerRoute(jogger.route, scene);
-    if (!jogger.runStarted) startJoggerRun(actor, jogger);
-    let next = jogger.distance + jogger.route.speed * delta * jogger.direction;
-    if (next > jogger.route.length) {
-      next = jogger.route.length - (next - jogger.route.length);
-      jogger.direction = -1;
-    } else if (next < 0) {
-      next = -next;
-      jogger.direction = 1;
-    }
-    jogger.distance = Math.max(0, Math.min(next, jogger.route.length));
-    const sample = sampleJoggerPath(jogger.route, jogger.distance);
-    actor.base.position.set(sample.x, joggerHeightAt(jogger.route, jogger.distance) + .02, sample.z);
-    actor.base.quaternion.setFromAxisAngle(UP,
-      Math.atan2(sample.dx * jogger.direction, sample.dz * jogger.direction));
-    actor.baseQuaternion.copy(actor.base.quaternion);
-    actor.base.updateMatrixWorld(true);
-  }
 }
 
 function configureScenes(game, state) {
@@ -1132,7 +991,8 @@ function configureScenes(game, state) {
       'Spawn.001': spawn, 'PortSpawnA.001': [...spawn], 'PortSpawnB.001': [...spawn],
       ...cultureDestinationPoints(),
     },
-    curves: {}, areas: {},
+    curves: Object.fromEntries(JOGGER_PATHS.map((route) => [`SultraJoggerCurve_${route.index}`, joggerCurve(route)])),
+    areas: {},
   });
 
   // The opening boat and its guide keep their original animation and camera.
@@ -1193,7 +1053,7 @@ async function loadHouse(state, id) {
   const entry = exhibits.find(item => item.id === id);
   if (!entry || state.templates.has(id)) return;
   const gltf = await assets.load(assetUrl(entry.model), { noCache: true });
-  convertMaterials(gltf.scene);
+  convertMaterials(gltf.scene, { preserveBakedColors: true });
   if (entry.unlit) gltf.scene.traverse((object) => {
     if (!object.isMesh) return;
     // Diffuse color from the PBR source is displayed directly, without baked
@@ -1261,6 +1121,7 @@ function addHouses(scene, state) {
         z: site.z * offset.scale + offset.z,
         y: GROUND + Math.max(3.4, source.size.y * scale * offset.scale * .55),
         distance: 2.9 + source.size.y * scale * offset.scale * .28,
+        radius: source.size.length() * scale * offset.scale * .5,
       });
     }
   }
@@ -1288,6 +1149,7 @@ function addHouses(scene, state) {
         z: site.z * offset.scale + offset.z,
         y: GROUND + height * .55,
         distance: Math.max(5.4, height * .5),
+        radius: Math.hypot(site.width, site.height, site.depth) * offset.scale * .5,
       });
     }
   }
@@ -1333,8 +1195,6 @@ function attachScene(scene, state) {
   state.treeContactsReady = false;
   state.bushContacts.clear();
   state.bushContactsReady = false;
-  state.joggers.clear();
-  state.joggerTime = 0;
   state.scene = scene;
   if (!SCENES.has(scene.id)) return;
   // Keep the original terrain shader, shoreline shading, shadows and wind grass.
@@ -1349,8 +1209,7 @@ export function installSultraIsland(game) {
     arrivalFocus: new Map(), arrival: null,
     environment: null, treeContacts: new Set(), treeContactsReady: false,
     bushContacts: new Set(), bushContactsReady: false, bushLastPosition: new Vector3(),
-    joggers: new Map(), joggerTime: 0,
-    guideNpcModel: null, guideNpcRequest: null,
+    guideNpcModel: null, guideNpcRequest: null, guideNpcScene: null, guideNpcActors: null, guideNpcSourceHeight: 0,
     treeAudio: createTreeTuning(game), bushAudio: createBushTuning(game),
   };
   state.models = createModelStream([...layout.houses, ...(layout.monuments || [])], id => loadHouse(state, id));
@@ -1443,7 +1302,7 @@ export function installSultraIsland(game) {
       state.models.request(id, true).then(() => {
         if (generation !== navigationGeneration) return;
         game.scenes.teleportTo(MAIN, { point, delay: 400 });
-        state.arrival = { id, since: performance.now(), until: 0, applied: false };
+        state.arrival = { id, since: performance.now(), applied: false };
       }).catch(error => {
         if (generation !== navigationGeneration) return;
         console.error('[Sultra destination]', error);
@@ -1511,8 +1370,7 @@ export function installSultraIsland(game) {
     if (scene.id !== MAIN) return;
     ensureEnvironment(scene, state);
     updateArrivalCamera(scene, state, performance.now());
-    updateJoggers(scene, state, performance.now());
-    updateMonumentGuideNpcs(game, scene, state);
+    updateMonumentGuideNpcs(game, scene, state, scene.player?.base?.position);
     for (const { target, uid } of state.guideTargets) {
       const actor = scene.actors[uid];
       if (actor?.base) target.position.copy(actor.base.position).add(GUIDE_OFFSET);
@@ -1539,6 +1397,12 @@ export function installSultraIsland(game) {
   });
   return state;
 }
+
+
+
+
+
+
 
 
 

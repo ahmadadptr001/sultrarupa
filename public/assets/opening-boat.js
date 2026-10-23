@@ -42,7 +42,7 @@ function toBasicMaterial(source) {
   return material;
 }
 
-export function convertMaterials(root) {
+export function convertMaterials(root, { preserveBakedColors = false } = {}) {
   const stale = new Set();
   root.traverse((object) => {
     if (!object.isMesh) return;
@@ -55,6 +55,18 @@ export function convertMaterials(root) {
     } else if (source) {
       stale.add(source);
       object.material = toBasicMaterial(source);
+    }
+    if (preserveBakedColors) {
+      // This legacy renderer outputs display-encoded colors directly. Decoding
+      // a baked sRGB atlas without an output conversion makes pale fur dark.
+      for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
+        if (!material) continue;
+        material.fog = false;
+        if (material.map) {
+          material.map.encoding = 3000;
+          material.map.needsUpdate = true;
+        }
+      }
     }
     object.castShadow = true;
     object.receiveShadow = true;
@@ -69,7 +81,7 @@ export function installOpeningBoat(game) {
   if (game.openingBoat) return;
   const state = game.openingBoat = { status: 'loading', model: null, boat: null };
   const load = () => assets.load(assetUrl('/models/opening-boat.glb'), { noCache: true }).then((gltf) => {
-    convertMaterials(gltf.scene);
+    convertMaterials(gltf.scene, { preserveBakedColors: true });
     const model = new Group();
     model.name = 'Custom opening boat';
     model.add(gltf.scene);

@@ -7,6 +7,204 @@ html.sc-interior-open .sc-house-prompt {
   display: none !important;
 }
 
+/* The gallery lives in the lazy interior stylesheet, not the landing page. */
+.sci-gallery-markers,
+.sci-gallery-focus {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.sc-interior [class^="sci-gallery-"][hidden] { display: none; }
+.sc-interior:not(.is-ready) .sci-gallery-markers { visibility: hidden; }
+
+.sci-gallery-marker {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 48px;
+  height: 48px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translate(-50%, -100%);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sci-gallery-triangle {
+  display: block;
+  width: 26px;
+  height: 21px;
+  background: var(--si-yellow);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  filter: drop-shadow(0 3px 2px #0006);
+  animation: sci-gallery-bounce 1.8s cubic-bezier(.45, 0, .55, 1) infinite;
+  will-change: transform;
+}
+
+.sci-gallery-label {
+  position: absolute;
+  bottom: 53px;
+  width: max-content;
+  max-width: min(230px, 65vw);
+  padding: 7px 11px;
+  border-radius: 9px;
+  background: var(--si-ink);
+  font: 600 12px/1.4 var(--si-font);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.sci-gallery-marker:hover .sci-gallery-label,
+.sci-gallery-marker:focus-visible .sci-gallery-label { opacity: 1; }
+.sc-interior .sci-gallery-marker:focus-visible { outline: 3px solid white; border-radius: 10px; }
+
+@keyframes sci-gallery-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.sci-gallery-status {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 170px;
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: #fffffff0;
+  color: var(--si-ink);
+  text-align: center;
+  font-size: 13px;
+}
+.sci-gallery-status button { margin-left: 8px; color: inherit; font: inherit; cursor: pointer; }
+.sc-interior:not(.is-ready) .sci-gallery-status { visibility: hidden; }
+
+.is-gallery-focus .sci-heading,
+.is-gallery-focus .sci-info,
+.is-gallery-focus .sci-close,
+.is-gallery-focus .sci-hint,
+.is-gallery-focus .sci-stick,
+.is-gallery-focus .sci-door { display: none; }
+.is-gallery-focus .sci-top { justify-content: flex-end; }
+.is-gallery-focus .sci-stage { cursor: default; }
+
+.sci-gallery-back,
+.sci-gallery-detail-back {
+  min-height: 44px;
+  padding: 11px 17px;
+  border: 2px solid white;
+  border-radius: 14px;
+  background: var(--si-paper);
+  color: var(--si-ink);
+  box-shadow: var(--si-shadow);
+  font: 700 13px/1.4 var(--si-font);
+  cursor: pointer;
+  pointer-events: auto;
+}
+.sci-gallery-back {
+  position: absolute;
+  top: calc(20px + env(safe-area-inset-top));
+  left: clamp(16px, 4vw, 38px);
+}
+.sci-gallery-summary {
+  position: absolute;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  width: min(620px, calc(100% - 32px));
+  max-height: 38%;
+  overflow: auto;
+  padding: 16px 20px;
+  border: 2px solid white;
+  border-radius: 20px;
+  background: #fffffff5;
+  color: var(--si-ink);
+  box-shadow: var(--si-shadow);
+  text-align: left;
+  font-family: var(--si-font);
+  cursor: pointer;
+  pointer-events: auto;
+}
+.sci-gallery-summary:hover { background: #f4fffc; border-color: var(--si-teal); }
+.sci-gallery-category {
+  display: block;
+  margin: 0 0 6px;
+  color: #007562;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.sci-gallery-title {
+  margin: 0;
+  color: var(--si-ink);
+  font: 700 22px/1.25 var(--si-display);
+}
+.sci-gallery-description { margin: 8px 0; font-size: 14px; line-height: 1.5; }
+.sci-gallery-more { display: block; color: #007562; font-size: 12px; font-weight: 700; line-height: 1.5; }
+.sc-interior .sci-gallery-summary:focus-visible,
+.sc-interior .sci-gallery-back:focus-visible,
+.sc-interior .sci-gallery-detail-back:focus-visible {
+  outline: 3px solid var(--si-teal);
+  outline-offset: 4px;
+}
+.sci-gallery-details {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: grid;
+  place-items: center;
+  padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+  background: #141122b8;
+  color: var(--si-ink);
+}
+.sci-gallery-sheet {
+  width: min(680px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: clamp(20px, 4vw, 34px);
+  border-radius: 24px;
+  background: var(--si-paper);
+  box-shadow: 0 20px 80px #0005;
+  user-select: text;
+}
+.sci-gallery-detail-back { margin-bottom: 22px; background: var(--si-paper-soft); box-shadow: none; }
+.sci-gallery-sheet h3 { margin: 6px 0 14px; font: 700 clamp(22px, 4vw, 30px)/1.25 var(--si-display); }
+.sci-gallery-sheet p { font-size: 15px; line-height: 1.75; }
+.sci-gallery-sheet a { color: #007562; text-decoration: underline; overflow-wrap: anywhere; }
+.sci-gallery-sources { padding-left: 20px; font-size: 12px; line-height: 1.7; }
+.sci-gallery-credit { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--si-line); }
+.sci-gallery-credit, .sci-gallery-credit p { font-size: 12px; line-height: 1.6; }
+
+@media (max-width: 600px) {
+  .sci-gallery-summary { padding: 13px 16px; border-radius: 16px; }
+  .sci-gallery-title { font-size: 18px; }
+  .sci-gallery-description { font-size: 13px; margin: 6px 0; }
+  .sci-gallery-back { max-width: calc(100% - 92px); }
+  .sci-gallery-sheet { border-radius: 18px; }
+}
+@media (max-height: 480px) {
+  .sci-gallery-summary { bottom: 8px; padding: 8px 14px; }
+  .sci-gallery-title { font-size: 16px; }
+  .sci-gallery-description { margin: 3px 0; font-size: 12px; }
+  .sci-gallery-category { margin-bottom: 2px; font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sci-gallery-triangle { animation: none; }
+  .sci-gallery-label { transition: none; }
+}
+
 .sc-interior {
   --si-ink: #3b3777;
   --si-ink-soft: #5d598d;

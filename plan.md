@@ -222,3 +222,26 @@ Dokumen ini adalah daftar kerja aktif untuk proyek. Status akan diperbarui setel
 - Lima menu HP dan 11 pin budaya tetap tersedia; tidak ada error JavaScript. Skrip: `C:\Users\user\Downloads\munas_edit\monuments_world_test.py`.
 - Build produksi berhasil; lint tanpa error, dengan dua peringatan generator yang telah dicatat sebelumnya. Pemeriksaan sintaks, lint modul setelah koreksi encoding, dan `git diff --check` berhasil. Peringatan metadataBase deployment masih sama.
 - Pekerjaan monumen selesai. Berhenti di sini sesuai permintaan pengguna, menunggu pilihan pekerjaan berikutnya.
+
+### Penggantian model pemandu monumen - 23 Oktober 2026
+
+- Model base_basic_shaded.glb (79,8 MB) dikompresi menjadi public/models/culture/monument-guide.glb (12,04 MB, 1.999.846 segitiga, galat posisi maksimum 0,1 mm, tekstur identik).
+- Kedua NPC NPC_SultraInfo_tugu-mtq dan NPC_SultraInfo_patung-oputa memakai model itu; rig asli tetap dipakai untuk interaksi, balon dialog, dan dialog.
+- Penyebab model tidak terlihat sebelumnya: root aktor NPC memakai skala 0,01, sehingga model menjadi 1,9 cm. Klon diskalakan dengan kompensasi 100x ke tinggi target 2,9 m (pemain sekitar 2,6 m), sehingga pemandu tidak lagi terlihat kecil.
+- Pemuatan kembali mengikuti konsep awal: dimuat malas hanya saat pemain berada dalam radius 90 m dari pemandu, satu kali, tanpa menambah beban saat pembukaan.
+- Verifikasi runtime: kedua aktor melaporkan klon terpasang, balon dialog tampil, dan tangkapan layar bersih tersimpan di C:\Users\user\Downloads\sultra-bukti-npc.
+
+### Fisika dan animasi jogger - 24 Oktober 2026
+
+- Jogger keliling peta sebelumnya digerakkan dengan menimpa posisi visual setiap frame, sedangkan collider fisikanya tertinggal di titik spawn, sehingga pemain bisa menembus karakternya.
+- Rute jogger kini dikonversi menjadi kurva BEZIER tertutup di manifest scene (curves), lalu aktor memakai gerak bawaan NPC (curve=..., run, speed=6). Posisi visual mengikuti body.center dari physics worker, jadi collider selalu berada tepat di karakter.
+- Animasi Run hanya dipilih mesin di atas ~5,7 m/s; karena itu kecepatan dinaikkan dari 3,05 ke 6 m/s. Runtime memastikan currentAnimation=Run dan moveAnims.Run.weight=1.
+- Uji tabrakan: sphere mode 256 di dekat pemain mendorong posisi pemain dari x=-52,296 ke -53,768 dan menahannya; cullSphere mengembalikan keadaan. Collider jogger memakai jalur yang sama.
+
+### Perbaikan rute jogger - 24 Oktober 2026
+
+- Tenggelam: rute lama menggabungkan path0 dan path12, lalu kurva tertutup menambah segmen penutup dari ujung path12 (146.83, -115.93) ke awal path0 (-61.67, 145.07). Tangen bezier membengkak ke arah laut, dan physics worker menurunkan NPC ke dasar laut (y sekitar 0,99).
+- Manjat tembok: seluruh layout.paths ternyata menyusur tembok/pagar solid, dengan jarak bersih hanya 0,7-3,7 m. Raycast moveSphereToFloor dari pusat badan +0,5 m ke bawah 1,2 m mengenai tembok, lalu badan dinaikkan ke atasnya.
+- Rute diganti menjadi loop pantai dekat spawn: [[-48,146],[-36,146],[-36,120],[-48,120]] (keliling sekitar 80 m), bebas tembok, jarak bersih minimum 4,8 m dari rumah mekongga. Kurva BEZIER tertutup memakai tangen Catmull-Rom dan y tetap di GROUND.
+- Uji runtime: jogger berputar di x -49..-34,8 dan z 117..148, y 3,05-6,14 (menyeberangi bukit asli), lap sekitar 13 detik pada 6 m/s. Visual dan collider tetap satu body; tidak turun ke laut dan tidak naik tembok.
+- Bukti: jogger-east-clean.jpg (jogger di kaki bukit, x=-35,1 z=141,4, y=3,05).

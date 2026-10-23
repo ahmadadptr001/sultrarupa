@@ -363,7 +363,7 @@ export function installPlayerCharacter(game) {
   if (game.playerCharacter) return;
   const state = game.playerCharacter = { status: 'loading', mode: 'native-retarget', entry: null };
   const loadCharacter = () => assets.load(assetUrl(MODEL_URL), { noCache: true }).then((gltf) => {
-    convertMaterials(gltf.scene);
+    convertMaterials(gltf.scene, { preserveBakedColors: true });
     gltf.scene.traverse((o) => { if (!state.source && o.isMesh) state.source = o; });
     if (!state.source) throw new Error('Character model contains no mesh');
   });
@@ -377,7 +377,7 @@ export function installPlayerCharacter(game) {
     group.name = 'Custom accessories';
     for (const model of models) {
       if (!model) continue;
-      convertMaterials(model.scene);
+      convertMaterials(model.scene, { preserveBakedColors: true });
       group.add(model.scene);
     }
     state.customSource = group;

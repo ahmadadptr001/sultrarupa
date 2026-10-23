@@ -1,4 +1,0 @@
-﻿const {chromium}=require('C:/Users/user/AppData/Local/npm-cache/_npx/420ff84f11983ee5/node_modules/playwright');
-(async()=>{const browser=await chromium.connectOverCDP('http://localhost:9333');const page=browser.contexts()[0].pages()[0];
-console.log(await page.evaluate(()=>{const a=window.__testApp,g=a.$webgl,e=g.playerCharacter.entry,p=e.actor;return {scene:g.scenes.current.id,base:p.base.position.toArray(),armature:p.armature.position.toArray(),root:e.root.position.toArray(),rootWorld:e.root.getWorldPosition(e.root.position.clone()).toArray(),rootVisible:e.root.visible,charVisible:p.charMesh.visible,material:e.mesh.material.visible,scale:e.root.scale.toArray(),playerKeys:Object.keys(p),storeKeys:Object.keys(g.store),cam:g.scenes.current.camera.cam.position.toArray()};}));
-await page.screenshot({path:'artifacts/accessory-fit/baseline-wardrobe-later.png'});process.exit(0);})();

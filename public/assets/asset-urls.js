@@ -336,6 +336,7 @@ const versions = {
   "/models/culture/sulawesi-island.glb": "f231e359cfa0d62c",
   "/models/culture/terrain-splat.png": "227017a1aab40911",
   "/models/culture/tugu-mtq.glb": "cadae492a0f2a291",
+  "/models/interiors/bingkai.glb": "ec1c7a3b3aa653ba",
   "/models/interiors/ruangan-kotak-besar.glb": "5d7362c0be50fa1d",
   "/models/munas-ix-logo-hd.glb": "518810905ed3cee3",
   "/models/opening-boat.glb": "0c64ea3fab0e3f6c",

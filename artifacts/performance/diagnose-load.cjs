@@ -1,2 +1,0 @@
-const {chromium}=require('C:/Users/user/AppData/Local/npm-cache/_npx/420ff84f11983ee5/node_modules/playwright');
-(async()=>{const b=await chromium.connectOverCDP('http://localhost:9333'),c=await b.newContext(),p=await c.newPage();p.on('pageerror',e=>console.log('PAGEERROR',e.stack));p.on('console',m=>{if(m.type()==='error')console.log('CONSOLE',m.text())});p.on('requestfailed',r=>console.log('FAIL',r.url(),r.failure()));await p.goto('http://localhost:3000/',{waitUntil:'domcontentloaded'});await p.waitForTimeout(6000);await c.close();process.exit(0)})()

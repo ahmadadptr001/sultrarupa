@@ -10,6 +10,7 @@ import {
 import { convertMaterials } from './opening-boat.js';
 import { HOUSE_EXHIBITS } from './sultra-culture-data.js';
 import { assetUrl } from './asset-urls.js';
+import { createInteriorGallery } from './sultra-interior-gallery.js';
 
 const MODEL_URL = '/models/interiors/ruangan-kotak-besar.glb?v=traditional-room-20261021';
 const EYE_HEIGHT = 1.65;
@@ -91,6 +92,7 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     renderer: null,
     scene: null,
     camera: null,
+    gallery: null,
     frame: 0,
     lastTime: 0,
     loadingStartedAt: 0,
@@ -271,6 +273,25 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     state.scene = new Scene();
     state.camera = new PerspectiveCamera(62, 1, 0.05, 80);
     state.camera.rotation.order = 'YXZ';
+    state.gallery = createInteriorGallery({
+      scene: state.scene, camera: state.camera, root, stage,
+      onLock: releaseControls,
+    });
+  }
+
+  function releaseControls() {
+    state.keys.clear();
+    // Clear IDs before releasing capture: a lost-capture event is not a tap.
+    const lookId = state.look.id;
+    const stickId = state.stick.id;
+    state.look.id = null;
+    state.stick.id = null;
+    if (lookId !== null && stage.hasPointerCapture(lookId)) stage.releasePointerCapture(lookId);
+    if (stickId !== null && stick.hasPointerCapture(stickId)) stick.releasePointerCapture(stickId);
+    stage.classList.remove('is-dragging');
+    state.stick.x = 0;
+    state.stick.y = 0;
+    knob.style.transform = 'translate(0px, 0px)';
   }
 
   function loadModel() {
@@ -344,6 +365,8 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     configureRoom(model);
     error.hidden = true;
     state.status = 'ready';
+    // Gallery assets belong to the room, and never block the island startup.
+    state.gallery.setHouse(state.target.id);
     maybeReveal(performance.now());
   }
 
@@ -389,7 +412,7 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
 
   function updateDoorPrompt() {
     const door = state.doorPosition;
-    if (!door || !root.classList.contains('is-ready')) {
+    if (!door || state.gallery?.locked || !root.classList.contains('is-ready')) {
       doorButton.hidden = true;
       return;
     }
@@ -433,6 +456,7 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     state.renderer.setSize(width, height, false);
     state.camera.aspect = width / height;
     state.camera.updateProjectionMatrix();
+    state.gallery?.resize();
   }
 
   function resetView() {
@@ -473,7 +497,7 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     if (Math.abs(forward) < 0.08) forward = 0;
     if (Math.abs(strafe) < 0.08) strafe = 0;
 
-    if (delta && root.classList.contains('is-ready') && (forward || strafe)) {
+    if (delta && !state.gallery?.locked && root.classList.contains('is-ready') && (forward || strafe)) {
       const move = new Vector3(
         -Math.sin(state.yaw) * forward + Math.cos(state.yaw) * strafe,
         0,
@@ -490,7 +514,8 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
       }
     }
 
-    updateCamera();
+    if (!state.gallery?.controlsCamera) updateCamera();
+    state.gallery?.update(now);
     updateDoorPrompt();
     state.renderer.render(state.scene, state.camera);
     state.frame = requestAnimationFrame(tick);
@@ -499,7 +524,7 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
   function startLoop() {
     if (state.frame) cancelAnimationFrame(state.frame);
     state.lastTime = 0;
-    updateCamera();
+    if (!state.gallery?.controlsCamera) updateCamera();
     state.frame = requestAnimationFrame(tick);
   }
 
@@ -569,6 +594,8 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
 
   function hide() {
     clearTimeout(state.fadeTimer);
+    state.gallery?.hide();
+    releaseControls();
     root.hidden = true;
     root.setAttribute('aria-hidden', 'true');
     root.classList.remove('is-ready');
@@ -663,6 +690,30 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
 
   function onKeyDown(event) {
     if (!state.open) return;
+    if (state.gallery?.handleKey(event)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+    if (event.target instanceof Element && event.target.closest('.sci-gallery-details:not([hidden])')) {
+      // Reading controls (scrolling and selecting text) belong to the sheet.
+      event.stopImmediatePropagation();
+      return;
+    }
+    if (event.code === 'Tab') {
+      // Keep keyboard navigation inside the active room dialog.
+      const buttons = [...root.querySelectorAll('button, a[href], [tabindex="0"]')]
+        .filter((element) => !element.disabled && element.getClientRects().length && !element.closest('[hidden]'));
+      const first = buttons[0], last = buttons[buttons.length - 1];
+      if (first && (!buttons.includes(document.activeElement)
+        || (event.shiftKey && document.activeElement === first)
+        || (!event.shiftKey && document.activeElement === last))) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      }
+      event.stopImmediatePropagation();
+      return;
+    }
     if (event.code === 'Escape') {
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -686,7 +737,7 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     if (MOVE_CODES.has(event.code) || event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
       event.preventDefault();
       event.stopImmediatePropagation();
-      state.keys.add(event.code);
+      if (!state.gallery?.locked) state.keys.add(event.code);
     }
   }
 
@@ -700,12 +751,15 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
   }
 
   function onStagePointerDown(event) {
-    if (!state.open || event.button !== 0) return;
+    if (!state.open || state.gallery?.locked || event.button !== 0) return;
     event.preventDefault();
     event.stopPropagation();
     state.look.id = event.pointerId;
     state.look.x = event.clientX;
     state.look.y = event.clientY;
+    state.look.startX = event.clientX;
+    state.look.startY = event.clientY;
+    state.look.dragged = false;
     stage.setPointerCapture(event.pointerId);
     stage.classList.add('is-dragging');
   }
@@ -714,6 +768,9 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
     if (!state.open || state.look.id !== event.pointerId) return;
     event.preventDefault();
     event.stopPropagation();
+    if (Math.hypot(event.clientX - state.look.startX, event.clientY - state.look.startY) > 6) {
+      state.look.dragged = true;
+    }
     const sensitivity = event.pointerType === 'touch' ? TOUCH_LOOK_SENSITIVITY : LOOK_SENSITIVITY;
     state.yaw -= (event.clientX - state.look.x) * sensitivity;
     state.pitch -= (event.clientY - state.look.y) * sensitivity;
@@ -725,12 +782,14 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
 
   function endLook(event) {
     if (state.look.id !== event.pointerId) return;
+    const tap = event.type === 'pointerup' && !state.look.dragged;
     state.look.id = null;
     stage.classList.remove('is-dragging');
+    if (tap && root.classList.contains('is-ready')) state.gallery?.pick(event.clientX, event.clientY);
   }
 
   function onStickDown(event) {
-    if (!state.open) return;
+    if (!state.open || state.gallery?.locked) return;
     event.preventDefault();
     event.stopPropagation();
     state.stick.id = event.pointerId;
@@ -786,6 +845,7 @@ export function createHouseInterior(game, { ui, onEnter, onExit, onInfo } = {}) 
       close({ reason: 'destroy', restoreFocus: false });
       state.destroyed = true;
       stopLoop();
+      state.gallery?.destroy();
       state.renderer?.dispose();
       state.renderer = null;
       root.remove();
