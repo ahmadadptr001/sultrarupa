@@ -2,11 +2,23 @@ import type { NextConfig } from "next";
 import assetVersions from "./config/asset-versions.json";
 
 const nextConfig: NextConfig = {
+  // Allow production audits while a developer keeps `next dev` running.
+  distDir: process.env.SULTRA_BUILD_DIR || ".next",
   async redirects() {
     return [{ source: "/coastal_world.html", destination: "/", permanent: true }];
   },
   async headers() {
     return [
+      {
+        // Reuse native binary assets even when two scene loaders ask for them.
+        source: "/assets/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=300, stale-while-revalidate=86400" }],
+      },
+      ...["js", "css"].map((extension) => ({
+        // Historical build IDs are edited in place: always revalidate code.
+        source: `/assets/:file(.*\\.${extension})`,
+        headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }],
+      })),
       ...Object.entries(assetVersions).map(([asset, version]) => ({
         source: `/asset-cache/${version}${asset}`,
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
@@ -38,13 +50,6 @@ const nextConfig: NextConfig = {
         source,
         headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" }],
       })),
-      {
-        // Module sources under /assets change with edits (they carry no content
-        // hash). Keep them fresh briefly but let browsers reuse the copy while
-        // revalidating in the background for the rest of the day.
-        source: "/assets/:path*",
-        headers: [{ key: "Cache-Control", value: "public, max-age=300, stale-while-revalidate=86400" }],
-      },
       {
         source: "/:path(intro|customize|mini-game|phone|quests)",
         headers: [{ key: "X-Robots-Tag", value: "noindex, follow" }],

@@ -19,6 +19,10 @@ export function installSultraStartup(game) {
     });
 
     function deferredPreload(...args) {
+      // The resource bootstrap warms this one effect just to fetch the entire
+      // shared audio sprite. Native playSound already loads it on demand.
+      // Keep scene music/ambience promises; only skip this unused warmup.
+      if (args[0] === 'sfx_UI_dialog_next') return Promise.resolve();
       // Preserve the native promise so BGM begins once its buffer is ready.
       // Interactive sounds retain their native on-demand loading path.
       return ready.then(() => preloadSound.apply(this, args));

@@ -5,7 +5,8 @@ import { installSultraPhoneMap } from './sultra-phone-map.js';
 import { installSultraPhoneCulture } from './sultra-phone-culture.js';
 import { registerSultraGuideDialog } from './sultra-guide-dialogs.js';
 import { createHouseInteractions } from './sultra-house-interaction.js';
-import { createHouseInterior } from './sultra-house-interior.js';
+import { createLazyHouseInterior } from './sultra-lazy-interior.js';
+import { createModelStream } from './sultra-model-stream.js';
 import { createCultureVoice } from './sultra-culture-voice.js';
 import { registerLuloDancers, installSultraLulo } from './sultra-lulo.js';
 import { convertMaterials } from './opening-boat.js';
@@ -698,10 +699,6 @@ function addRopeSpan(target, baseY, fromX, fromZ, toX, toZ, height) {
   }
 }
 
-function monumentSite(id) {
-  return (layout.monuments || []).find((site) => site.id === id);
-}
-
 function monumentOutline(site, padding) {
   const halfWidth = site.width / 2 + padding;
   const halfDepth = site.depth / 2 + padding;
@@ -725,7 +722,7 @@ function addMonumentBarriers(scene, state) {
   const group = state.houses;
   if (!group) return;
   const data = group.userData || (group.userData = {});
-  if (data.sultraRopeBarriers) return;
+  data.sultraRopeBarriers ??= new Set();
   const source = state.environment?.rockGeometry
     || scene.chunks?.find((chunk) => chunk.geometry?.attributes?.position)?.geometry;
   const position = source?.attributes?.position;
@@ -734,10 +731,11 @@ function addMonumentBarriers(scene, state) {
   const postVertices = [];
   const ropeVertices = [];
   const postHeight = 1.12;
-  for (const monument of group.children) {
-    if (!monument.userData?.landmark) continue;
-    const site = monumentSite(monument.userData.landmark);
-    if (!site) continue;
+  // Tiny procedural ropes mark the solid boundary even if the HD monument is
+  // still downloading, so a slow connection never creates an invisible wall.
+  for (const site of layout.monuments || []) {
+    if (data.sultraRopeBarriers.has(site.id)) continue;
+    data.sultraRopeBarriers.add(site.id);
     const baseY = GROUND + .02;
     const posts = monumentOutline(site, .65);
     for (const [x, z] of posts) {
@@ -760,7 +758,6 @@ function addMonumentBarriers(scene, state) {
   barrier.add(new Mesh(postGeometry, new MeshBasicMaterial({ color: 0x5b3724, toneMapped: false })));
   barrier.add(new Mesh(ropeGeometry, new MeshBasicMaterial({ color: 0xd3a24d, toneMapped: false })));
   group.add(barrier);
-  data.sultraRopeBarriers = true;
 }
 
 function addMonumentColliders(scene, state) {
@@ -773,10 +770,9 @@ function addMonumentColliders(scene, state) {
   if (!position) return;
   const Attribute = position.constructor;
   const entries = [];
-  for (const monument of state.houses.children) {
-    if (!monument.userData?.landmark) continue;
-    const site = monumentSite(monument.userData.landmark);
-    if (!site) continue;
+  // Collision footprints are tiny layout data and stay ready independently of
+  // HD downloads. Streaming never removes the ground or physical boundaries.
+  for (const site of layout.monuments || []) {
     const vertices = [];
     addBarBox(vertices, site.x, GROUND + site.height / 2, site.z,
       site.width + .1, site.height, site.depth + .1, site.rotation || 0);
@@ -1141,57 +1137,65 @@ function configureScenes(game, state) {
   state.configured = true;
 }
 
-async function loadHouses(state) {
+async function loadHouse(state, id) {
   const exhibits = [...HOUSE_EXHIBITS, ...(layout.monuments || [])];
-  await Promise.all(exhibits.map(async (entry) => {
-    const gltf = await assets.load(assetUrl(entry.model), { noCache: true });
-    convertMaterials(gltf.scene);
-    if (entry.unlit) gltf.scene.traverse((object) => {
-      if (!object.isMesh) return;
-      // Diffuse color from the PBR source is displayed directly, without baked
-      // directional shading, scene lighting, tone mapping or fog dimming it.
-      const materials = Array.isArray(object.material) ? object.material : [object.material];
-      for (const material of materials) {
-        material.color.set(0xffffff);
-        material.fog = false;
-        material.toneMapped = false;
-        if (material.map) {
-          // This legacy renderer presents display-encoded colors directly.
-          // Its r150 texture API uses encoding; colorSpace alone has no effect.
-          // Avoid decoding sRGB into a linear framebuffer with no output encode.
-          material.map.encoding = 3000; // THREE.LinearEncoding in the bundle.
-          material.map.needsUpdate = true;
-        }
-        material.needsUpdate = true;
+  const entry = exhibits.find(item => item.id === id);
+  if (!entry || state.templates.has(id)) return;
+  const gltf = await assets.load(assetUrl(entry.model), { noCache: true });
+  convertMaterials(gltf.scene);
+  if (entry.unlit) gltf.scene.traverse((object) => {
+    if (!object.isMesh) return;
+    // Diffuse color from the PBR source is displayed directly, without baked
+    // directional shading, scene lighting, tone mapping or fog dimming it.
+    const materials = Array.isArray(object.material) ? object.material : [object.material];
+    for (const material of materials) {
+      material.color.set(0xffffff);
+      material.fog = false;
+      material.toneMapped = false;
+      if (material.map) {
+        // This legacy renderer presents display-encoded colors directly.
+        // Its r150 texture API uses encoding; colorSpace alone has no effect.
+        // Avoid decoding sRGB into a linear framebuffer with no output encode.
+        material.map.encoding = 3000; // THREE.LinearEncoding in the bundle.
+        material.map.needsUpdate = true;
       }
-    });
-    gltf.scene.updateMatrixWorld(true);
-    const bounds = new Box3().setFromObject(gltf.scene);
-    const size = bounds.getSize(new Vector3());
-    const center = bounds.getCenter(new Vector3());
-    const normalized = new Group();
-    normalized.name = entry.title;
-    gltf.scene.position.x -= center.x;
-    gltf.scene.position.y -= bounds.min.y;
-    gltf.scene.position.z -= center.z;
-    normalized.add(gltf.scene);
-    state.templates.set(entry.id, { object: normalized, size });
-  }));
-  state.status = 'ready';
+      material.needsUpdate = true;
+    }
+  });
+  gltf.scene.updateMatrixWorld(true);
+  const bounds = new Box3().setFromObject(gltf.scene);
+  const size = bounds.getSize(new Vector3());
+  const center = bounds.getCenter(new Vector3());
+  const normalized = new Group();
+  normalized.name = entry.title;
+  gltf.scene.position.x -= center.x;
+  gltf.scene.position.y -= bounds.min.y;
+  gltf.scene.position.z -= center.z;
+  normalized.add(gltf.scene);
+  state.templates.set(entry.id, { object: normalized, size });
 }
 
 function addHouses(scene, state) {
   const preview = scene.id === INTRO;
   const offset = preview ? layout.introTransform : { scale: 1, x: 0, z: 0 };
-  const group = new Group();
+  const first = !state.houses;
+  const group = state.houses || new Group();
   group.name = preview ? 'Sultrarupa opening island houses' : 'Sultrarupa traditional houses';
   const targets = [];
   const interactiveHouses = [];
-  if (!preview) state.arrivalFocus.clear();
+  if (first) {
+    state.attachedModels = new Set();
+    if (!preview) state.arrivalFocus.clear();
+  }
   for (const site of layout.houses) {
     const source = state.templates.get(site.id);
     const content = HOUSE_EXHIBITS.find((entry) => entry.id === site.id);
-    if (!source || !content) continue;
+    if (first && !preview && content) targets.push({
+      ...content, kind: 'house',
+      position: new Vector3(site.entrance?.x ?? site.x, GROUND + 2.1, site.entrance?.z ?? site.z),
+    });
+    if (!source || !content || state.attachedModels.has(site.id)) continue;
+    state.attachedModels.add(site.id);
     const house = source.object.clone(true);
     const scale = (site.depth ?? 18) / source.size.z;
     house.scale.setScalar(scale * offset.scale);
@@ -1208,14 +1212,11 @@ function addHouses(scene, state) {
         distance: 2.9 + source.size.y * scale * offset.scale * .28,
       });
     }
-    if (!preview) targets.push({
-      ...content, kind: 'house',
-      position: new Vector3(site.entrance?.x ?? site.x, GROUND + 2.1, site.entrance?.z ?? site.z),
-    });
   }
   for (const site of layout.monuments || []) {
     const source = state.templates.get(site.id);
-    if (!source) continue;
+    if (!source || state.attachedModels.has(site.id)) continue;
+    state.attachedModels.add(site.id);
     const monument = source.object.clone(true);
     monument.name = site.title;
     // Height and footprint are independent: the MTQ tower stands on a narrow
@@ -1239,10 +1240,10 @@ function addHouses(scene, state) {
       });
     }
   }
-  scene.base.add(group);
+  if (first) scene.base.add(group);
   group.updateMatrixWorld(true);
   state.houses = group;
-  if (!preview) {
+  if (first && !preview) {
     state.guideTargets = [];
     for (const site of layout.guides) {
       const content = CULTURE_GUIDES.find((entry) => entry.id === site.id);
@@ -1260,14 +1261,20 @@ function addHouses(scene, state) {
       state.arrivalFocus.set('lulo-stage', { x: stage.x, z: stage.z, y: GROUND + 2.1, distance: 6.2 });
     }
     state.ui.setTargets(targets);
-    state.houseInteraction.setHouses(interactiveHouses);
   }
+  if (!preview && interactiveHouses.length) state.houseInteraction.setHouses(interactiveHouses, { append: true });
 }
 
 function attachScene(scene, state) {
   if (state.interior?.isOpen) state.interior.close({ reason: 'scene', restoreFocus: false });
   state.houseInteraction.clear();
   state.ui.clear();
+  for (const child of state.houses?.children || []) {
+    if (child.name === 'Sultra rope barriers') child.traverse(object => {
+      object.geometry?.dispose();
+      object.material?.dispose();
+    });
+  }
   state.houses?.removeFromParent();
   state.houses = null;
   state.guideTargets = [];
@@ -1294,6 +1301,8 @@ export function installSultraIsland(game) {
     joggers: new Map(), joggerTime: 0,
     treeAudio: createTreeTuning(game), bushAudio: createBushTuning(game),
   };
+  state.models = createModelStream([...layout.houses, ...(layout.monuments || [])], id => loadHouse(state, id));
+  const streamPosition = new Vector3();
   const houseBits = new Map((layout.houses || []).map((site, index) => [site.id, 1 << index]));
   const guideBits = new Map((layout.guides || []).map((site, index) => [site.id, 1 << index]));
   function setVariable(name, value) {
@@ -1341,7 +1350,7 @@ export function installSultraIsland(game) {
       if (target?.kind === 'house' && page >= total - 1) setVariable('isSultraStoryFinished', true);
     },
   });
-  state.interior = createHouseInterior(game, {
+  state.interior = createLazyHouseInterior(game, {
     ui: state.ui,
     onEnter(target) {
       game.input?.keyboard?.unpressAllKeys();
@@ -1363,6 +1372,7 @@ export function installSultraIsland(game) {
   state.houseInteraction = createHouseInteractions(game, state.ui, state.interior);
   state.voice = createCultureVoice(game);
   state.ui.setNarrationControls(state.voice.element);
+  let navigationGeneration = 0, destinationNotice;
   state.phoneMap = installSultraPhoneMap(game, {
     navigateTo(id) {
       const point = culturePointName(id);
@@ -1372,8 +1382,23 @@ export function installSultraIsland(game) {
       // Follow the phone map's built-in travel flow: leave the phone first,
       // then place the player at a named, safe destination point.
       game.app.$router?.push({ name: 'Home' });
-      game.scenes.teleportTo(MAIN, { point, delay: 400 });
-      state.arrival = { id, since: performance.now(), until: 0, applied: false };
+      const generation = ++navigationGeneration;
+      destinationNotice ??= document.createElement('div');
+      destinationNotice.setAttribute('role', 'status');
+      destinationNotice.textContent = 'Menyiapkan tujuan…';
+      destinationNotice.style.cssText = 'position:fixed;z-index:90;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 20px;border-radius:16px;background:#34335a;color:white;pointer-events:none';
+      document.body.append(destinationNotice);
+      state.models.request(id, true).then(() => {
+        if (generation !== navigationGeneration) return;
+        game.scenes.teleportTo(MAIN, { point, delay: 400 });
+        state.arrival = { id, since: performance.now(), until: 0, applied: false };
+      }).catch(error => {
+        if (generation !== navigationGeneration) return;
+        console.error('[Sultra destination]', error);
+        window.alert('Tujuan belum berhasil dimuat. Periksa koneksi lalu pilih tujuan lagi.');
+      }).finally(() => {
+        if (generation === navigationGeneration) destinationNotice.remove();
+      });
       return true;
     },
   });
@@ -1382,17 +1407,29 @@ export function installSultraIsland(game) {
   function preload() {
     if (state.ready) return;
     configureScenes(game, state);
+    let origin = { x: layout.spawn[0], z: layout.spawn[2] };
+    const returning = game.savestate.getVariable('isIntroCompleted');
+    if (returning) {
+      try {
+        const [scene, x, , z] = (localStorage.getItem('player_position') || '').split('|');
+        if (scene === MAIN && Number.isFinite(Number(x)) && Number.isFinite(Number(z))) origin = { x: Number(x), z: Number(z) };
+      } catch { /* Native spawn remains available when storage is restricted. */ }
+    }
     state.ready = Promise.all([
-      loadHouses(state),
+      // The opening boat starts offshore, beyond every site's streaming radius.
+      // Its native scene/boat/character barrier is retained; coastal models start
+      // as it approaches. Returning players need their nearest destination now.
+      returning ? state.models.initial(origin.x, origin.z) : Promise.resolve(),
       loadEnvironment(game, state).catch((error) => {
         console.error('[Sultrarupa island] environment', error);
       }),
-    ]).catch((error) => {
+    ]).then(() => { state.status = 'ready'; }).catch((error) => {
       state.status = 'error';
       state.error = error;
       console.error('[Sultrarupa island]', error);
+      throw error;
     });
-    game.app.$preloader.task(state.ready);
+    game.app.$preloader.task(state.ready, { graceful: false });
   }
   game.hooks.beforePreload.watch(preload);
   // Also supports installation into a live development session before teleport.
@@ -1405,7 +1442,18 @@ export function installSultraIsland(game) {
     // The native low-quality fallback removes every blade. Keep a small patch
     // around the player; higher-quality devices retain the native larger field.
     if (scene.grass && game.store.grass.radius < .08) game.store.grass.radius = .08;
-    if (!state.houses && state.status === 'ready') addHouses(scene, state);
+    if (state.status === 'ready' && (!state.houses || state.attachedModels.size < state.templates.size)) addHouses(scene, state);
+    if (game.app.$preloader.hidden) {
+      const actor = scene.player || scene.npcIntro;
+      if (actor?.base) {
+        actor.base.getWorldPosition(streamPosition);
+        if (scene.id === INTRO) {
+          streamPosition.x = (streamPosition.x - layout.introTransform.x) / layout.introTransform.scale;
+          streamPosition.z = (streamPosition.z - layout.introTransform.z) / layout.introTransform.scale;
+        }
+        state.models.update(streamPosition.x, streamPosition.z);
+      }
+    }
     if (scene.id !== MAIN) return;
     ensureEnvironment(scene, state);
     updateArrivalCamera(scene, state, performance.now());

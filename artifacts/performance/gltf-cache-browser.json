@@ -1,5 +1,5 @@
 {
-  "readyMs": 2326.300000011921,
+  "readyMs": 4266.4000000059605,
   "scene": "IslandIntro",
   "character": "ready",
   "houseTemplates": 6,
@@ -149,14 +149,14 @@
   ],
   "puts": [
     "__cache__/assets/Asset_Taxi.9d714b7c65453426.glb.scene.json",
-    "__cache__/assets/Asset_JoystickRaw.da301e9265453426.glb.scene.json",
-    "__cache__/assets/Asset_TreeRoundA.5a4ba08065453426.glb.scene.json",
-    "__cache__/assets/Asset_PalmTree.f4a68a0e65453426.glb.scene.json",
     "__cache__/assets/Asset_BoatYellow.9ec7874765453426.glb.scene.json",
     "__cache__/asset-cache/5a2112a95da02ec7/models/culture/sulawesi-intro.glb.scene.json",
+    "__cache__/assets/Asset_JoystickRaw.da301e9265453426.glb.scene.json",
+    "__cache__/assets/Asset_PalmTree.f4a68a0e65453426.glb.scene.json",
+    "__cache__/assets/Asset_TreeRoundA.5a4ba08065453426.glb.scene.json",
+    "__cache__/assets/Asset_RockA.3a9f348865453426.glb.scene.json",
     "__cache__/assets/Asset_TreeRoundF.5133ec1365453426.glb.scene.json",
     "__cache__/assets/Asset_BushA.4e15289965453426.glb.scene.json",
-    "__cache__/assets/Asset_RockA.3a9f348865453426.glb.scene.json",
     "__cache__/assets/Asset_Wall.0a094ddd65453426.glb.scene.json",
     "__cache__/assets/Asset_CoastalWorld.e8c2b2cb65453426.glb.scene.json",
     "__cache__/assets/Asset_SpeakersOn.e617dbf365453426.glb.scene.json"

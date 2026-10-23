@@ -1,0 +1,22 @@
+[
+  {
+    "path": "/assets/sultra-bootstrap.js",
+    "cache": "public, max-age=0, must-revalidate"
+  },
+  {
+    "path": "/assets/sultra-shell.css",
+    "cache": "public, max-age=0, must-revalidate"
+  },
+  {
+    "path": "/assets/Gilmer-Bold.b4e74cd165453426.woff2",
+    "cache": "public, max-age=31536000, immutable"
+  },
+  {
+    "path": "/vendors/draco/draco_decoder.wasm",
+    "cache": "public, max-age=31536000, immutable"
+  },
+  {
+    "path": "/asset-cache/f9fc82de1a2d6059/models/culture/laika.glb",
+    "cache": "public, max-age=31536000, immutable"
+  }
+]

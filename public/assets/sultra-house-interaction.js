@@ -96,9 +96,9 @@ export function createHouseInteractions(game, ui, interior) {
     prompt.hidden = true;
   }
 
-  function setHouses(houses) {
-    clear();
-    entries = houses.map(({ id, object }) => {
+  function setHouses(houses, { append = false } = {}) {
+    if (!append) clear();
+    const additions = houses.filter(house => !entries.some(entry => entry.id === house.id)).map(({ id, object }) => {
       object.updateMatrixWorld(true);
       const bounds = new Box3().setFromObject(object);
       const meshes = [];
@@ -125,6 +125,7 @@ export function createHouseInteractions(game, ui, interior) {
       });
       return { id, bounds, meshes, glows, material };
     });
+    entries.push(...additions);
   }
 
   function openHouse(entry) {

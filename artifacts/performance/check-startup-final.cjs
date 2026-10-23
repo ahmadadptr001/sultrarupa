@@ -44,7 +44,7 @@ const fs = require('node:fs');
     });
     result.name = name;
     assert.equal(result.character, 'ready');
-    assert.equal(result.houseTemplates, 6);
+    assert.equal(result.houseTemplates, result.savedIntroCompleted ? 1 : 0, 'Only the current nearby destination belongs in startup');
     if (!result.savedIntroCompleted) {
       assert.equal(result.boat, 'ready');
       assert.equal(result.logo, 'ready');
