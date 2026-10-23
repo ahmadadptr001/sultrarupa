@@ -40,8 +40,8 @@ const fs = require('node:fs');
       testApp.$router.push('/');
       testGame.scenes.teleportTo('IslandWest', { point: 'Spawn', noAnimations: true });
     });
-    await page.waitForFunction(() => testGame.scenes.current.id === 'IslandWest'
-      && testGame.scenes.current.physics.isReady && testGame.scenes.current.player.isBodyReady);
+    await page.waitForFunction(() => testGame.scenes.current?.id === 'IslandWest'
+      && testGame.scenes.current.physics?.isReady && testGame.scenes.current.player?.isBodyReady);
     await page.waitForFunction(() => testGame.sultraIsland.templates.has('mekongga'));
     const proximity = await page.evaluate(() => [...testGame.sultraIsland.templates.keys()]);
     assert.ok(!proximity.includes('tugu-mtq'));

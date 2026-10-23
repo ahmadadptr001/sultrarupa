@@ -1,8 +1,15 @@
+import { prepareSceneTextures } from './sultra-texture-warmup.js';
+
 const installed = new WeakSet();
 
 export function installSultraStartup(game) {
   if (installed.has(game)) return;
   installed.add(game);
+  game.sultraStartup = {
+    prepareTextures(root) {
+      if (!game.app.$preloader.hidden) return prepareSceneTextures(game.threeRenderer, root);
+    },
+  };
 
   // Audio exists after init; this hook runs before native resources and scenes
   // start their optional sound preloads. Neither caller waits for those files.

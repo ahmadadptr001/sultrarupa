@@ -1,22 +1,32 @@
 [
   {
     "path": "/assets/sultra-bootstrap.js",
+    "status": 200,
     "cache": "public, max-age=0, must-revalidate"
   },
   {
     "path": "/assets/sultra-shell.css",
+    "status": 200,
     "cache": "public, max-age=0, must-revalidate"
   },
   {
     "path": "/assets/Gilmer-Bold.b4e74cd165453426.woff2",
+    "status": 200,
     "cache": "public, max-age=31536000, immutable"
   },
   {
     "path": "/vendors/draco/draco_decoder.wasm",
+    "status": 200,
     "cache": "public, max-age=31536000, immutable"
   },
   {
     "path": "/asset-cache/f9fc82de1a2d6059/models/culture/laika.glb",
+    "status": 200,
     "cache": "public, max-age=31536000, immutable"
+  },
+  {
+    "path": "/assets/character.df6ab95f65453426.glb",
+    "status": 200,
+    "cache": "public, max-age=300, stale-while-revalidate=86400"
   }
 ]

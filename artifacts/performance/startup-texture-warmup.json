@@ -1,0 +1,331 @@
+{
+  "metrics": {
+    "tasks": [
+      {
+        "start": 408.5,
+        "duration": 67
+      },
+      {
+        "start": 974,
+        "duration": 281
+      },
+      {
+        "start": 1274.199999988079,
+        "duration": 82
+      },
+      {
+        "start": 1384.199999988079,
+        "duration": 118
+      },
+      {
+        "start": 1504.0999999940395,
+        "duration": 78
+      },
+      {
+        "start": 1618,
+        "duration": 74
+      },
+      {
+        "start": 1694.699999988079,
+        "duration": 72
+      },
+      {
+        "start": 1767.2999999970198,
+        "duration": 69
+      }
+    ],
+    "readyMs": 2403.0999999940395,
+    "paint": [
+      {
+        "name": "first-paint",
+        "start": 160
+      },
+      {
+        "name": "first-contentful-paint",
+        "start": 160
+      }
+    ]
+  },
+  "top": [
+    {
+      "ms": 628.746,
+      "functionName": "(idle)",
+      "scriptId": "0",
+      "url": "",
+      "lineNumber": -1,
+      "columnNumber": -1
+    },
+    {
+      "ms": 234.273,
+      "functionName": "(program)",
+      "scriptId": "0",
+      "url": "",
+      "lineNumber": -1,
+      "columnNumber": -1
+    },
+    {
+      "ms": 110.764,
+      "functionName": "texSubImage2D",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 812802
+    },
+    {
+      "ms": 64.425,
+      "functionName": "(garbage collector)",
+      "scriptId": "0",
+      "url": "",
+      "lineNumber": -1,
+      "columnNumber": -1
+    },
+    {
+      "ms": 49.889,
+      "functionName": "cE",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 768266
+    },
+    {
+      "ms": 45.618,
+      "functionName": "texSubImage2D",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 812802
+    },
+    {
+      "ms": 29.074,
+      "functionName": "add",
+      "scriptId": "14",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 256457
+    },
+    {
+      "ms": 25.872,
+      "functionName": "buildTreeEnvironment",
+      "scriptId": "40",
+      "url": "http://localhost:3001/assets/sultra-island.js",
+      "lineNumber": 217,
+      "columnNumber": 29
+    },
+    {
+      "ms": 25.781,
+      "functionName": "initGeometry",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 1056673
+    },
+    {
+      "ms": 25.623,
+      "functionName": "wM",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 540751
+    },
+    {
+      "ms": 23.133,
+      "functionName": "",
+      "scriptId": "14",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 150424
+    },
+    {
+      "ms": 22.146,
+      "functionName": "Gk",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 958053
+    },
+    {
+      "ms": 21.389,
+      "functionName": "e",
+      "scriptId": "14",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 180872
+    },
+    {
+      "ms": 21.097,
+      "functionName": "wM",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 540751
+    },
+    {
+      "ms": 19.873,
+      "functionName": "split",
+      "scriptId": "14",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 163245
+    },
+    {
+      "ms": 16.963,
+      "functionName": "",
+      "scriptId": "12",
+      "url": "http://localhost:3001/assets/main.35e6243a65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 10080
+    },
+    {
+      "ms": 14.933,
+      "functionName": "getX",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 590132
+    },
+    {
+      "ms": 12.014,
+      "functionName": "",
+      "scriptId": "37",
+      "url": "http://localhost:3001/assets/sultra-intro-wordmark.js",
+      "lineNumber": 53,
+      "columnNumber": 32
+    },
+    {
+      "ms": 11.781,
+      "functionName": "subclip",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 959159
+    },
+    {
+      "ms": 11.742,
+      "functionName": "wM",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 540751
+    },
+    {
+      "ms": 11.735,
+      "functionName": "split",
+      "scriptId": "14",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 163245
+    },
+    {
+      "ms": 10.074,
+      "functionName": "triggerInit",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 1034115
+    },
+    {
+      "ms": 10.005,
+      "functionName": "",
+      "scriptId": "14",
+      "url": "http://localhost:3001/assets/webgl.3250e36a65453426.js",
+      "lineNumber": 4,
+      "columnNumber": 238630
+    },
+    {
+      "ms": 9.943,
+      "functionName": "toJSON",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 591508
+    },
+    {
+      "ms": 9.815,
+      "functionName": "Vk",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 958153
+    },
+    {
+      "ms": 9.768,
+      "functionName": "wM",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 540751
+    },
+    {
+      "ms": 9.723,
+      "functionName": "intersectsTriangle",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 539014
+    },
+    {
+      "ms": 9.316,
+      "functionName": "cE",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 768266
+    },
+    {
+      "ms": 8.999,
+      "functionName": "cE",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 768266
+    },
+    {
+      "ms": 8.953,
+      "functionName": "",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 0,
+      "columnNumber": 0
+    },
+    {
+      "ms": 8.551,
+      "functionName": "bindTexture",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 811672
+    },
+    {
+      "ms": 8.303,
+      "functionName": "wM",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 540751
+    },
+    {
+      "ms": 8.195,
+      "functionName": "skinGeometry",
+      "scriptId": "39",
+      "url": "http://localhost:3001/assets/player-character.js",
+      "lineNumber": 65,
+      "columnNumber": 21
+    },
+    {
+      "ms": 7.799,
+      "functionName": "intersectsTriangle",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 539014
+    },
+    {
+      "ms": 7.734,
+      "functionName": "de",
+      "scriptId": "20",
+      "url": "http://localhost:3001/assets/vendor.75f6e6ae65453426.js",
+      "lineNumber": 5,
+      "columnNumber": 858274
+    }
+  ]
+}

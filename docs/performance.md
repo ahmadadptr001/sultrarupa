@@ -57,3 +57,35 @@ Both reports completed without Lighthouse warnings: `artifacts/performance/light
 `gltf-cache-browser.json` independently verifies all six house/monument templates, player, boat and logo ready with zero page errors and zero canvas PNG encodes. `html-delivery.json` checks byte-identical decompression, accepted encoding preferences, 304, HEAD and SEO endpoints. `startup-mobile-fast.json` records separate 4 Mbps / 80 ms checks on the GPU browser: cold reveal 30.56 seconds, cached intro 2.06 seconds, returning player 4.62 seconds. All passed without page errors, failed requests, duplicate GLB downloads or audio finishing before reveal. The cold visit still downloads about 14 MB of HD assets; these actual game-reveal timings are separate from Lighthouse's simulated loading-screen metrics. They also use a different renderer from the older 36.46-second software-WebGL test, so that older result is not a controlled comparison.
 
 To reproduce mobile reveal checks against a running production server and GPU browser: set `SULTRA_TEST_CDP=http://localhost:9334`, `SULTRA_TEST_MOBILE=1`, then run `node artifacts/performance/check-startup-final.cjs startup-mobile-fast`. Keep the native readiness barrier: all visible scene assets and prerendering must finish before dismissing the loader.
+
+## Approved distance streaming and CPU batching (2026-10-23)
+
+This section supersedes the historical six-model startup requirement above. The user explicitly approved loading distant houses/monuments progressively. The offshore introduction now downloads none of those six models before reveal; returning visitors await their nearest model. Later requests follow the actor within a 95-unit radius, one house/monument at a time, after scene position/physics are ready. Map destinations await their model before teleporting. Terrain and procedural monument boundaries remain ready independently of streamed HD visuals.
+
+The full shell CSS is an external nonblocking stylesheet with the existing loading appearance retained inline. About, interior code/CSS, the interior model and the sound-effect sprite load on first use. Intro music still plays after reveal. Models retain their existing Draco compression, textures and geometry quality. The asset loader now clears rejected in-flight promises so a failed connection can actually retry. Shared HD textures upload in small tasks before native prerender, and the grass loop omits unused quaternion calculations with byte-identical output.
+
+Controlled local mobile tests use the same full GPU Chromium, production server and 4 Mbps / 80 ms connection as `startup-mobile-fast.json`:
+
+| Actual game readiness | Previous pass | Final streaming pass |
+| --- | ---: | ---: |
+| Cold first visit | 30.56 s | 15.26 s |
+| Encoded asset bodies before reveal | 14.07 MB | 6.80 MB |
+| Cached introduction | 2.06 s | 2.42 s |
+| Saved returning player | 4.62 s | 4.72 s |
+
+Cold-start bytes decreased by 52%, and time to the actual opening scene decreased by 50%. Cached/returning visits are not faster in this run: the readiness work remains, texture preparation now yields between tasks, and the first return downloads a nearby house that was intentionally absent from the offshore introduction. Results are in `startup-hd-streaming-final.json`; no audio completed before reveal, no GLB downloaded twice, and there were no page errors or failed requests in normal startup.
+
+The final standard simulated mobile Lighthouse audit (`lighthouse-startup-final.json`) reports:
+
+| Metric | Previous GPU pass | Final streaming pass |
+| --- | ---: | ---: |
+| Performance score | 56 | 60 |
+| FCP | 2.12 s | 1.74 s |
+| LCP | 2.49 s | 2.42 s |
+| TBT | 3.60 s | 2.14 s |
+| Speed Index | 9.11 s | 8.26 s |
+| Total transfer during audit | 16.74 MB | 7.47 MB |
+
+There are no render-blocking requests in the audit. These are local lab results, separate from the user's reported deployed PageSpeed score of 61. The change does **not** achieve 90. LCP still measures the loading screen; the actual game-ready timing above is the more useful loading metric. Shader setup, physics construction and individual GPU uploads remain significant on slower devices. Do not remove the automatic HD introduction or substitute a click-to-start gate without separate concept approval.
+
+Functional checks cover real HTTP 503 followed by a successful model retry, cancelling an older map destination, all six models attaching exactly once, unchanged procedural boundaries, walking above ground, lazy About/interior/audio use, and cancelled/repeated interior entry. Production build and targeted lint pass. Configuration examples, source-build limitations and test commands are in `loading-architecture.md`.

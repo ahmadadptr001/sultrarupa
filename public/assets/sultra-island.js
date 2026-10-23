@@ -26,6 +26,9 @@ const TREE_PRECISION = 20;
 const copy = (value) => JSON.parse(JSON.stringify(value));
 const guideUID = (id) => `NPC_SultraGuide_${id}`;
 const guideSubtype = (id) => `SultraGuide_${id}`;
+const MONUMENT_NPC_PREFIX = 'NPC_SultraInfo_';
+const MONUMENT_GUIDE_MODEL = '/models/culture/monument-guide.glb';
+const MONUMENT_GUIDE_LOAD_RADIUS = 90;
 const MONUMENT_GUIDES = {
   'tugu-mtq': {
     title: 'Tugu MTQ: Tugu Religi Sultra',
@@ -873,6 +876,59 @@ function registerMonumentGuides(game) {
   return actors;
 }
 
+function loadMonumentGuideModel(game, state) {
+  if (state.guideNpcModel) return;
+  const load = (url) => assets.load(url, { noCache: true });
+  state.guideNpcRequest ??= load(assetUrl(MONUMENT_GUIDE_MODEL))
+    // Older dev/build servers predate this file's cache manifest entry; the
+    // plain public URL still serves it, so keep the swap working there too.
+    .catch(() => load(MONUMENT_GUIDE_MODEL))
+    .then((gltf) => {
+      convertMaterials(gltf.scene);
+      state.guideNpcModel = gltf.scene;
+    })
+    .catch((error) => {
+      console.error('[Sultrarupa island] monument guide model', error);
+      state.guideNpcRequest = null;
+    });
+}
+
+// Swap the two monument guides' procedural citizens for the sculpted model.
+// The native rig stays in the tree (dialog, interaction and camera logic keep
+// using it) but is hidden once this model is attached.
+function attachMonumentGuideNpcs(scene, state) {
+  const model = state.guideNpcModel;
+  if (!model) return;
+  state.guideNpcSwapped ??= new WeakSet();
+  for (const [uid, actor] of Object.entries(scene.actors || {})) {
+    if (!uid.startsWith(MONUMENT_NPC_PREFIX) || !actor?.base || !actor.isBodyReady) continue;
+    if (state.guideNpcSwapped.has(actor)) continue;
+    state.guideNpcSwapped.add(actor);
+    for (const child of actor.base.children) child.visible = false;
+    const guide = model.clone(true);
+    guide.name = 'Sultrarupa monument guide NPC';
+    actor.base.add(guide);
+    actor.base.updateMatrixWorld(true);
+  }
+}
+
+function updateMonumentGuideNpcs(game, scene, state, player) {
+  if (state.guideNpcModel) {
+    attachMonumentGuideNpcs(scene, state);
+    return;
+  }
+  if (state.guideNpcRequest || !player) return;
+  for (const site of layout.monuments || []) {
+    if (!MONUMENT_GUIDES[site.id]) continue;
+    const position = monumentGuidePosition(site);
+    const dx = player.x - position.x;
+    const dz = player.z - position.z;
+    if (dx * dx + dz * dz > MONUMENT_GUIDE_LOAD_RADIUS ** 2) continue;
+    loadMonumentGuideModel(game, state);
+    return;
+  }
+}
+
 function registerJoggers(game) {
   const actors = {};
   const colors = [22, 23, 24, 25];
@@ -1299,6 +1355,7 @@ export function installSultraIsland(game) {
     environment: null, treeContacts: new Set(), treeContactsReady: false,
     bushContacts: new Set(), bushContactsReady: false, bushLastPosition: new Vector3(),
     joggers: new Map(), joggerTime: 0,
+    guideNpcModel: null, guideNpcRequest: null, guideNpcSwapped: null,
     treeAudio: createTreeTuning(game), bushAudio: createBushTuning(game),
   };
   state.models = createModelStream([...layout.houses, ...(layout.monuments || [])], id => loadHouse(state, id));
@@ -1443,7 +1500,9 @@ export function installSultraIsland(game) {
     // around the player; higher-quality devices retain the native larger field.
     if (scene.grass && game.store.grass.radius < .08) game.store.grass.radius = .08;
     if (state.status === 'ready' && (!state.houses || state.attachedModels.size < state.templates.size)) addHouses(scene, state);
-    if (game.app.$preloader.hidden) {
+    const positionReady = scene.id !== MAIN || (scene.physics?.isReady
+      && scene.player?.isBodyReady && !game.store.isTransitionActive?.value);
+    if (game.app.$preloader.hidden && positionReady) {
       const actor = scene.player || scene.npcIntro;
       if (actor?.base) {
         actor.base.getWorldPosition(streamPosition);
@@ -1458,6 +1517,7 @@ export function installSultraIsland(game) {
     ensureEnvironment(scene, state);
     updateArrivalCamera(scene, state, performance.now());
     updateJoggers(scene, state, performance.now());
+    updateMonumentGuideNpcs(game, scene, state, scene.player?.base?.position);
     for (const { target, uid } of state.guideTargets) {
       const actor = scene.actors[uid];
       if (actor?.base) target.position.copy(actor.base.position).add(GUIDE_OFFSET);

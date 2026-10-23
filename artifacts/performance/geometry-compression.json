@@ -95,7 +95,14 @@
       "after": 498404,
       "gzipBefore": 950385,
       "gzipAfter": 484903,
-      "decodeMs": 47.356599999999986,
+      "decodeMs": 55.35319999999999,
+      "quantizationBits": {
+        "POSITION": 20,
+        "NORMAL": 16,
+        "TEX_COORD": 20,
+        "COLOR": 16,
+        "GENERIC": 20
+      },
       "texturesUnchanged": true,
       "triangles": 33286,
       "maxPositionError": 0.000001601164266546194,
@@ -107,7 +114,14 @@
       "after": 518780,
       "gzipBefore": 1576273,
       "gzipAfter": 469041,
-      "decodeMs": 52.944999999999936,
+      "decodeMs": 55.04589999999996,
+      "quantizationBits": {
+        "POSITION": 20,
+        "NORMAL": 16,
+        "TEX_COORD": 20,
+        "COLOR": 16,
+        "GENERIC": 20
+      },
       "texturesUnchanged": true,
       "triangles": 95452,
       "maxPositionError": 8.09065816432132e-7,
@@ -119,7 +133,14 @@
       "after": 710648,
       "gzipBefore": 779112,
       "gzipAfter": 619307,
-      "decodeMs": 27.496000000000095,
+      "decodeMs": 25.12350000000015,
+      "quantizationBits": {
+        "POSITION": 20,
+        "NORMAL": 16,
+        "TEX_COORD": 20,
+        "COLOR": 16,
+        "GENERIC": 20
+      },
       "texturesUnchanged": true,
       "triangles": 21430,
       "maxPositionError": 0.000013368459481121242,
@@ -131,7 +152,14 @@
       "after": 58972,
       "gzipBefore": 250086,
       "gzipAfter": 50611,
-      "decodeMs": 8.248199999999997,
+      "decodeMs": 9.762699999999768,
+      "quantizationBits": {
+        "POSITION": 20,
+        "NORMAL": 16,
+        "TEX_COORD": 20,
+        "COLOR": 16,
+        "GENERIC": 20
+      },
       "texturesUnchanged": true,
       "triangles": 11994,
       "maxPositionError": 0.00014396692244645387,
@@ -143,11 +171,37 @@
       "after": 58900,
       "gzipBefore": 251835,
       "gzipAfter": 50491,
-      "decodeMs": 8.675600000000031,
+      "decodeMs": 12.052000000000135,
+      "quantizationBits": {
+        "POSITION": 20,
+        "NORMAL": 16,
+        "TEX_COORD": 20,
+        "COLOR": 16,
+        "GENERIC": 20
+      },
       "texturesUnchanged": true,
       "triangles": 11994,
       "maxPositionError": 0.00023466590123609194,
       "maxBoundsError": 0.000091552734375
+    },
+    {
+      "file": "models/culture/monument-guide.glb",
+      "before": 79791520,
+      "after": 12043580,
+      "gzipBefore": 46544755,
+      "gzipAfter": 11831927,
+      "decodeMs": 1352.9883,
+      "quantizationBits": {
+        "POSITION": 14,
+        "NORMAL": 12,
+        "TEX_COORD": 16,
+        "COLOR": 14,
+        "GENERIC": 14
+      },
+      "texturesUnchanged": true,
+      "triangles": 1999846,
+      "maxPositionError": 0.00009974644970813323,
+      "maxBoundsError": 0.00005435943603515625
     }
   ],
   "skipped": [
