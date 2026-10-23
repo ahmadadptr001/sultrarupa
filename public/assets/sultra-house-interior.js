@@ -14,8 +14,8 @@ import { createInteriorGallery } from './sultra-interior-gallery.js';
 
 const MODEL_URL = '/models/interiors/ruangan-kotak-besar.glb?v=traditional-room-20261021';
 const EYE_HEIGHT = 1.65;
-const WALK_SPEED = 2.2;
-const RUN_SPEED = 3.6;
+const WALK_SPEED = 3.5;
+const RUN_SPEED = 5.2;
 const LOOK_SENSITIVITY = 0.0032;
 const TOUCH_LOOK_SENSITIVITY = 0.0046;
 const ROOM_LIMIT = 6.85;

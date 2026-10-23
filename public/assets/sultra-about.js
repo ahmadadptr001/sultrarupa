@@ -2,22 +2,25 @@
 (() => {
   const TEAM = [
     {
-      name: 'Andi Pratama',
-      role: 'Leader / Full-Stack Developer',
-      bio: 'Memimpin arah produk, membangun arsitektur, dan menyatukan pengalaman 3D dengan web.',
-      photo: '/branding/team/andi.svg',
+      name: 'Ahmad Bagas A.',
+      role: 'Full-Stack Developer',
+      bio: 'Membangun arsitektur dan menyatukan pengalaman 3D dengan web.',
+      photo: '/branding/team/ahmad-bagas.webp',
+      crop: 'bagas',
     },
     {
-      name: 'Bayu Saputra',
+      name: 'Aditya P Aryandi Ramadhan',
       role: 'Front-End Developer',
       bio: 'Merapikan antarmuka, interaksi, dan performa agar pulau tetap ringan di semua perangkat.',
-      photo: '/branding/team/bayu.svg',
+      photo: '/branding/team/aditya.webp',
+      crop: 'aditya',
     },
     {
-      name: 'Nabila Putri',
+      name: 'Ahmad Dino',
       role: 'UI/UX Designer',
       bio: 'Merancang alur, tipografi, dan detail visual yang membuat cerita budaya mudah dijelajahi.',
-      photo: '/branding/team/nabila.svg',
+      photo: '/branding/team/ahmad-dino.webp',
+      crop: 'dino',
     },
   ];
 
@@ -68,6 +71,10 @@
     .sultra-about__team { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
     .sultra-about__member { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; padding: 17px; border: 1px solid #e8e3d9; border-radius: 18px; background: #fff; box-shadow: 0 8px 20px rgb(48 43 94 / 4%); }
     .sultra-about__photo { flex: 0 0 auto; width: 72px; height: 72px; border-radius: 50%; object-fit: cover; background: #ece9f7; box-shadow: 0 0 0 3px #f6f3ec; }
+    .sultra-about__photo--crop { position: relative; display: block; overflow: hidden; }
+    .sultra-about__photo--crop img { position: absolute; width: 304%; height: 405.333%; max-width: none; left: -164.444%; top: -133.333%; }
+    .sultra-about__photo--aditya img { width: 290.909%; height: 387.879%; left: -100%; top: -148.485%; }
+    .sultra-about__photo--dino img { width: 300%; height: 400%; left: -90.625%; top: -121.875%; }
     .sultra-about__memberText { min-width: 0; }
     .sultra-about__role { margin: 0 0 4px; color: #008f7c; font-size: 9px; font-weight: 700; letter-spacing: .1em; line-height: 1.35; text-transform: uppercase; }
     .sultra-about__name { margin: 0 0 5px; color: #302b5e; font-size: 14px; font-weight: 700; line-height: 1.2; }
@@ -124,7 +131,9 @@
   function memberMarkup(member) {
     return `
       <article class="sultra-about__member">
-        <img class="sultra-about__photo" src="${member.photo}" alt="Foto ${member.name}" width="66" height="66" loading="lazy">
+        ${member.crop
+          ? `<span class="sultra-about__photo sultra-about__photo--crop sultra-about__photo--${member.crop}"><img data-photo-src="${member.photo}" alt="Foto ${member.name}" width="684" height="912" decoding="async"></span>`
+          : `<img class="sultra-about__photo" data-photo-src="${member.photo}" alt="Foto ${member.name}" width="66" height="66" decoding="async">`}
         <div class="sultra-about__memberText">
           <p class="sultra-about__role">${member.role}</p>
           <h4 class="sultra-about__name">${member.name}</h4>
@@ -221,7 +230,8 @@
           </section>
           <section class="sultra-about__section">
             <p class="sultra-about__eyebrow">Tim di balik layar</p>
-            <h3>Orang-orang yang merawat ceritanya</h3>
+            <h3>Tim Pengembang</h3>
+            <p>Universitas Nahdlatul Ulama Sulawesi Tenggara<br>Program Studi Teknik Informatika</p>
             <div class="sultra-about__team">
               ${TEAM.map(memberMarkup).join('')}
             </div>
@@ -287,6 +297,13 @@
   function openAbout() {
     buildDialog();
     if (!dialog.hidden) return;
+    // Load every portrait on opening, even below the dialog's scroll viewport.
+    // Keep these requests out of the game's initial loading path.
+    for (const photo of dialog.querySelectorAll('[data-photo-src]')) {
+      if (!photo.getAttribute('src') || (photo.complete && !photo.naturalWidth)) {
+        photo.src = photo.dataset.photoSrc;
+      }
+    }
     lastFocus = document.activeElement;
     dialog.hidden = false;
     document.documentElement.classList.add('sultra-about-open');

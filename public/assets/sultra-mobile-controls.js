@@ -30,6 +30,10 @@ export function installSultraMobileControls(game) {
   function orbit(dx, dy) {
     const scene = mainScene();
     if (!scene || game.store?.inDialog?.value || game.store?.isTransitionActive?.value) return;
+    if (game.sultraIsland?.arrival?.applied) {
+      scene.playerCam?.removeTarget({ id: 'sultra-arrival', instant: true });
+      game.sultraIsland.arrival = null;
+    }
     scene.physics?.send?.('orbit-camera', { dx, dy }, true);
   }
 

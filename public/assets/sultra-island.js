@@ -116,9 +116,11 @@ function culturePointName(id) {
 const ARRIVAL_CAM_ID = 'sultra-arrival';
 const ARRIVAL_LOOK_AT_POINT = new Vector3();
 const ARRIVAL_POINT_POS = new Vector3();
+const ARRIVAL_CAMERA_POS = new Vector3();
+const ARRIVAL_CAMERA_TARGET = new Vector3();
 
-// Arrival uses the ordinary physics follow camera. Only its initial gaze points
-// toward the destination; no dolly, zoom, timed showcase, or player lock.
+// Arrival resets the ordinary follow camera behind the player, facing the
+// destination, at its normal distance and height without locking movement.
 function updateArrivalCamera(scene, state, now) {
   const pending = state.arrival;
   if (!pending) return;
@@ -143,6 +145,7 @@ function updateArrivalCamera(scene, state, now) {
     return;
   }
   if (cam.isOnPhone || cam.phoneQtProgress > .01) return;
+  if (scene.webgl.store.isTransitionActive?.value) return;
   const focus = state.arrivalFocus.get(pending.id);
   const point = scene.getPoint?.(culturePointName(pending.id));
   const player = scene.player?.base?.position;
@@ -150,6 +153,28 @@ function updateArrivalCamera(scene, state, now) {
   ARRIVAL_POINT_POS.set(point.position.x, GROUND + .2, point.position.z);
   if (player.distanceToSquared(ARRIVAL_POINT_POS) > 25) {
     if (now - pending.since > 12000) state.arrival = null;
+    return;
+  }
+  if (!pending.cameraReset) {
+    // Reset the actual follow camera too: changing only its gaze retains the
+    // previous orbit height and can put the destination behind the camera.
+    cam.updateCameraOptions?.();
+    const options = scene.player.cameraOptions;
+    ARRIVAL_CAMERA_POS.set(player.x - focus.x, 0, player.z - focus.z);
+    if (ARRIVAL_CAMERA_POS.lengthSq() < .01) {
+      ARRIVAL_CAMERA_POS.set(0, 0, 1).applyQuaternion(point.quaternion);
+    }
+    ARRIVAL_CAMERA_POS.normalize().multiplyScalar(options.distance).add(player);
+    ARRIVAL_CAMERA_POS.y = player.y + options.elevation;
+    ARRIVAL_CAMERA_TARGET.copy(player).add(options.offset);
+    scene.physics.setCameraOptions({
+      position: ARRIVAL_CAMERA_POS, target: ARRIVAL_CAMERA_TARGET,
+      elevation: options.elevation, distance: options.distance,
+    });
+    cam.base.position.copy(ARRIVAL_CAMERA_POS);
+    // Map travel should not replay the island's opening fly-in.
+    scene.introCamProgress = 1;
+    pending.cameraReset = true;
     return;
   }
   // Keep a natural eye-level view even at a very tall monument. Its base and
@@ -1289,6 +1314,8 @@ export function installSultraIsland(game) {
       const point = culturePointName(id);
       const points = game.app?.$manifest?.content?.scenes?.[MAIN]?.points;
       if (!points?.[point] || !game.scenes?.teleportTo) return false;
+      game.scenes.current?.playerCam?.removeTarget({ id: ARRIVAL_CAM_ID, instant: true });
+      state.arrival = null;
       game.input?.keyboard?.unpressAllKeys();
       // Follow the phone map's built-in travel flow: leave the phone first,
       // then place the player at a named, safe destination point.

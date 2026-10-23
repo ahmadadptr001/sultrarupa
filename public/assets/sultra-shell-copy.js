@@ -117,6 +117,20 @@
     .menu-infos .sultra-reset-button:hover,
     .menu-infos .sultra-reset-button:focus-visible { border-color: rgb(195 82 91 / 48%); background: #fff5f5; color: #a93f48; transform: translateY(-1px); }
     .menu-infos .sultra-reset-button:active { transform: translateY(1px); }
+    .sultra-reset-dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); box-sizing: border-box; overflow: auto; margin: auto; padding: 30px; border: 1px solid #e6e0f1; border-radius: 26px; background: #fbfaf7; color: #302b5e; box-shadow: 0 24px 80px #19163855; font-family: Gilmer, "Segoe UI", sans-serif; touch-action: pan-y; }
+    .sultra-reset-dialog[open] { animation: sultra-reset-enter .24s cubic-bezier(.2,.8,.2,1); }
+    .sultra-reset-dialog::backdrop { background: #211d45aa; backdrop-filter: blur(5px); }
+    .sultra-reset-icon { display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 20px; border-radius: 17px; background: #e0f5ee; color: #008f7c; }
+    .sultra-reset-icon svg { width: 28px; height: 28px; }
+    .sultra-reset-dialog h2 { margin: 0 0 12px; font-size: 25px; line-height: 1.2; }
+    .sultra-reset-dialog p { margin: 0; color: #686179; font-size: 14px; line-height: 1.65; }
+    .sultra-reset-dialog .sultra-reset-warning { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: #fff0e7; color: #925333; font-size: 12px; }
+    .sultra-reset-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
+    .sultra-reset-actions button { flex: 1 1 140px; min-height: 46px; padding: 12px 16px; border: 1px solid #d9d4e5; border-radius: 14px; background: #fff; color: #3b3777; font: 700 13px Gilmer, "Segoe UI", sans-serif; cursor: pointer; }
+    .sultra-reset-actions .sultra-reset-confirm { background: #3b3777; border-color: #3b3777; color: #fff; }
+    .sultra-reset-actions .sultra-reset-confirm:hover { background: #50498e; }
+    @keyframes sultra-reset-enter { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .sultra-reset-dialog[open] { animation: none; } }
   `;
 
   function installStyles() {
@@ -186,14 +200,50 @@
     button.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const confirmed = window.confirm(
-        'Hapus cache dan mulai dari awal?\n\nProgres perjalanan, koleksi, dan posisi jelajah akan dihapus. Tindakan ini tidak bisa dibatalkan.',
-      );
-      if (confirmed) resetGameProgress();
+      openResetDialog(button);
     });
     wrap.append(button);
     discover.insertAdjacentElement('afterend', wrap);
     requestAnimationFrame(() => wrap.classList.add('is-ready'));
+  }
+
+  let resetDialog;
+  function openResetDialog(trigger) {
+    if (!resetDialog) {
+      resetDialog = document.createElement('dialog');
+      resetDialog.className = 'sultra-reset-dialog';
+      resetDialog.setAttribute('aria-labelledby', 'sultra-reset-title');
+      resetDialog.setAttribute('aria-describedby', 'sultra-reset-description sultra-reset-warning');
+      resetDialog.innerHTML = `
+        <div class="sultra-reset-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></svg></div>
+        <h2 id="sultra-reset-title">Mulai petualangan baru?</h2>
+        <p id="sultra-reset-description">Data perjalanan di perangkat ini akan direset. Progres, koleksi, dan posisi jelajahmu akan dihapus, lalu halaman dimuat ulang.</p>
+        <p class="sultra-reset-warning" id="sultra-reset-warning">Tindakan ini tidak bisa dibatalkan.</p>
+        <div class="sultra-reset-actions"><button type="button" data-reset-cancel autofocus>Batal</button><button type="button" class="sultra-reset-confirm">Hapus & mulai ulang</button></div>`;
+      document.body.append(resetDialog);
+      resetDialog.querySelector('[data-reset-cancel]').onclick = () => resetDialog.close();
+      resetDialog.querySelector('.sultra-reset-confirm').onclick = async (event) => {
+        event.currentTarget.disabled = true;
+        event.currentTarget.textContent = 'Menghapus…';
+        resetDialog.setAttribute('aria-busy', 'true');
+        await resetGameProgress();
+      };
+      // Keep modal keyboard actions from reaching the game/menu underneath.
+      window.addEventListener('keydown', (event) => {
+        if (!resetDialog.open) return;
+        event.stopImmediatePropagation();
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          if (!resetDialog.hasAttribute('aria-busy')) resetDialog.close();
+        }
+      }, true);
+      resetDialog.addEventListener('cancel', (event) => {
+        if (resetDialog.hasAttribute('aria-busy')) event.preventDefault();
+      });
+    }
+    if (resetDialog.open) return;
+    resetDialog.onclose = () => trigger.focus({ preventScroll: true });
+    resetDialog.showModal();
   }
 
   function bindShellActions() {

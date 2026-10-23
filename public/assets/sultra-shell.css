@@ -5627,3 +5627,20 @@ html {
         display: none !important;
         pointer-events: none !important;
       }
+
+/* Shared interaction timing; preserve each control's positioning transforms. */
+:where(button, .button, [role="button"], a[class]) {
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease,
+    box-shadow .2s ease, filter .2s ease, scale .2s cubic-bezier(.2,.8,.2,1);
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) {
+  :where(button, .button, [role="button"]):not(:disabled):hover { filter: brightness(1.06); }
+}
+:where(button, .button, [role="button"]):not(:disabled):active { scale: .97; }
+:where(button, .button, [role="button"], a):focus-visible { outline: 3px solid #02bfa5; outline-offset: 4px; }
+:where(button, [role="button"]):disabled { cursor: wait; opacity: .65; }
+@media (prefers-reduced-motion: reduce) {
+  :where(button, .button, [role="button"], a[class]) { transition-duration: .01ms !important; }
+  :where(button, .button, [role="button"]):active { scale: 1; }
+}

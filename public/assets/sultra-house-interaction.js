@@ -1,16 +1,19 @@
 import {
   cV as Raycaster, aT as Vector2, aS as Vector3, cx as Box3,
-  b5 as Mesh, a$ as MeshBasicMaterial, b0 as DoubleSide,
+  bm as Quaternion,
 } from './vendor.75f6e6ae65453426.js';
 
 const APPROACH_DISTANCE = 5;
-const NO_RAYCAST = () => {};
+const SWAY_ANGLE = .009;
+const SWAY_PERIOD = 2.8;
 
-// Use the existing renderer and house geometry. Only the nearby house receives
-// a soft additive wash; photographs, textures and the distant skyline stay intact.
+// Sway the existing house gently around its base, without overlay geometry.
 export function createHouseInteractions(game, ui, interior) {
   const raycaster = new Raycaster();
   const pointer = new Vector2();
+  const swayRotation = new Quaternion();
+  const swayAxis = new Vector3(0, 0, 1);
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const prompt = document.createElement('div');
   prompt.className = 'sc-house-prompt';
   prompt.hidden = true;
@@ -86,8 +89,8 @@ export function createHouseInteractions(game, ui, interior) {
   function clear() {
     clearFocus();
     for (const entry of entries) {
-      entry.glows.forEach((glow) => glow.removeFromParent());
-      entry.material.dispose();
+      entry.object.quaternion.copy(entry.restRotation);
+      entry.object.updateMatrixWorld(true);
     }
     entries = [];
     nearest = null;
@@ -103,27 +106,10 @@ export function createHouseInteractions(game, ui, interior) {
       const bounds = new Box3().setFromObject(object);
       const meshes = [];
       object.traverse((node) => {
-        if (node.isMesh && node.visible && !node.userData.sultraHouseGlow) meshes.push(node);
+        if (node.isMesh && node.visible) meshes.push(node);
       });
-      const material = new MeshBasicMaterial({
-        color: 0xffdd91, transparent: true, opacity: 0,
-        blending: 2, // Three.js AdditiveBlending.
-        side: DoubleSide, depthTest: true, depthWrite: false,
-        polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1,
-        toneMapped: false, fog: true,
-      });
-      const glows = meshes.map((mesh) => {
-        const glow = new Mesh(mesh.geometry, material);
-        glow.name = 'Nearby house glow';
-        glow.userData.sultraHouseGlow = true;
-        glow.raycast = NO_RAYCAST;
-        glow.layers.mask = mesh.layers.mask;
-        glow.visible = false;
-        glow.renderOrder = mesh.renderOrder + 1;
-        mesh.add(glow);
-        return glow;
-      });
-      return { id, bounds, meshes, glows, material };
+      return { id, object, bounds, meshes, restRotation: object.quaternion.clone(),
+        strength: 0, phase: 0 };
     });
     entries.push(...additions);
   }
@@ -212,7 +198,8 @@ export function createHouseInteractions(game, ui, interior) {
       scene = nextScene;
       camera = nextCamera;
       const now = performance.now();
-      const blend = 1 - Math.exp(-Math.min((now - lastUpdate) / 1000, .1) * 10);
+      const delta = Math.max(0, Math.min((now - lastUpdate) / 1000, .1));
+      const blend = 1 - Math.exp(-delta * 5);
       lastUpdate = now;
       nearest = null;
       let distance = APPROACH_DISTANCE;
@@ -226,9 +213,18 @@ export function createHouseInteractions(game, ui, interior) {
         }
       }
       for (const entry of entries) {
-        const opacity = entry.id === focusedId ? .2 : entry === nearest ? .3 : 0;
-        entry.material.opacity += (opacity - entry.material.opacity) * blend;
-        entry.glows.forEach((glow) => { glow.visible = entry.material.opacity > .002; });
+        const active = !reducedMotion.matches && entry === nearest;
+        if (!active && entry.strength === 0) continue;
+        entry.strength += ((active ? 1 : 0) - entry.strength) * blend;
+        if (!active && entry.strength < .001) {
+          entry.strength = entry.phase = 0;
+          entry.object.quaternion.copy(entry.restRotation);
+        } else {
+          entry.phase = (entry.phase + delta * Math.PI * 2 / SWAY_PERIOD) % (Math.PI * 2);
+          swayRotation.setFromAxisAngle(swayAxis, Math.sin(entry.phase) * SWAY_ANGLE * entry.strength);
+          entry.object.quaternion.copy(entry.restRotation).multiply(swayRotation);
+        }
+        entry.object.updateMatrixWorld(true);
       }
       prompt.hidden = !nearest || !available() || hasNativeInteraction();
     },
