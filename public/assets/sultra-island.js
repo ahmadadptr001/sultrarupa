@@ -21,6 +21,7 @@ const INTRO = 'IslandIntro';
 const SCENES = new Set([MAIN, INTRO]);
 const GROUND = layout.groundY ?? 3;
 const GUIDE_OFFSET = new Vector3(0, 3.3, 0);
+const GUIDE_UP = new Vector3(0, 1, 0);
 const TREE_PRECISION = 20;
 const copy = (value) => JSON.parse(JSON.stringify(value));
 const guideUID = (id) => `NPC_SultraGuide_${id}`;
@@ -204,8 +205,13 @@ function cultureDestinationPoints() {
   }
   if (layout.stage || layout.luloStage) {
     const stage = layout.stage || layout.luloStage;
-    const destination = stage.speakers || stage.dance || stage;
-    add('lulo-stage', destination.x, (destination.z ?? stage.z) + 3, destination.rotation ?? 0);
+    const dance = stage.dance || stage;
+    const speaker = stage.speakers || { x: dance.x, z: dance.z - 9 };
+    const dx = dance.x - speaker.x, dz = dance.z - speaker.z;
+    const length = Math.hypot(dx, dz) || 1;
+    const distance = (dance.radius || 2.5) * 1.3 + 2.6 + .45 + 2.5;
+    add('lulo-stage', dance.x + dx / length * distance, dance.z + dz / length * distance,
+      Math.atan2(-dx, -dz));
   }
   return points;
 }
@@ -830,7 +836,7 @@ function registerGuides(game) {
       head: null, body: null, bottom: 'Bottom-Sandals',
       script: 'TalkingCitizen', scriptArgs: { animation: 'Idle2' },
     };
-    registerSultraGuideDialog(game, subtype, content);
+    registerSultraGuideDialog(game, subtype, content, { guideBit: 1 << index });
     const uid = guideUID(site.id);
     actors[uid] = {
       uid, type: 'NPC', params: { subtype, move: `radius=${site.wanderRadius ?? 3},pausemin=0.8,pausemax=2.4,speed=1.7` },
@@ -877,7 +883,7 @@ function registerMonumentGuides(game) {
       head: heads[index % heads.length], body: null, bottom: 'Bottom-Sandals',
       script: 'TalkingCitizen', scriptArgs: { animation: 'Idle2' },
     };
-    registerSultraGuideDialog(game, subtype, content);
+    registerSultraGuideDialog(game, subtype, content, { monumentId: site.id });
     const position = monumentGuidePosition(site);
     const uid = `NPC_SultraInfo_${site.id}`;
     actors[uid] = {
@@ -953,6 +959,18 @@ function attachMonumentGuideNpcs(scene, state) {
 function updateMonumentGuideNpcs(game, scene, state, player) {
   if (state.guideNpcModel) {
     attachMonumentGuideNpcs(scene, state);
+    for (const actor of state.guideNpcActors || []) {
+      if (!actor.sultraGuideModel || !player) continue;
+      actor.sultraFacing ??= { rest: actor.baseQuaternion.clone(), current: actor.baseQuaternion.clone(), target: new Quaternion() };
+      const facing = actor.sultraFacing;
+      const talking = actor.isTalking || game.app.$dialogs.current?.speaker === actor;
+      if (talking) facing.target.setFromAxisAngle(GUIDE_UP, Math.atan2(player.x - actor.base.position.x, player.z - actor.base.position.z));
+      else facing.target.copy(facing.rest);
+      facing.current.slerp(facing.target, 1 - Math.exp(-Math.min(game.time.dt / 1000, .05) * 8));
+      actor.base.quaternion.copy(facing.current);
+      actor.base.updateMatrix();
+      actor.base.updateMatrixWorld(true);
+    }
     return;
   }
   if (state.guideNpcRequest || !player) return;
@@ -1192,7 +1210,7 @@ function addHouses(scene, state) {
       state.arrivalFocus.set(site.id, { x: site.x, z: site.z, y: GROUND + 1.7, distance: 5.6 });
     }
     const lulo = CULTURE_GUIDES.find((entry) => entry.id === 'lulo');
-    targets.push({ ...lulo, id: 'lulo-stage', title: 'Panggung Lulo', kind: 'guide', worldMarker: 'music',
+    targets.push({ ...lulo, id: 'lulo-stage', title: 'Lulo', kind: 'guide', worldMarker: 'music',
       position: new Vector3(layout.stage.speakers.x, GROUND + 2.1, layout.stage.speakers.z + 3) });
     if (layout.stage) {
       const stage = layout.stage.speakers || layout.stage.dance || layout.stage;
@@ -1240,7 +1258,6 @@ export function installSultraIsland(game) {
   state.models = createModelStream([...layout.houses, ...(layout.monuments || [])], id => loadHouse(state, id));
   const streamPosition = new Vector3();
   const houseBits = new Map((layout.houses || []).map((site, index) => [site.id, 1 << index]));
-  const guideBits = new Map((layout.guides || []).map((site, index) => [site.id, 1 << index]));
   function setVariable(name, value) {
     const vars = game.savestate?.game?.vars;
     if (vars && vars[name] !== value) vars[name] = value;
@@ -1253,17 +1270,9 @@ export function installSultraIsland(game) {
     if (kind === 'house') {
       const bit = houseBits.get(id);
       if (bit) addMask('sultraHouseMask', bit);
-    } else if (kind === 'guide') {
-      const bit = guideBits.get(id);
-      if (bit) addMask('sultraGuideMask', bit);
     }
   }
-  function markLandmarks(position) {
-    for (const site of layout.monuments || []) {
-      if (Math.hypot(position.x - site.x, position.z - site.z) > 14) continue;
-      if (site.id === 'tugu-mtq') setVariable('isSultraTuguVisited', true);
-      else if (site.id === 'patung-oputa') setVariable('isSultraOputaVisited', true);
-    }
+  function markOutfit() {
     const player = game.savestate?.game?.player;
     if (player && (player.head !== 'Head-Empty' || player.body !== 'Body-Empty'
       || player.bottom !== 'Bottom-Empty')) setVariable('isSultraDressedUp', true);
@@ -1406,12 +1415,7 @@ export function installSultraIsland(game) {
     if (playerPosition) {
       updateTreeContacts(state, playerPosition);
       updateBushContacts(state, playerPosition);
-      for (const { target } of state.guideTargets) {
-        const dx = target.position.x - playerPosition.x;
-        const dz = target.position.z - playerPosition.z;
-        if (dx * dx + dz * dz < 49) markCulture(target.id, 'guide');
-      }
-      markLandmarks(playerPosition);
+      markOutfit();
     }
     const camera = scene.getCurrentCamera()?.cam;
     if (camera && scene.player?.base) {

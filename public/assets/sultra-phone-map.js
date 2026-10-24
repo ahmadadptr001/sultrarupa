@@ -183,7 +183,7 @@ function destinationPins() {
   if (stage) {
     const destination = stage.speakers || stage.dance || stage;
     pins.push({
-      id: 'lulo-stage', title: 'Panggung Lulo', kind: 'stage',
+      id: 'lulo-stage', title: 'Lulo', kind: 'stage',
       x: destination.x, z: (destination.z ?? stage.z) + 3,
     });
   }

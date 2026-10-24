@@ -163,12 +163,12 @@ export function installSultraPhoneCulture(game, {
     root.append(section('Rumah adat', houses, 'house'));
     if (layout.stage || layout.luloStage) {
       root.append(section('Musik & tari bersama', [{
-        id: 'lulo-stage', title: 'Panggung Lulo', region: 'Tolaki · Sulawesi Tenggara',
-        subtitle: 'Temui penari dan dengarkan musik saat mendekati panggung.',
+        id: 'lulo-stage', title: 'Lulo', region: 'Tolaki · Sulawesi Tenggara',
+        subtitle: 'Tari pergaulan suku Tolaki. Temui penari dan dengarkan musik Lulo.',
       }], 'music'));
     }
     root.append(section('Temui pemandu lokal', guides, 'guide'),
-      node('p', 'spc-note', 'Dekati rumah yang bercahaya lalu tekan Space atau ketuk bangunannya. Dekati pemandu dan gunakan Space atau ikon chat.'));
+      node('p', 'spc-note', 'Dekati rumah yang bergoyang halus lalu tekan Space atau ketuk bangunannya. Dekati pemandu dan gunakan Space atau ikon chat.'));
     // Keep native phone drag and scroll handlers away from this scrollable pane.
     for (const eventName of ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'click', 'wheel']) root.addEventListener(eventName, (event) => event.stopPropagation());
     tab.classList.add('sultra-phone-culture-active');

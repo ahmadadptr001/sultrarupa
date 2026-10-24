@@ -23,7 +23,7 @@ function storyBubbles(paragraph) {
   });
 }
 
-export function registerSultraGuideDialog(game, subtype, content) {
+export function registerSultraGuideDialog(game, subtype, content, progress = {}) {
   const subject = content.title.split(':')[0];
   const region = content.region.replace(/\s*·\s*/g, ', ');
   const bubbles = [
@@ -51,5 +51,41 @@ export function registerSultraGuideDialog(game, subtype, content) {
     __id__: { value: subtype },
   });
   game.app.$dialogs.list[subtype] = dialog;
+  const dialogs = game.app.$dialogs;
+  if (!game.sultraConversationCompletions) {
+    game.sultraConversationCompletions = new Map();
+    const nextNode = dialogs.nextNode;
+    dialogs.nextNode = async function (...args) {
+      const completion = game.sultraConversationCompletions.get(dialogs.current.id);
+      if (completion) completion.finishing = dialogs.current.node?.id === completion.lastNode;
+      try { return await nextNode.apply(this, args); }
+      finally { if (completion) completion.finishing = false; }
+    };
+    const startDialog = dialogs.startDialog;
+    dialogs.startDialog = function (speaker, requested, options = {}) {
+      const id = typeof requested === 'object' ? requested.__id__ : requested;
+      const completion = game.sultraConversationCompletions.get(id);
+      if (!completion) return startDialog.call(this, speaker, requested, options);
+      return startDialog.call(this, speaker, requested, {
+        ...options,
+        onDone(current, choices) {
+          // Only the final spoken node's END counts. Cancel, proximity, and
+          // opening a phone article never award conversation progress.
+          if (completion.finishing && current.speaker?.uid === speaker?.uid) completion.finish();
+          options.onDone?.(current, choices);
+        },
+      });
+    };
+  }
+  game.sultraConversationCompletions.set(subtype, {
+    lastNode: `Story${bubbles.length - 1}`,
+    finish() {
+      const vars = game.savestate.game.vars;
+      if (progress.guideBit) game.savestate.setVariable('sultraGuideTalkMask', (Number(vars.sultraGuideTalkMask) || 0) | progress.guideBit);
+      if (content.id === 'lulo') game.savestate.setVariable('isSultraLuloDiscussed', true);
+      if (progress.monumentId === 'tugu-mtq') game.savestate.setVariable('isSultraTuguDiscussed', true);
+      if (progress.monumentId === 'patung-oputa') game.savestate.setVariable('isSultraOputaDiscussed', true);
+    },
+  });
   return dialog;
 }
