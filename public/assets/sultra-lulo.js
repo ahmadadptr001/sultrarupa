@@ -1,4 +1,5 @@
 import { aS as Vector3, bm as Quaternion } from './vendor.75f6e6ae65453426.js';
+import { assetUrl } from './asset-urls.js';
 
 const AUDIO_URL = '/audio/lulo.m4a';
 const PREFIX = 'NPC_SultraLulo_';
@@ -341,7 +342,7 @@ export function installSultraLulo(game, layout) {
     element.preload = 'none';
     element.loop = true;
     element.volume = 0;
-    element.src = AUDIO_URL;
+    element.src = assetUrl(AUDIO_URL);
     element.addEventListener('error', () => { state.error = element.error?.message || 'Lulo audio unavailable'; });
     element.addEventListener('playing', () => { state.loading = false; state.blocked = false; });
     state.element = element;

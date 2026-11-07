@@ -1,4 +1,5 @@
 import narrationManifest from './sultra-narration-manifest.js';
+import { assetUrl } from './asset-urls.js';
 
 const MAX_CHUNK_LENGTH = 220;
 const LISTEN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5-10-6.5Z" fill="currentColor"/></svg>';
@@ -209,7 +210,7 @@ export function createCultureVoice(game, { onStateChange = () => {} } = {}) {
     };
     audio.onerror = fallback;
     startTimeout = window.setTimeout(fallback, 15000);
-    audio.src = entry.url;
+    audio.src = assetUrl(entry.url);
     try {
       const promise = audio.play();
       promise?.catch((error) => {

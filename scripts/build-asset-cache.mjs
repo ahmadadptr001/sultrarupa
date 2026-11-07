@@ -10,7 +10,7 @@ async function visit(directory) {
   for (const entry of (await fs.readdir(directory, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
     const filename = path.join(directory, entry.name);
     if (entry.isDirectory()) await visit(filename);
-    else if (/\.(glb|json|png|jpe?g|webp)$/i.test(entry.name)) {
+    else if (/\.(glb|json|png|jpe?g|webp|m4a|mp3|ogg|wav)$/i.test(entry.name)) {
       const url = '/' + path.relative(path.join(root, 'public'), filename).split(path.sep).join('/');
       versions[url] = createHash('sha256').update(await fs.readFile(filename)).digest('hex').slice(0, 16);
     }
@@ -20,6 +20,8 @@ async function writeIfChanged(filename, content) {
   if (await fs.readFile(filename, 'utf8').catch(() => '') !== content) await fs.writeFile(filename, content);
 }
 await visit(path.join(root, 'public/models'));
+await visit(path.join(root, 'public/images/culture/gallery'));
+await visit(path.join(root, 'public/audio'));
 await fs.mkdir(path.join(root, 'config'), { recursive: true });
 await writeIfChanged(path.join(root, 'config/asset-versions.json'), JSON.stringify(versions, null, 2) + '\n');
 await writeIfChanged(path.join(root, 'public/assets/asset-urls.js'),
@@ -30,4 +32,4 @@ await writeIfChanged(path.join(root, 'public/assets/asset-urls.js'),
   + '  const version = versions[pathname];\n'
   + '  return version ? `/asset-cache/${version}${pathname}` : url;\n'
   + '}\n');
-console.log(`Versioned ${Object.keys(versions).length} model assets for browser caching.`);
+console.log(`Versioned ${Object.keys(versions).length} HD model, gallery and audio assets for browser caching.`);

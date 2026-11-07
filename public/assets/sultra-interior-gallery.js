@@ -184,7 +184,7 @@ export function createInteriorGallery({ scene, camera, root, stage, onLock }) {
         } catch (error) { reject(error); }
       };
       image.onerror = () => reject(new Error(`Gallery photograph unavailable: ${url}`));
-      image.src = url;
+      image.src = assetUrl(url);
     }).catch((error) => {
       images.delete(url);
       throw error;
